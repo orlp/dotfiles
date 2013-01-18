@@ -17,7 +17,7 @@ function prompt()
         pwd = string.sub(pwd, 1, -2)
     end
 
-    local path = string.gsub(pwd, "\\", "\27[1;31m >\27[0;37m ")
+    local path = string.gsub(pwd, "\\", "\27[1;34m >\27[0;37m ")
 
     local dirs = false
     local files = false
