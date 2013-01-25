@@ -21,10 +21,13 @@ set expandtab
 set autoindent
 set smartindent
 set smarttab
+set backspace=indent,eol,start
+
+
+
 
 " line numbers
 :set number
-
 
 " strip trailing whitespace on save
 " autocmd BufWritePre * :%s/\s\+$//e
