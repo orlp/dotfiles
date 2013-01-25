@@ -11,6 +11,10 @@ let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable
 colorscheme wombat
 syntax on
 
+" powerline requirements
+set nocompatible
+set laststatus=2
+
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
 
@@ -23,8 +27,13 @@ set smartindent
 set smarttab
 set backspace=indent,eol,start
 
+" enable filetype plugins
+filetype plugin indent on
 
+" pathogen
+execute pathogen#infect()
 
+" powerline
 
 " line numbers
 :set number
@@ -35,6 +44,8 @@ set backspace=indent,eol,start
 " skin gvim
 if has("gui")
     " font
+    set encoding=utf-8
+    let g:Powerline_symbols = 'fancy'
     set guifont=Consolas:h10
 
     " hide the toolbar
