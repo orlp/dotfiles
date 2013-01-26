@@ -1,0 +1,6 @@
+On Windows I find a vimrc that gets run (like %USERPROFILE%\_vimrc) and add something like this:
+
+    let $HOME = 'C:\Program Files (x86)\dotfiles'
+    source ~/.vim/vimrc.vim
+    
+On linux use symlinks.
