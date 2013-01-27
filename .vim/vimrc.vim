@@ -64,6 +64,11 @@ set encoding=utf-8
 nnoremap j gj
 nnoremap k gk
 
+" who the hell uses Ex mode? remap to paragraph reformat
+vmap Q gq
+nmap Q gqap
+
+
 " strip trailing whitespace on save
 " autocmd BufWritePre * :%s/\s\+$//e
 
