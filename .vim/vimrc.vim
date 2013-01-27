@@ -7,13 +7,23 @@ let s:portable = expand('<sfile>:p:h')
 " add the directory to 'runtimepath'
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
+" no compatability
+set nocompatible
+
+" change the mapleader from \ to ,
+let mapleader=","
+
 " syntax highlighting
 colorscheme wombat
 syntax on
 
-" powerline requirements
-set nocompatible
+" powerline
 set laststatus=2
+let g:Powerline_symbols = 'fancy'
+
+" search
+set smartcase
+set incsearch
 
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
@@ -33,10 +43,26 @@ filetype plugin indent on
 " pathogen
 execute pathogen#infect()
 
-" powerline
-
 " line numbers
-:set number
+set number
+
+" no bells, please
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+
+" no backups please (use a real version control)
+set nobackup
+set noswapfile
+
+" save my poor shift key
+nnoremap ; :
+
+" use UTF-8
+set encoding=utf-8
+
+" I like wrapping
+nnoremap j gj
+nnoremap k gk
 
 " strip trailing whitespace on save
 " autocmd BufWritePre * :%s/\s\+$//e
@@ -44,8 +70,6 @@ execute pathogen#infect()
 " skin gvim
 if has("gui")
     " font
-    set encoding=utf-8
-    let g:Powerline_symbols = 'fancy'
     set guifont=Consolas:h10
 
     " hide the toolbar
