@@ -43,6 +43,12 @@ filetype plugin indent on
 " pathogen
 execute pathogen#infect()
 
+" ctrlp buffer mode
+nmap <leader>b :CtrlPBuffer<CR>
+
+" nerdtree open
+nmap <leader>n :NERDTreeToggle<CR>
+
 " line numbers
 set number
 
@@ -71,6 +77,9 @@ nmap Q gqap
 " don't autocomplete these kind of files
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
+" quick paste
+nmap <leader>v "+gP
+
 " strip trailing whitespace on save
 " autocmd BufWritePre * :%s/\s\+$//e
 
@@ -85,6 +94,8 @@ if has("gui")
     " hide scrollbar
     set guioptions-=r
     set guioptions-=l
+    set guioptions-=R
+    set guioptions-=L
 
     " don't use these strange menu snips
     set guioptions-=t
