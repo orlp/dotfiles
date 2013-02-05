@@ -7,8 +7,12 @@ let s:portable = expand('<sfile>:p:h')
 " add the directory to 'runtimepath'
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
-" no compatability
+" pathogen
+execute pathogen#infect()
+
+" this is just mandatory
 set nocompatible
+set hidden
 
 " change the mapleader from \ to ,
 let mapleader=","
@@ -21,13 +25,22 @@ syntax on
 set laststatus=2
 let g:Powerline_symbols = 'fancy'
 
+" ctrlp buffer mode
+nmap <silent> <leader>b :CtrlPBuffer<CR>
+
+" nerdtree open
+nmap <silent> <leader>n :NERDTreeToggle<CR>
+
 " search
 set smartcase
 set incsearch
+set hlsearch 
+
+" quick clear highlighting
 map <silent> <leader>l :noh<CR>
 
 " keep some distance from the edge of the screen while scrolling
-set scrolloff=5
+set scrolloff=3
 
 " tab settings
 set tabstop=4
@@ -41,15 +54,6 @@ set backspace=indent,eol,start
 " enable filetype plugins
 filetype plugin indent on
 
-" pathogen
-execute pathogen#infect()
-
-" ctrlp buffer mode
-nmap <silent> <leader>b :CtrlPBuffer<CR>
-
-" nerdtree open
-nmap <silent> <leader>n :NERDTreeToggle<CR>
-
 " line numbers
 set number
 
@@ -61,6 +65,9 @@ autocmd GUIEnter * set visualbell t_vb=
 set nobackup
 set noswapfile
 
+" automatically read files
+set autoread
+
 " save my poor shift key
 nnoremap ; :
 
@@ -70,6 +77,7 @@ set encoding=utf-8
 " I like wrapping
 nnoremap j gj
 nnoremap k gk
+set virtualedit=all
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gq
@@ -78,11 +86,12 @@ nmap Q gqap
 " don't autocomplete these kind of files
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
-" quick paste
-nmap <leader>v "+gP
+" quick paste/yank from system clipboard
+nmap <leader>p "+gP
+nmap <leader>y "+y
 
-" strip trailing whitespace on save
-" autocmd BufWritePre * :%s/\s\+$//e
+" better cursor
+set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 
 " skin gvim
 if has("gui")
