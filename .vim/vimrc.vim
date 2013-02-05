@@ -24,6 +24,7 @@ let g:Powerline_symbols = 'fancy'
 " search
 set smartcase
 set incsearch
+map <silent> <leader>l :noh<CR>
 
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
@@ -44,10 +45,10 @@ filetype plugin indent on
 execute pathogen#infect()
 
 " ctrlp buffer mode
-nmap <leader>b :CtrlPBuffer<CR>
+nmap <silent> <leader>b :CtrlPBuffer<CR>
 
 " nerdtree open
-nmap <leader>n :NERDTreeToggle<CR>
+nmap <silent> <leader>n :NERDTreeToggle<CR>
 
 " line numbers
 set number
