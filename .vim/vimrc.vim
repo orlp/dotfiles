@@ -68,6 +68,8 @@ nnoremap k gk
 vmap Q gq
 nmap Q gqap
 
+" don't autocomplete these kind of files
+set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
 " strip trailing whitespace on save
 " autocmd BufWritePre * :%s/\s\+$//e
@@ -82,6 +84,7 @@ if has("gui")
 
     " hide scrollbar
     set guioptions-=r
+    set guioptions-=l
 
     " don't use these strange menu snips
     set guioptions-=t
