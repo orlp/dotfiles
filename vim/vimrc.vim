@@ -7,6 +7,9 @@ let s:portable = expand('<sfile>:p:h')
 " add the directory to 'runtimepath'
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
+" set this as my vimrc
+let $MYVIMRC="~/vim/vimrc.vim"
+
 " pathogen
 execute pathogen#infect()
 
@@ -89,6 +92,13 @@ set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 " quick paste/yank from system clipboard
 nmap <leader>p "+gP
 nmap <leader>y "+y
+
+" cd to the directory containing the file in the buffer
+nmap <silent> <leader>cd :lcd %:h<CR>
+
+" easily edit vimrc
+nmap <silent> <leader>ev :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
 " better cursor
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
