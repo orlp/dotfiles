@@ -59,6 +59,10 @@ filetype plugin indent on
 
 " line numbers
 set number
+            
+" Make vim faster
+set ttyfast
+set lazyredraw 
 
 " no bells, please
 set noerrorbells visualbell t_vb=
@@ -80,7 +84,6 @@ set encoding=utf-8
 " I like wrapping
 nnoremap j gj
 nnoremap k gk
-set virtualedit=all
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gq
