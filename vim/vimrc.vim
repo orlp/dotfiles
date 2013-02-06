@@ -10,9 +10,6 @@ let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable
 " set this as my vimrc
 let $MYVIMRC="~/vim/vimrc.vim"
 
-" pathogen
-execute pathogen#infect()
-
 " this is just mandatory
 set nocompatible
 set hidden
@@ -64,6 +61,11 @@ set number
 set ttyfast
 set lazyredraw 
 
+" don't time out on mappings, do on key codes
+set notimeout
+set ttimeout
+set timeoutlen=100
+
 " no bells, please
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
@@ -93,8 +95,16 @@ nmap Q gqap
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
 " quick paste/yank from system clipboard
-nmap <leader>p "+gP
-nmap <leader>y "+y
+map <leader>p "+p
+map <leader>y "+y
+
+
+
+
+
+
+
+
 
 " cd to the directory containing the file in the buffer
 nmap <silent> <leader>cd :lcd %:h<CR>
@@ -123,3 +133,6 @@ if has("gui")
     " don't use these strange menu snips
     set guioptions-=t
 end
+
+" pathogen
+execute pathogen#infect()
