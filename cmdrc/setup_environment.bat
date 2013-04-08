@@ -22,6 +22,9 @@ REM emulate a bit of linux
 doskey cat=type $*
 doskey mv=move $*
 
+REM sublime text 2 shortcut
+doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
+
 REM enable ansi colors
 if "%PROCESSOR_ARCHITECTURE%"=="x86" (
     "%~dp0ansicon"\x86\ansicon.exe -p

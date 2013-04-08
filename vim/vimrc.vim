@@ -32,6 +32,7 @@ nmap <silent> <leader>b :CtrlPBuffer<CR>
 nmap <silent> <leader>n :NERDTreeToggle<CR>
 
 " search
+set ignorecase
 set smartcase
 set incsearch
 set hlsearch 
