@@ -22,19 +22,49 @@
 ::
 
 @echo off
-setlocal
+
+:: Mimic cmd.exe's behaviour when starting from the start menu.
+::
+if /i "%1"=="startmenu" (
+    cd /d "%userprofile%"
+    shift /1
+)
+
+:: Check for the --profile option.
+if /i "%1"=="--profile" (
+    set clink_profile_arg=--profile "%~2"
+    shift /1
+    shift /1
+)
 
 :: If the .bat is run without any arguments, then start a cmd.exe instance.
 ::
 if "%1"=="" (
-    start "" cmd.exe /k "%~s0 inject && title clink"
-    goto :eof
+    call :launch
+    goto :end
 )
 
 :: Pass through to appropriate loader.
 ::
-if "%PROCESSOR_ARCHITECTURE%"=="x86" (
-    %~dpsn0_x86.exe %*
-) else (
-    %~dpsn0_x64.exe %*
+if /i "%PROCESSOR_ARCHITECTURE%"=="x86" (
+    call :loader_x86 %*
+) else if /i "%PROCESSOR_ARCHITECTURE%"=="amd64" (
+    call :loader_x64 %*
 )
+
+:end
+set clink_profile_arg=
+goto :eof
+
+:: Helper functions to avoid cmd.exe's issues with brackets.
+:loader_x86
+"%~dpn0_x86.exe" %*
+exit /b 0
+
+:loader_x64
+"%~dpn0_x64.exe" %*
+exit /b 0
+
+:launch
+start "" cmd.exe /s /k ""%~dpnx0" inject %clink_profile_arg% && title Clink"
+exit /b 0

@@ -10,16 +10,15 @@ let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable
 " set this as my vimrc
 let $MYVIMRC="~/vim/vimrc.vim"
 
+" pathogen
+execute pathogen#infect()
+
 " this is just mandatory
 set nocompatible
 set hidden
 
 " change the mapleader from \ to ,
 let mapleader=","
-
-" syntax highlighting
-colorscheme wombat
-syntax on
 
 " powerline
 set laststatus=2
@@ -88,6 +87,7 @@ set encoding=utf-8
 nnoremap j gj
 nnoremap k gk
 
+
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gq
 nmap Q gqap
@@ -98,14 +98,6 @@ set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 " quick paste/yank from system clipboard
 map <leader>p "+p
 map <leader>y "+y
-
-
-
-
-
-
-
-
 
 " cd to the directory containing the file in the buffer
 nmap <silent> <leader>cd :lcd %:h<CR>
@@ -122,6 +114,9 @@ if has("gui")
     " font
     set guifont=Consolas:h10
 
+    " hide the menu bar
+    set guioptions-=m
+
     " hide the toolbar
     set guioptions-=T
 
@@ -133,7 +128,14 @@ if has("gui")
 
     " don't use these strange menu snips
     set guioptions-=t
+
+    " make gvim remember pos
+    let g:screen_size_restore_pos = 1
+    source ~/vim/winsize_persistent.vim
 end
 
-" pathogen
-execute pathogen#infect()
+" syntax highlighting
+syntax on
+set background=light
+colorscheme solarized
+

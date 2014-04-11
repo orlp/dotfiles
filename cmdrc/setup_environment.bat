@@ -1,14 +1,6 @@
-@cls
 @echo off
 
-setlocal ENABLEDELAYEDEXPANSION
-
-REM don't bother setting up an environment if we're not interactive
-echo %CMDCMDLINE% | find /i "/c" >nul
-if not errorlevel 1 goto exit
-
-REM welcome message (first to promote the sense of being fast)
-echo %computername%
+REM set up environment/commands
 
 REM always use pushd
 doskey dirs=pushd
@@ -22,8 +14,15 @@ REM emulate a bit of linux
 doskey cat=type $*
 doskey mv=move $*
 
+REM git
+doskey gm=git commit -am "$*" ^&^& git push
+
 REM sublime text 2 shortcut
 doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
+
+REM don't bother setting up a nice visual environment if we're not interactive
+echo %CMDCMDLINE% | C:\Windows\System32\find.exe /i "/c" >nul
+if not errorlevel 1 goto exit
 
 REM enable ansi colors
 if "%PROCESSOR_ARCHITECTURE%"=="x86" (
@@ -34,7 +33,6 @@ if "%PROCESSOR_ARCHITECTURE%"=="x86" (
 
 REM environment variables
 endlocal
-set PATH=%PATH%;%~dp0bin
 if NOT "%1" == "" set CONSOLE_NR=%1
 
 REM startup dir
@@ -44,5 +42,5 @@ REM run clink (this HAS to be the last command, that's why we already put echo t
 echo on
 @"%~dp0clink\clink.bat" inject --quiet --profile "%~dp0clink_profile" --scripts "%~dp0clink_scripts"
 
-
 :exit
+@echo on

@@ -1,6 +1,7 @@
-ctrld_exits=1
+ctrld_exits=0
 passthrough_ctrlc=1
 esc_clears_line=1
 match_colour=-1
-exec_match_style=-1
+exec_match_style=1
 prompt_colour=-1
+terminate_autoanswer=1
