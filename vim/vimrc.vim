@@ -28,7 +28,7 @@ let g:Powerline_symbols = 'fancy'
 nmap <silent> <leader>b :CtrlPBuffer<CR>
 
 " nerdtree open
-nmap <silent> <leader>n :NERDTreeToggle<CR>
+nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 
 " search
 set ignorecase
