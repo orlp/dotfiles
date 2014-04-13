@@ -18,16 +18,23 @@ set nocompatible
 set hidden
 
 " change the mapleader from \ to ,
-let mapleader=","
+let mapleader=" "
 
 " powerline
 set laststatus=2
 let g:Powerline_symbols = 'fancy'
 
+set ruler
+set showcmd
+
 " ctrlp buffer mode
 nmap <silent> <leader>b :CtrlPBuffer<CR>
 
-" nerdtree open
+" NERDTree
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:NERDTreeDirArrows=1
+let g:NERDChristmasTree=0
+let NERDTreeIgnore=["\.pyc$", "\.o$"]
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 
 " search
@@ -39,25 +46,32 @@ set hlsearch
 " quick clear highlighting
 map <silent> <leader>l :noh<CR>
 
-" keep some distance from the edge of the screen while scrolling
-set scrolloff=3
+" open current file in explorer
+if has("win32")
+    nmap <silent> <leader>ee :execute "silent !start explorer /select," . shellescape(@%)<CR>
+endif
 
-" tab settings
+" keep some distance from the edge of the screen while scrolling
+set scrolloff=5
+
+" indent settings
 set tabstop=4
 set shiftwidth=4
 set expandtab
 set autoindent
-set smartindent
+filetype plugin indent on
 set smarttab
 set backspace=indent,eol,start
 
-" enable filetype plugins
-filetype plugin indent on
+set indentexpr=GetIndent(v:lnum)
+function GetIndent(lnum)
+   return indent(prevnonblank(a:lnum - 1))
+endfunction
 
 " line numbers
 set number
             
-" Make vim faster
+" make vim faster
 set ttyfast
 set lazyredraw 
 
@@ -77,16 +91,17 @@ set noswapfile
 " automatically read files
 set autoread
 
-" save my poor shift key
-nnoremap ; :
+" fix backspace
+set bs=2
 
 " use UTF-8
 set encoding=utf-8
 
-" I like wrapping
+" wrapping
+set linebreak
+set textwidth=120
 nnoremap j gj
 nnoremap k gk
-
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gq
@@ -112,7 +127,7 @@ set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ve
 " skin gvim
 if has("gui")
     " font
-    set guifont=Consolas:h10
+    set guifont=Consolas:h11
 
     " hide the menu bar
     set guioptions-=m
@@ -136,6 +151,4 @@ end
 
 " syntax highlighting
 syntax on
-set background=light
-colorscheme solarized
-
+colorscheme twilight

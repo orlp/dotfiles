@@ -20,6 +20,9 @@ doskey gm=git commit -am "$*" ^&^& git push
 REM sublime text 2 shortcut
 doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
 
+REM gvim shortcut
+doskey vim="C:\Program Files (x86)\Vim\vim74\gvim.exe" $*
+
 REM don't bother setting up a nice visual environment if we're not interactive
 echo %CMDCMDLINE% | C:\Windows\System32\find.exe /i "/c" >nul
 if not errorlevel 1 goto exit
