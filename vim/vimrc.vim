@@ -20,10 +20,8 @@ set hidden
 " change the mapleader from \ to ,
 let mapleader=" "
 
-" powerline
+" status line
 set laststatus=2
-let g:Powerline_symbols = 'fancy'
-
 set ruler
 set showcmd
 
@@ -63,8 +61,9 @@ filetype plugin indent on
 set smarttab
 set backspace=indent,eol,start
 
+" override default indent to ignore blank lines
 set indentexpr=GetIndent(v:lnum)
-function GetIndent(lnum)
+function! GetIndent(lnum)
    return indent(prevnonblank(a:lnum - 1))
 endfunction
 
@@ -92,7 +91,7 @@ set noswapfile
 set autoread
 
 " fix backspace
-set bs=2
+set backspace=2
 
 " use UTF-8
 set encoding=utf-8
@@ -120,6 +119,22 @@ nmap <silent> <leader>cd :lcd %:h<CR>
 " easily edit vimrc
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+" search for visual selected text
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=substitute(
+  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+
+" quick find/replace
+nmap <leader>h *Ncgn
+vmap <leader>h *Ngvc
 
 " better cursor
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
