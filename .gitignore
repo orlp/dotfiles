@@ -1,5 +1,6 @@
-/_viminfo
-/_vimsize
+/vim/.cache/*
+/vim/.NERDTreeBookmarks
+/vim/.viminfo
+/vim/.vimsize
 /vim/.netrwhist
-/.cache/*
 /.NERDTreeBookmarks

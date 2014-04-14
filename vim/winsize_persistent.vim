@@ -3,7 +3,7 @@ if has("gui_running")
     if has('amiga')
       return "s:.vimsize"
     elseif has('win32')
-      return $HOME.'\_vimsize'
+      return $HOME.'/vim/.vimsize'
     else
       return $HOME.'/.vimsize'
     endif

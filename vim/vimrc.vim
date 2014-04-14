@@ -1,3 +1,6 @@
+" remove legacy
+set nocompatible
+
 " set default 'runtimepath' (without ~/.vim folders)
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 
@@ -7,14 +10,15 @@ let s:portable = expand('<sfile>:p:h')
 " add the directory to 'runtimepath'
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
-" set this as my vimrc
-let $MYVIMRC="~/vim/vimrc.vim"
+" set this as my vimrc and similar file locations
+let $MYVIMRC='~/vim/vimrc.vim'
+set viminfo+=n~/vim/.viminfo
+let g:unite_data_directory=expand('~/vim/.cache')
 
 " pathogen
 execute pathogen#infect()
 
 " this is just mandatory
-set nocompatible
 set hidden
 
 " change the mapleader from \ to ,
@@ -25,21 +29,19 @@ set laststatus=2
 set ruler
 set showcmd
 
-" ctrlp buffer mode
-nmap <silent> <leader>b :CtrlPBuffer<CR>
-
 " NERDTree
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:NERDTreeDirArrows=1
 let g:NERDChristmasTree=0
-let NERDTreeIgnore=["\.pyc$", "\.o$"]
+let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
+let g:NERDTreeBookmarksFile = expand('~/vim/.NERDTreeBookmarks')
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 
 " search
 set ignorecase
 set smartcase
 set incsearch
-set hlsearch 
+set hlsearch
 
 " quick clear highlighting
 map <silent> <leader>l :noh<CR>
@@ -69,7 +71,8 @@ endfunction
 
 " line numbers
 set number
-            
+set cursorline
+
 " make vim faster
 set ttyfast
 set lazyredraw 
@@ -116,9 +119,13 @@ map <leader>y "+y
 " cd to the directory containing the file in the buffer
 nmap <silent> <leader>cd :lcd %:h<CR>
 
-" easily edit vimrc
+" easily edit vimrc and automatically reload
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+augroup reload_vimrc
+    autocmd!
+    autocmd BufWritePost ~/vim/vimrc.vim NERDTreeToggle|source ~/vim/vimrc.vim|NERDTreeToggle
+augroup END
 
 " search for visual selected text
 vnoremap <silent> * :<C-U>
@@ -132,9 +139,8 @@ vnoremap <silent> # :<C-U>
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
-" quick find/replace
-nmap <leader>h *Ncgn
-vmap <leader>h *Ngvc
+" quick replace occurences
+nmap co :let @/ = '<Bslash><'.expand('<cword>').'<Bslash>>'<CR>:set hlsearch<CR>cgn
 
 " better cursor
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
