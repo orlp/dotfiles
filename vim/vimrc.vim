@@ -71,6 +71,10 @@ nmap <silent> <leader>cd :lcd %:h<CR>
 " easily edit vimrc and automatically reload
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 
+" easier indenting of code
+vnoremap < <gv
+vnoremap > >gv
+
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
 
