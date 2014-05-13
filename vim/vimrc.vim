@@ -37,19 +37,39 @@ let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
 let g:NERDTreeBookmarksFile = expand('~/vim/.NERDTreeBookmarks')
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 
+" unite
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
+
 " search
 set ignorecase
 set smartcase
 set incsearch
 set hlsearch
 
+" <leader> commands
 " quick clear highlighting
 map <silent> <leader>l :noh<CR>
 
 " open current file in explorer
 if has("win32")
-    nmap <silent> <leader>ee :execute "silent !start explorer /select," . shellescape(@%)<CR>
+    nmap <silent> <leader>ee :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
 endif
+
+" quick paste/yank from system clipboard
+map <leader>p "+p
+map <leader>P "+P
+map <leader>y "+y
+
+" quick swap implementation/header
+map <leader>a :A<CR>
+
+" cd to the directory containing the file in the buffer
+nmap <silent> <leader>cd :lcd %:h<CR>
+
+" easily edit vimrc and automatically reload
+nmap <silent> <leader>ev :e $MYVIMRC<CR>
 
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
@@ -112,16 +132,6 @@ nmap Q gqap
 " don't autocomplete these kind of files
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
-" quick paste/yank from system clipboard
-map <leader>p "+p
-map <leader>y "+y
-
-" cd to the directory containing the file in the buffer
-nmap <silent> <leader>cd :lcd %:h<CR>
-
-" easily edit vimrc and automatically reload
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-
 augroup reload_vimrc
     autocmd!
     autocmd BufWritePost ~/vim/vimrc.vim NERDTreeToggle|source ~/vim/vimrc.vim|NERDTreeToggle
@@ -140,7 +150,37 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 " quick replace occurences
-nmap co :let @/ = '<Bslash><'.expand('<cword>').'<Bslash>>'<CR>:set hlsearch<CR>cgn
+let g:should_inject_replace_occurences = 0
+function! MoveToNext()
+    if g:should_inject_replace_occurences
+        call feedkeys("n")
+        call repeat#set("\<Plug>ReplaceOccurences")
+    endif
+
+    let g:should_inject_replace_occurences = 0
+endfunction
+
+augroup auto_move_to_next
+    autocmd! InsertLeave * :call MoveToNext()
+augroup END
+
+nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
+nmap <silent> co :let @/ = '\<'.expand('<cword>').'\>'<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
+
+function! ReplaceOccurence()
+    " we can't use <cword> here because it is too forgiving on what exactly is considered 'under the cursor'
+    let l:winview = winsaveview()
+    let l:save_reg = getreg('"')
+    let l:save_regmode = getregtype('"')
+    normal! yiw
+    let l:text = @@
+    call setreg('"', l:save_reg, l:save_regmode)
+    call winrestview(winview)
+
+    if match(l:text, @/) != -1
+        exe "normal! cgn\<c-a>\<esc>"
+    endif
+endfunction
 
 " better cursor
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
@@ -172,4 +212,5 @@ end
 
 " syntax highlighting
 syntax on
-colorscheme twilight
+set background=light
+colorscheme solarized
