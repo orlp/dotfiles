@@ -1,0 +1,9 @@
+a.vim: https://github.com/vim-scripts/a.vim
+nerdtree: https://github.com/scrooloose/nerdtree
+rust.vim: https://github.com/wting/rust.vim
+unite.vim: https://github.com/Shougo/unite.vim
+vim-colors-solarized: https://github.com/altercation/vim-colors-solarized
+vim-easymotion: https://github.com/Lokaltog/vim-easymotion
+vim-nerdtree-tabs: https://github.com/jistr/vim-nerdtree-tabs
+vim-repeat: https://github.com/tpope/vim-repeat
+vim-surround: https://github.com/tpope/vim-surround
