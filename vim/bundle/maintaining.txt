@@ -5,5 +5,4 @@ Pulling in updates
 git subtree pull --prefix=vim/bundle/<plugin-name> <remote> master --squash
 
 Pulling in all updates on Windows:
-for /F "tokens=*" %A in (vim/bundle/remotes.txt) do git subtree pull --prefix=vim/bundle/%A master --squ
-ash
+for /F "tokens=*" %A in (vim/bundle/remotes.txt) do git subtree pull --prefix=vim/bundle/%A master --squash
