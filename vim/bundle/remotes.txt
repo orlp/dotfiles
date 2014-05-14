@@ -7,3 +7,4 @@ vim-easymotion https://github.com/Lokaltog/vim-easymotion
 vim-nerdtree-tabs https://github.com/jistr/vim-nerdtree-tabs
 vim-repeat https://github.com/tpope/vim-repeat
 vim-surround https://github.com/tpope/vim-surround
+supertab https://github.com/ervandew/supertab
