@@ -1,5 +1,9 @@
 @echo off
 
+REM don't bother setting up a nice environment if we're not interactive
+echo %CMDCMDLINE% | C:\Windows\System32\find.exe /i "/c" >nul
+if not errorlevel 1 goto exit
+
 REM set up environment/commands
 
 REM always use pushd
@@ -22,10 +26,6 @@ doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
 
 REM gvim shortcut
 doskey vim="C:\Program Files (x86)\Vim\vim74\gvim.exe" $*
-
-REM don't bother setting up a nice visual environment if we're not interactive
-echo %CMDCMDLINE% | C:\Windows\System32\find.exe /i "/c" >nul
-if not errorlevel 1 goto exit
 
 REM enable ansi colors
 if "%PROCESSOR_ARCHITECTURE%"=="x86" (

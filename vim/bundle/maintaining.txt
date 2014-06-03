@@ -1,3 +1,5 @@
+For a list of plugins and their remotes see remotes.txt.
+
 Adding new plugins:
 git subtree add --prefix=vim/bundle/<plugin-name> <remote> master --squash
 

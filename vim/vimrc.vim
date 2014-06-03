@@ -48,6 +48,9 @@ set smartcase
 set incsearch
 set hlsearch
 
+" autocomplete
+set completeopt+=longest
+
 " <leader> commands
 " quick clear highlighting
 map <silent> <leader>l :noh<CR>
