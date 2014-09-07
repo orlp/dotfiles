@@ -1,4 +1,4 @@
-#IfWinActive ahk_class Vim
+; #IfWinActive ahk_class Vim
 #NoTrayIcon
 #SingleInstance force
 #NoEnv

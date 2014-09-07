@@ -27,13 +27,6 @@ doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
 REM gvim shortcut
 doskey vim="C:\Program Files (x86)\Vim\vim74\gvim.exe" $*
 
-REM enable ansi colors
-if "%PROCESSOR_ARCHITECTURE%"=="x86" (
-    "%~dp0ansicon"\x86\ansicon.exe -p
-) else (
-    "%~dp0ansicon"\x64\ansicon.exe -p
-)
-
 REM environment variables
 endlocal
 if NOT "%1" == "" set CONSOLE_NR=%1
