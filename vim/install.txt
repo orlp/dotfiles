@@ -4,3 +4,5 @@ On Windows I find a vimrc that gets run (like %USERPROFILE%\_vimrc) and add some
     source ~/vim/vimrc.vim
     
 On linux use symlinks.
+
+    ln -s ~/dotfiles/vim/vimrc.vim ~/.vimrc

@@ -1,19 +1,21 @@
 " remove legacy
 set nocompatible
 
+" http://stackoverflow.com/questions/3377298/how-can-i-override-vim-and-vimrc-paths-but-no-others-in-vim
 " set default 'runtimepath' (without ~/.vim folders)
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 
 " what is the name of the directory containing this file?
 let s:portable = expand('<sfile>:p:h')
+let $VIMHOME = s:portable
 
 " add the directory to 'runtimepath'
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
 " set this as my vimrc and similar file locations
-let $MYVIMRC='~/vim/vimrc.vim'
-set viminfo+=n~/vim/.viminfo
-let g:unite_data_directory=expand('~/vim/.cache')
+let $MYVIMRC = $VIMHOME . '/vimrc.vim'
+let g:unite_data_directory = $VIMHOME . '/.cache'
+set viminfo+=n$VIMHOME/.viminfo
 
 " pathogen
 execute pathogen#infect()
@@ -36,11 +38,20 @@ let g:NERDChristmasTree=0
 let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
 let g:NERDTreeBookmarksFile = expand('~/vim/.NERDTreeBookmarks')
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
+nmap <silent> <leader>N :NERDTreeFind<CR>
 
 " unite
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
+
+" easymotion
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
+
+let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
 
 " search
 set ignorecase
@@ -195,7 +206,7 @@ set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ve
 " skin gvim
 if has("gui")
     " font
-    set guifont=Consolas:h11
+    set guifont=Inconsolata\ 12
 
     " hide the menu bar
     set guioptions-=m
@@ -214,10 +225,12 @@ if has("gui")
 
     " make gvim remember pos
     let g:screen_size_restore_pos = 1
-    source ~/vim/winsize_persistent.vim
+    source $VIMHOME/winsize_persistent.vim
 end
 
 " syntax highlighting
+let g:solarized_termcolors=256
 syntax on
 set background=light
 colorscheme solarized
+set t_Co=256
