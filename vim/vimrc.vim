@@ -206,7 +206,9 @@ set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ve
 " skin gvim
 if has("gui")
     " font
-    set guifont=Inconsolata\ 12
+    if has('win32')
+        set guifont=Consolas:h11
+    endif
 
     " hide the menu bar
     set guioptions-=m
