@@ -12,10 +12,40 @@ let $VIMHOME = s:portable
 " add the directory to 'runtimepath'
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
-" set this as my vimrc and similar file locations
+" create portable directories
+if isdirectory($VIMHOME . '/.backup') == 0
+    call mkdir($VIMHOME . '/.backup')
+endif
+
+if isdirectory($VIMHOME . '/.cache') == 0
+    call mkdir($VIMHOME . '/.cache')
+endif
+
+if isdirectory($VIMHOME . '/.swap') == 0
+    call mkdir($VIMHOME . '/.swap')
+endif
+
+if isdirectory($VIMHOME . '/.undo') == 0
+    call mkdir($VIMHOME . '/.undo')
+endif
+
+" set portable file locations
 let $MYVIMRC = $VIMHOME . '/vimrc.vim'
 let g:unite_data_directory = $VIMHOME . '/.cache'
+let g:NERDTreeBookmarksFile = $VIMHOME . '/.NERDTreeBookmarks'
+
 set viminfo+=n$VIMHOME/.viminfo
+
+set backup
+set backupdir=$VIMHOME/.backup/
+
+set swapfile
+set directory=$VIMHOME/.swap// " two slashes intentional, prevents collisions (:help dir)
+
+if exists('+undofile')
+    set undofile
+    set directory=$VIMHOME/.undo// " two slashes intentional, prevents collisions (:help dir)
+endif
 
 " pathogen
 execute pathogen#infect()
@@ -36,7 +66,6 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:NERDTreeDirArrows=1
 let g:NERDChristmasTree=0
 let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
-let g:NERDTreeBookmarksFile = expand('~/vim/.NERDTreeBookmarks')
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 nmap <silent> <leader>N :NERDTreeFind<CR>
 
@@ -124,10 +153,6 @@ set timeoutlen=100
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
 
-" no backups please (use a real version control)
-set nobackup
-set noswapfile
-
 " automatically read files
 set autoread
 
@@ -152,7 +177,7 @@ set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
 augroup reload_vimrc
     autocmd!
-    autocmd BufWritePost ~/vim/vimrc.vim NERDTreeToggle|source ~/vim/vimrc.vim|NERDTreeToggle
+    autocmd BufWritePost $MYVIMRC NERDTreeToggle|source $MYVIMRC|NERDTreeToggle
 augroup END
 
 " search for visual selected text

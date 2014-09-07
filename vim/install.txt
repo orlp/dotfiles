@@ -1,8 +1,13 @@
-On Windows I find a vimrc that gets run (like %USERPROFILE%\_vimrc) and add something like this:
+Windows
+-------
+Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and add something like this:
 
-    let $HOME = 'C:\Program Files (x86)\dotfiles'
-    source ~/vim/vimrc.vim
+    source C:\\Program Files\ (x86)\\dotfiles\\vim\\vimrc.vim
+
+Also run vim_caps_remap_install.bat if you want to remap caps lock to escape.
     
-On linux use symlinks.
+Linux
+-----
+Use a symlink:
 
     ln -s ~/dotfiles/vim/vimrc.vim ~/.vimrc
