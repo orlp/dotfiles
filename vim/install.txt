@@ -8,6 +8,6 @@ Also run vim_caps_remap_install.bat if you want to remap caps lock to escape.
     
 Linux
 -----
-Use a symlink:
+Edit ~/.vimrc to contain:
 
-    ln -s ~/dotfiles/vim/vimrc.vim ~/.vimrc
+    source ~/dotfiles/vim/vimrc.vim
