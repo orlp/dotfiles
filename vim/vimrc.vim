@@ -105,6 +105,7 @@ map <leader>p "+p
 map <leader>P "+P
 map <leader>y "+y
 
+" keep clipboard contents on vim exit
 if has('unix')
     autocmd VimLeave * call system('xsel -ib', getreg('+'))
 endif
