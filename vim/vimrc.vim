@@ -256,8 +256,8 @@ if has("gui")
 end
 
 " syntax highlighting
-let g:solarized_termcolors=256
+" let g:solarized_termcolors=16
+set t_Co=16
 syntax on
-set background=light
+set background=dark
 colorscheme solarized
-set t_Co=256
