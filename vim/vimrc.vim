@@ -36,15 +36,15 @@ let g:NERDTreeBookmarksFile = $VIMHOME . '/.NERDTreeBookmarks'
 
 set viminfo+=n$VIMHOME/.viminfo
 
-set backup
 set backupdir=$VIMHOME/.backup/
+set backup
 
-set swapfile
 set directory=$VIMHOME/.swap// " two slashes intentional, prevents collisions (:help dir)
+set swapfile
 
 if exists('+undofile')
+    set undodir=$VIMHOME/.undo// " two slashes intentional, prevents collisions (:help dir)
     set undofile
-    set directory=$VIMHOME/.undo// " two slashes intentional, prevents collisions (:help dir)
 endif
 
 " pathogen
