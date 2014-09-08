@@ -87,13 +87,14 @@ set ignorecase
 set smartcase
 set incsearch
 set hlsearch
+set wrapscan
 
 " autocomplete
 set completeopt+=longest
 
 " <leader> commands
 " quick clear highlighting
-map <silent> <leader>l :noh<CR>
+map <silent> <leader>l :nohlsearch<CR>
 
 " open current file in explorer
 if has('win32')
@@ -217,20 +218,22 @@ nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
 nmap <silent> co :let @/ = '\<'.expand('<cword>').'\>'<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
 
 function! ReplaceOccurence()
-    " we can't use <cword> here because it is too forgiving on what exactly is considered 'under the cursor'
     let l:winview = winsaveview()
     let l:save_reg = getreg('"')
     let l:save_regmode = getregtype('"')
-    normal! yiw
-    let l:text = @@
+    let [l:lnum_cur, l:col_cur] = getpos(".")[1:2] 
+    normal! ygn
+    let [l:lnum1, l:col1] = getpos("'[")[1:2]
+    let [l:lnum2, l:col2] = getpos("']")[1:2]
     call setreg('"', l:save_reg, l:save_regmode)
     call winrestview(winview)
-
-    if match(l:text, @/) != -1
+    
+    if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
         exe "normal! cgn\<c-a>\<esc>"
     endif
-
+    
     call feedkeys("n")
+
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
 
