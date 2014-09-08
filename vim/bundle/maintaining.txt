@@ -6,5 +6,8 @@ git subtree add --prefix=vim/bundle/<plugin-name> <remote> master --squash
 Pulling in updates
 git subtree pull --prefix=vim/bundle/<plugin-name> <remote> master --squash
 
-Pulling in all updates on Windows:
+Pulling in all updates on Windows (run from dotfiles root):
 for /F "tokens=*" %A in (vim/bundle/remotes.txt) do git subtree pull --prefix=vim/bundle/%A master --squash
+
+Pulling in all updates on Linux (run from dotfiles root):
+printf 'git subtree pull --prefix=vim/bundle/%s %s master --squash\n' $(<vim/bundle/remotes.txt) | bash

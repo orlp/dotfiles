@@ -54,7 +54,7 @@ execute pathogen#infect()
 set hidden
 
 " change the mapleader from \ to ,
-let mapleader=" "
+let mapleader=' '
 
 " status line
 set laststatus=2
@@ -96,14 +96,18 @@ set completeopt+=longest
 map <silent> <leader>l :noh<CR>
 
 " open current file in explorer
-if has("win32")
+if has('win32')
     nmap <silent> <leader>ee :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
 endif
 
-" quick paste/yank from system clipboard
+" quick copy/paste to/from system clipboard
 map <leader>p "+p
 map <leader>P "+P
 map <leader>y "+y
+
+if has('unix')
+    autocmd VimLeave * call system('xsel -ib', getreg('+'))
+endif
 
 " quick swap implementation/header
 map <leader>a :A<CR>
