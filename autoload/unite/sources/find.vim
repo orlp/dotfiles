@@ -27,9 +27,6 @@
 call unite#util#set_default('g:unite_source_find_command', 'find')
 call unite#util#set_default('g:unite_source_find_default_opts', '')
 call unite#util#set_default('g:unite_source_find_max_candidates', 100)
-call unite#util#set_default('g:unite_source_find_ignore_pattern',
-      \'\~$\|\.\%(bak\|sw[po]\)$\|'.
-      \'\%(^\|/\)\.\%(hg\|git\|bzr\|svn\)\%($\|/\)')
 "}}}
 
 " Actions "{{{
@@ -41,7 +38,7 @@ let s:action_find = {
   \ }
 function! s:action_find.func(candidate) "{{{
   call unite#start_script([['find',
-        \ a:candidate.action__directory]],
+        \ unite#helper#get_candidate_directory(a:candidate)]],
         \ {'no_quit' : 1})
 endfunction "}}}
 if executable(g:unite_source_find_command) && unite#util#has_vimproc()
@@ -59,7 +56,11 @@ let s:source = {
       \ 'max_candidates': g:unite_source_find_max_candidates,
       \ 'hooks' : {},
       \ 'matchers' : ['matcher_regexp'],
-      \ 'ignore_pattern' : g:unite_source_find_ignore_pattern,
+      \ 'ignore_globs' : [
+      \         '*~', '*.o', '*.exe', '*.bak',
+      \         'DS_Store', '*.zwc', '*.pyc', '*.sw[po]', '*.class',
+      \         '.hg/*', '.git/*', '.bzr/*', '.svn/*',
+      \ ],
       \ }
 
 function! s:source.hooks.on_init(args, context) "{{{
@@ -86,7 +87,6 @@ endfunction "}}}
 function! s:source.gather_candidates(args, context) "{{{
   if empty(a:context.source__target)
         \ || a:context.source__input == ''
-    call unite#print_source_message('Completed.', s:source.name)
     let a:context.is_async = 0
     return []
   endif
@@ -119,28 +119,26 @@ function! s:source.async_gather_candidates(args, context) "{{{
   let stdout = a:context.source__proc.stdout
   if stdout.eof
     " Disable async.
-    call unite#print_source_message('Completed.', s:source.name)
     let a:context.is_async = 0
   endif
 
   let candidates = map(filter(
-        \ stdout.read_lines(-1, 100), "v:val !~ '^\\s*$'"),
+        \ stdout.read_lines(-1, 1000), "v:val !~ '^\\s*$'"),
         \ "fnamemodify(unite#util#iconv(v:val, 'char', &encoding), ':p')")
 
+  let cwd = getcwd()
   if isdirectory(a:context.source__target)
-    let cwd = getcwd()
-    lcd `=a:context.source__target`
+    call unite#util#lcd(a:context.source__target)
   endif
 
   call map(candidates, "{
     \   'word' : unite#util#substitute_path_separator(v:val),
     \   'kind' : (isdirectory(v:val) ? 'directory' : 'file'),
     \   'action__path' : unite#util#substitute_path_separator(v:val),
-    \   'action__directory' : unite#util#path2directory(v:val),
     \ }")
 
   if isdirectory(a:context.source__target)
-    lcd `=cwd`
+    call unite#util#lcd(cwd)
   endif
 
   return candidates

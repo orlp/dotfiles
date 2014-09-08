@@ -65,6 +65,7 @@ function! unite#kinds#jump_list#define() "{{{
       " Open folds.
       normal! zv
       call s:adjust_scroll(s:best_winline())
+      call s:clear_highlight()
     endfor
   endfunction"}}}
 
@@ -74,8 +75,8 @@ function! unite#kinds#jump_list#define() "{{{
         \ }
   function! kind.action_table.preview.func(candidate) "{{{
     let filename = s:get_filename(a:candidate)
-    let buflisted = buflisted(
-          \ unite#util#escape_file_searching(filename))
+    let bufwinnr = bufwinnr(filename)
+    let buflisted = buflisted(filename)
     let preview_windows = filter(range(1, winnr('$')),
           \ 'getwinvar(v:val, "&previewwindow") != 0')
     if empty(preview_windows)
@@ -86,10 +87,12 @@ function! unite#kinds#jump_list#define() "{{{
     wincmd P
     try
       let bufnr = s:open(a:candidate)
-      if !buflisted
+      if bufwinnr < 0
         doautocmd BufRead
         setlocal nomodified
-        call unite#add_previewed_buffer_list(bufnr)
+        if !buflisted
+          call unite#add_previewed_buffer_list(bufnr)
+        endif
       endif
       call s:jump(a:candidate, 1)
     finally
@@ -109,9 +112,9 @@ function! unite#kinds#jump_list#define() "{{{
       let context = unite.context
       let current_winnr = winnr()
 
-      if context.vertical 
+      if context.vertical
           setlocal winfixwidth
-      else 
+      else
           setlocal winfixheight
       endif
 
@@ -268,7 +271,8 @@ function! s:open_current_line(is_highlight) "{{{
   normal! zv
   normal! zz
   if a:is_highlight
-    execute 'match Search /\%'.line('.').'l/'
+    call s:clear_highlight()
+    call unite#view#_match_line('Search', line('.'), 10)
   endif
 endfunction"}}}
 
@@ -295,11 +299,13 @@ endfunction"}}}
 function! s:get_bufnr(candidate) "{{{
   return has_key(a:candidate, 'action__buffer_nr') ?
         \ a:candidate.action__buffer_nr :
-        \ bufnr(unite#util#escape_file_searching(
-        \     a:candidate.action__path))
+        \ bufnr(a:candidate.action__path)
 endfunction"}}}
 function! s:convert_path(path) "{{{
   return unite#util#substitute_path_separator(fnamemodify(a:path, ':p'))
+endfunction"}}}
+function! s:clear_highlight() "{{{
+  silent! call matchdelete(10)
 endfunction"}}}
 
 let &cpo = s:save_cpo

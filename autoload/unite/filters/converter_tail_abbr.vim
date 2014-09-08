@@ -1,6 +1,7 @@
 "=============================================================================
-" FILE: file_point.vim
+" FILE: converter_tail_abbr.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
+"          Sean Mackesey <s.mackesey@gmail.com> 
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -26,49 +27,20 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#sources#file_point#define() "{{{
-  return s:source
+function! unite#filters#converter_tail_abbr#define() "{{{
+  return s:converter
 endfunction"}}}
 
-let s:source = {
-      \ 'name' : 'file_point',
-      \ 'description' : 'file candidate from cursor point',
-      \ 'hooks' : {},
+let s:converter = {
+      \ 'name' : 'converter_tail_abbr',
+      \ 'description' : 'converts abbr to tail of filename',
       \}
-function! s:source.hooks.on_init(args, context) "{{{
-  let filename_pattern = '[[:alnum:];/?:@&=+$_.!~|()#-]\+'
-  let filename = unite#util#expand(
-        \ matchstr(getline('.')[: col('.')-1], filename_pattern . '$')
-        \ . matchstr(getline('.')[col('.') :], '^'.filename_pattern))
-  let a:context.source__filename =
-        \ (filename =~ '^\%(https\?\|ftp\)://') ?
-        \ filename : fnamemodify(filename, ':p')
-endfunction"}}}
 
-function! s:source.gather_candidates(args, context) "{{{
-  if a:context.source__filename =~ '^\%(https\?\|ftp\)://'
-    if exists('*vimproc#host_exists') &&
-          \ !vimproc#host_exists(a:context.source__filename)
-      " URI is invalid.
-      return []
-    endif
-
-    " URI.
-    return [{
-          \   'word' : a:context.source__filename,
-          \   'kind' : ['file', 'uri'],
-          \   'action__path' : a:context.source__filename,
-          \ }]
-  elseif filereadable(a:context.source__filename)
-    return [{
-          \   'word' : a:context.source__filename,
-          \   'kind' : 'file',
-          \   'action__path' : a:context.source__filename,
-          \ }]
-  else
-    " File not found.
-    return []
-  endif
+function! s:converter.filter(candidates, context) "{{{
+  for candidate in a:candidates
+    let candidate.abbr = fnamemodify(get(candidate, 'action__path', candidate.word), ':t')
+  endfor
+  return a:candidates
 endfunction"}}}
 
 let &cpo = s:save_cpo

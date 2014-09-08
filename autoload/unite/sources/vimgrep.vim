@@ -26,10 +26,6 @@
 " Variables  "{{{
 call unite#util#set_default(
       \ 'g:unite_source_vimgrep_search_word_highlight', 'Search')
-call unite#util#set_default('g:unite_source_vimgrep_ignore_pattern',
-      \'\~$\|\.\%(o\|exe\|dll\|bak\|sw[po]\)$\|'.
-      \'\%(^\|/\)\.\%(hg\|git\|bzr\|svn\)\%($\|/\)\|'.
-      \'\%(^\|/\)tags\%(-\a*\)\?$')
 "}}}
 
 " Actions "{{{
@@ -56,7 +52,8 @@ let s:action_vimgrep_directory = {
   \ }
 function! s:action_vimgrep_directory.func(candidates) "{{{
   call unite#start_script([
-        \ ['vimgrep', map(copy(a:candidates), 'string(v:val.action__directory)'),
+        \ ['vimgrep', map(copy(a:candidates),
+        \ 'string(unite#helper#get_candidate_directory(v:val))'),
         \ ]], { 'no_quit' : 1 })
 endfunction "}}}
 " }}}
@@ -71,7 +68,11 @@ let s:source = {
       \ 'hooks' : {},
       \ 'syntax' : 'uniteSource__Vimgrep',
       \ 'matchers' : 'matcher_regexp',
-      \ 'ignore_pattern' : g:unite_source_vimgrep_ignore_pattern,
+      \ 'ignore_globs' : [
+      \         '*~', '*.o', '*.exe', '*.bak',
+      \         'DS_Store', '*.zwc', '*.pyc', '*.sw[po]', '*.class',
+      \         '.hg/*', '.git/*', '.bzr/*', '.svn/*',
+      \ ],
       \ }
 
 function! s:source.hooks.on_init(args, context) "{{{
@@ -139,8 +140,6 @@ endfunction"}}}
 function! s:source.hooks.on_post_filter(args, context) "{{{
   for candidate in a:context.candidates
     let candidate.kind = ['file', 'jump_list']
-    let candidate.action__directory =
-          \ unite#util#path2directory(candidate.action__path)
     let candidate.action__col_pattern = a:context.source__input
     let candidate.is_multiline = 1
   endfor
@@ -149,7 +148,6 @@ endfunction"}}}
 function! s:source.gather_candidates(args, context) "{{{
   if empty(a:context.source__target)
         \ || a:context.source__input == ''
-    call unite#print_source_message('Completed.', s:source.name)
     return []
   endif
 
@@ -169,11 +167,9 @@ function! s:source.gather_candidates(args, context) "{{{
     execute cmdline
     let qflist = getqflist()
 
-    call unite#print_source_message('Completed.', s:source.name)
-
+    let cwd = getcwd()
     if isdirectory(a:context.source__directory)
-      let cwd = getcwd()
-      lcd `=a:context.source__directory`
+      call unite#util#lcd(a:context.source__directory)
     endif
 
     for qf in filter(qflist,
@@ -193,11 +189,10 @@ function! s:source.gather_candidates(args, context) "{{{
     endfor
 
     if isdirectory(a:context.source__directory)
-      lcd `=cwd`
+      call unite#util#lcd(cwd)
     endif
   catch /^Vim\%((\a\+)\)\?:E480/
     " Ignore.
-    call unite#print_source_message('Completed.', s:source.name)
     return []
   finally
     " Delete unlisted buffers.
