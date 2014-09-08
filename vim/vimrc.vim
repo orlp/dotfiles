@@ -53,7 +53,7 @@ execute pathogen#infect()
 " this is just mandatory
 set hidden
 
-" change the mapleader from \ to ,
+" change the mapleader from \ to space
 let mapleader=' '
 
 " status line
