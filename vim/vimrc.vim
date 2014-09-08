@@ -75,6 +75,8 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
 
 " easymotion
+map <Leader>m <Plug>(easymotion-prefix)
+map <Leader><Leader> <Plug>(easymotion-s)
 map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
@@ -218,6 +220,7 @@ nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
 nmap <silent> co :let @/ = '\<'.expand('<cword>').'\>'<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
 
 function! ReplaceOccurence()
+    " check if we are on top of an occurence
     let l:winview = winsaveview()
     let l:save_reg = getreg('"')
     let l:save_regmode = getregtype('"')
@@ -228,12 +231,12 @@ function! ReplaceOccurence()
     call setreg('"', l:save_reg, l:save_regmode)
     call winrestview(winview)
     
+    " if we are on top of an occurence, replace it
     if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
         exe "normal! cgn\<c-a>\<esc>"
     endif
     
     call feedkeys("n")
-
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
 
