@@ -229,6 +229,9 @@ function! ReplaceOccurence()
     if match(l:text, @/) != -1
         exe "normal! cgn\<c-a>\<esc>"
     endif
+
+    call feedkeys("n")
+    call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
 
 " better cursor
