@@ -180,6 +180,7 @@ nmap Q gqap
 " don't autocomplete these kind of files
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
+" automatically reload vimrc on save
 augroup reload_vimrc
     autocmd!
     autocmd BufWritePost $MYVIMRC NERDTreeToggle|source $MYVIMRC|NERDTreeToggle
