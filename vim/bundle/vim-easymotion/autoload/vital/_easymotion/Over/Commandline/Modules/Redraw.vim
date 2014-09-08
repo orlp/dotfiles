@@ -37,7 +37,14 @@ endfunction
 
 function! s:module.redraw(cmdline)
 	redraw
-	normal! :
+	" Workaround for the :set cedit=<C-c>
+	" https://github.com/osyo-manga/vital-over/issues/52
+	" https://github.com/Lokaltog/vim-easymotion/issues/177#issuecomment-53663431
+	if &cedit != "<C-c>"
+		normal! :
+	else
+		execute "normal! :\<Esc>"
+	endif
 endfunction
 
 function! s:make()
