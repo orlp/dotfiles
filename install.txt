@@ -1,3 +1,38 @@
+Windows
+=======
+Installation instructions for Windows.
+
+cmdrc
+-----
+Execute: cmdrc/install.bat
+Add to path: cmdrc/bin/
+Recommended: Install qcon from https://github.com/orlp/qcon
+
+nocaps
+------
+Execute: nocaps/caps_remap_install.bat
+
+vim
+---
+Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and change it's contents to this (change to the proper install path):
+
+    source C:\\Program Files\ (x86)\\dotfiles\\vim\\vimrc.vim
+
+Linux
+=====
+Installation instructions for linux.
+
+nocaps
+------
+Run the following command on startup:
+setxkbmap -option caps:escape
+
+vim
+---
+Edit ~/.vimrc to contain:
+
+    source ~/dotfiles/vim/vimrc.vim
+
 tmux
 ----
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf

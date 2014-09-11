@@ -1,0 +1,9 @@
+vim/bundle/a.vim https://github.com/vim-scripts/a.vim
+vim/bundle/nerdtree https://github.com/scrooloose/nerdtree
+vim/bundle/rust.vim https://github.com/wting/rust.vim
+vim/bundle/unite.vim https://github.com/Shougo/unite.vim
+vim/bundle/vim-easymotion https://github.com/Lokaltog/vim-easymotion
+vim/bundle/vim-nerdtree-tabs https://github.com/jistr/vim-nerdtree-tabs
+vim/bundle/vim-repeat https://github.com/tpope/vim-repeat
+vim/bundle/vim-surround https://github.com/tpope/vim-surround
+vim/bundle/supertab https://github.com/ervandew/supertab
