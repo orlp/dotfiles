@@ -110,7 +110,7 @@ map <leader>y "+y
 
 " keep clipboard contents on vim exit
 if has('unix')
-    autocmd VimLeave * call system('xsel -ib', getreg('+'))
+    autocmd VimLeavePre * call system('xsel -ib', getreg('+'))
 endif
 
 " quick swap implementation/header

@@ -33,6 +33,11 @@ Edit ~/.vimrc to contain:
 
     source ~/dotfiles/vim/vimrc.vim
 
+zsh
+---
+ln -s ~/dotfiles/zsh/zshrc ~/.zshrc
+chsh -s /bin/zsh
+
 tmux
 ----
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
