@@ -259,10 +259,12 @@ endfunction
 set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 
 " skin gvim
-if has("gui")
+if has("gui_running")
     " font
     if has('win32')
         set guifont=Consolas:h11
+    else
+        set guifont=Monaco\ 10
     endif
 
     " hide the menu bar
@@ -271,7 +273,7 @@ if has("gui")
     " hide the toolbar
     set guioptions-=T
 
-    " hide scrollbar
+    " hide scrollbarif
     set guioptions-=r
     set guioptions-=l
     set guioptions-=R
@@ -283,15 +285,15 @@ if has("gui")
     " make gvim remember pos
     let g:screen_size_restore_pos = 1
     source $VIMHOME/winsize_persistent.vim
-end
+endif
 
 
 " syntax highlighting
 set t_Co=16
 syntax on
-if has("gui")
+if has("gui_running")
     set background=light
 else
     set background=dark " this is flipped on gui for some reason
-end
+endif
 colorscheme solarized
