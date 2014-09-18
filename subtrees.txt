@@ -7,4 +7,4 @@ vim/bundle/vim-nerdtree-tabs https://github.com/jistr/vim-nerdtree-tabs
 vim/bundle/vim-repeat https://github.com/tpope/vim-repeat
 vim/bundle/vim-surround https://github.com/tpope/vim-surround
 vim/bundle/supertab https://github.com/ervandew/supertab
-vim/bundle/vim-airline https://github.com/bling/vim-airline
+vim/bundle/vim-bufferline https://github.com/bling/vim-bufferline
