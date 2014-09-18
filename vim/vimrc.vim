@@ -76,13 +76,11 @@ nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
 
 " easymotion
 map <Leader>m <Plug>(easymotion-prefix)
-" map <Leader><Leader> <Plug>(easymotion-s)
+map <Leader><Leader> <Plug>(easymotion-s)
 map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
-
-map <Leader><Leader> <Leader>
 
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
 
