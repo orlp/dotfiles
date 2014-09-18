@@ -58,8 +58,16 @@ let mapleader=' '
 
 " status line
 set laststatus=2
-set ruler
 set showcmd
+
+set statusline=   " clear the statusline for when vimrc is reloaded
+set statusline+=%f\                              " file name
+set statusline+=%m%r%w                           " flags
+set statusline+=%=                               " right align
+set statusline+=%{strlen(&ft)?&ft:'none'}\ \|\   " filetype
+set statusline+=%{strlen(&fenc)?&fenc:&enc}\ \|\ " encoding
+set statusline+=%{&fileformat}                   " file format
+set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 
 " NERDTree
 let g:nerdtree_tabs_open_on_gui_startup = 0
