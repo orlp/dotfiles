@@ -47,6 +47,9 @@ if exists('+undofile')
     set undofile
 endif
 
+" ctags
+set tags=./tags;/
+
 " pathogen
 execute pathogen#infect()
 
@@ -186,7 +189,7 @@ nnoremap j gj
 nnoremap k gk
 
 augroup highlight_long_lines
-  autocmd BufEnter * highlight OverLength ctermbg=grey guibg=#d7d7af
+  autocmd BufEnter * highlight OverLength ctermbg=255 guibg=#d7d7af
   autocmd BufEnter * match OverLength /\%101v.*/
 augroup END
 
@@ -207,15 +210,15 @@ augroup END
 
 " search for visual selected text
 vnoremap <silent> * :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy/<C-R><C-R>=substitute(
-  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-  \gV:call setreg('"', old_reg, old_regtype)<CR>
+    \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+    \gvy/<C-R><C-R>=substitute(
+    \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+    \gV:call setreg('"', old_reg, old_regtype)<CR>
 vnoremap <silent> # :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy?<C-R><C-R>=substitute(
-  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-  \gV:call setreg('"', old_reg, old_regtype)<CR>
+    \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+    \gvy?<C-R><C-R>=substitute(
+    \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+    \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 " quick replace occurences
 let g:should_inject_replace_occurences = 0
@@ -233,12 +236,13 @@ augroup auto_move_to_next
 augroup END
 
 nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
-nmap <silent> <Leader>r :let @/ = '\<'.expand('<cword>').'\>'<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
+nmap <silent> <Leader>r :let @/ = '\<'.expand('<cword>').'\>'<CR>
+    \:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
 vmap <silent> <Leader>r :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy:let @/ = substitute(
-  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
-  \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
+    \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+    \gvy:let @/ = substitute(
+    \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
+    \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
 
 function! ReplaceOccurence()
     " check if we are on top of an occurence
