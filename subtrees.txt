@@ -8,3 +8,4 @@ vim/bundle/vim-repeat https://github.com/tpope/vim-repeat
 vim/bundle/vim-surround https://github.com/tpope/vim-surround
 vim/bundle/supertab https://github.com/ervandew/supertab
 vim/bundle/vim-bufferline https://github.com/bling/vim-bufferline
+vim/bundle/tagbar https://github.com/majutsushi/tagbar
