@@ -1,5 +1,5 @@
 "=============================================================================
-" FILE: sorter_length.vim
+" FILE: matcher_hide_current_file.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -26,18 +26,24 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! unite#filters#sorter_length#define() "{{{
-  return s:sorter
+function! unite#filters#matcher_hide_current_file#define() "{{{
+  return s:matcher
 endfunction"}}}
 
-let s:sorter = {
-      \ 'name' : 'sorter_length',
-      \ 'description' : 'sort by length order',
+let s:matcher = {
+      \ 'name' : 'matcher_hide_current_file',
+      \ 'description' : 'hide current file matcher',
       \}
 
-function! s:sorter.filter(candidates, context) "{{{
-  return unite#util#sort_by(a:candidates,
-        \ "len(v:val.word) + 100*len(substitute(v:val.word, '[^/]', '', 'g'))")
+function! s:matcher.filter(candidates, context) "{{{
+  if bufname(unite#get_current_unite().prev_bufnr) == ''
+    return a:candidates
+  endif
+
+  let file = unite#util#substitute_path_separator(
+        \ fnamemodify(bufname(unite#get_current_unite().prev_bufnr), ':p'))
+  return filter(a:candidates, "
+        \ get(v:val, 'action__path', v:val.word) !=# file")
 endfunction"}}}
 
 let &cpo = s:save_cpo

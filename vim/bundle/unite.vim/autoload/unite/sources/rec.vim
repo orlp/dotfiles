@@ -56,8 +56,8 @@ let s:source_file_rec = {
       \ 'max_candidates' : 50,
       \ 'ignore_globs' : [
       \         '.', '*~', '*.o', '*.exe', '*.bak',
-      \         'DS_Store', '*.zwc', '*.pyc', '*.sw[po]', '*.class',
-      \         '.hg/*', '.git/*', '.bzr/*', '.svn/*',
+      \         'DS_Store', '*.pyc', '*.sw[po]', '*.class',
+      \         '.hg/**', '.git/**', '.bzr/**', '.svn/**',
       \         'tags', 'tags-*'
       \ ],
       \ 'matchers' : [ 'converter_relative_word',
@@ -95,9 +95,12 @@ endfunction"}}}
 function! s:source_file_rec.async_gather_candidates(args, context) "{{{
   let continuation = a:context.source__continuation
 
+  let ignore_dir = get(a:context, 'custom_rec_ignore_directory_pattern',
+              \ '/\.\+$\|/\%(\.hg\|\.git\|\.bzr\|\.svn\)/')
+
   let [continuation.rest, files] =
         \ s:get_files(a:context, continuation.rest,
-        \   1, g:unite_source_rec_unit)
+        \   1, g:unite_source_rec_unit, ignore_dir)
 
   if empty(continuation.rest) || (
         \  g:unite_source_rec_max_cache_files > 0 &&
@@ -471,7 +474,7 @@ function! s:get_path(args, context) "{{{
 
   return directory
 endfunction"}}}
-function! s:get_files(context, files, level, max_unit) "{{{
+function! s:get_files(context, files, level, max_unit, ignore_dir) "{{{
   let continuation_files = []
   let ret_files = []
   let files_index = 0
@@ -479,11 +482,10 @@ function! s:get_files(context, files, level, max_unit) "{{{
   for file in a:files
     let files_index += 1
 
-    if file =~? '/\.\+$\|/\%(\.hg\|\.git\|\.bzr\|\.svn\)/'
-      continue
-    endif
-
     if isdirectory(file)
+      if file =~? a:ignore_dir
+        continue
+      endif
       if getftype(file) ==# 'link'
         let real_file = s:resolve(file)
         if real_file == ''
@@ -509,7 +511,7 @@ function! s:get_files(context, files, level, max_unit) "{{{
         let child = substitute(child, '\/$', '', '')
         let child_index += 1
 
-        if child =~? '/\.\+$\|/\%(\.hg\|\.git\|\.bzr\|\.svn\)/'
+        if child =~? a:ignore_dir
           continue
         endif
 
@@ -529,7 +531,7 @@ function! s:get_files(context, files, level, max_unit) "{{{
           if a:level < 5 && ret_files_len < a:max_unit
             let [continuation_files_child, ret_files_child] =
                   \ s:get_files(a:context, [child], a:level + 1,
-                  \  a:max_unit - ret_files_len)
+                  \  a:max_unit - ret_files_len, a:ignore_dir)
             let continuation_files += continuation_files_child
 
             if !a:context.source__is_directory

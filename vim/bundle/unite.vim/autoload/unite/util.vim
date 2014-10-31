@@ -279,9 +279,9 @@ function! unite#util#is_cmdwin() "{{{
   return bufname('%') ==# '[Command Line]'
 endfunction"}}}
 function! s:buflisted(bufnr) "{{{
-  return getbufvar(a:bufnr, '&bufhidden') == '' &&
-        \ (exists('t:unite_buffer_dictionary') ?
-        \   has_key(t:unite_buffer_dictionary, a:bufnr) && bufloaded(a:bufnr) :
+  return (getbufvar(a:bufnr, '&bufhidden') == '' || buflisted(a:bufnr)) &&
+        \ (exists('t:tabpagebuffer') ?
+        \   has_key(t:tabpagebuffer, a:bufnr) && bufloaded(a:bufnr) :
         \   bufloaded(a:bufnr))
 endfunction"}}}
 
@@ -382,7 +382,9 @@ function! unite#util#is_sudo() "{{{
 endfunction"}}}
 
 function! unite#util#lcd(dir) "{{{
-  execute 'lcd' fnameescape(a:dir)
+  if isdirectory(a:dir)
+    execute 'lcd' fnameescape(a:dir)
+  endif
 endfunction"}}}
 
 let &cpo = s:save_cpo
