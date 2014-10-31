@@ -204,7 +204,7 @@ function! unite#mappings#define_default_mappings() "{{{
   nmap <buffer> <C-r>     <Plug>(unite_restart)
   nmap <buffer> *         <Plug>(unite_toggle_mark_all_candidates)
   nmap <buffer> M         <Plug>(unite_disable_max_candidates)
-  nmap <buffer> ?         <Plug>(unite_quick_help)
+  nmap <buffer> g?        <Plug>(unite_quick_help)
   nmap <buffer> N         <Plug>(unite_new_candidate)
   nmap <buffer> .         <Plug>(unite_narrowing_dot)
   nmap <buffer> <2-LeftMouse>   <Plug>(unite_do_default_action)
@@ -220,7 +220,7 @@ function! unite#mappings#define_default_mappings() "{{{
   nnoremap <silent><buffer><expr> e
         \ unite#smart_map('e', unite#do_action('edit'))
   nnoremap <silent><buffer><expr> p
-        \ unite#do_action('preview')
+        \ unite#smart_map('p', unite#mappings#smart_preview())
   nmap <silent><buffer><expr> x
         \ unite#smart_map('x', "\<Plug>(unite_quick_match_default_action)")
   nnoremap <silent><buffer><expr> t
@@ -669,6 +669,16 @@ function! unite#mappings#cursor_down(is_skip_not_matched) "{{{
     return cnt == 1 ? 'j' : cnt.'j'
   endif
 endfunction"}}}
+function! unite#mappings#smart_preview() "{{{
+  if b:unite.preview_candidate !=#
+        \           unite#helper#get_current_candidate()
+    let b:unite.preview_candidate = unite#helper#get_current_candidate()
+    return unite#do_action('preview')
+  else
+    let b:unite.preview_candidate = {}
+    return ":\<C-u>pclose!\<CR>"
+  endif
+endfunction"}}}
 function! s:toggle_transpose_window() "{{{
   " Toggle vertical/horizontal view.
   let context = unite#get_context()
@@ -741,6 +751,7 @@ function! s:get_quick_match_table() "{{{
   endfor
   return table
 endfunction"}}}
+
 
 function! s:complete() "{{{
   let unite = unite#get_current_unite()

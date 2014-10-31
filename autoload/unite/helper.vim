@@ -123,7 +123,7 @@ endfunction"}}}
 
 function! unite#helper#parse_options(args) "{{{
   let args = []
-  let options = { 'custom' : {} }
+  let options = {}
   for arg in split(a:args, '\%(\\\@<!\s\)\+')
     let arg = substitute(arg, '\\\( \)', '\1', 'g')
     let arg_key = substitute(arg, '=\zs.*$', '', '')
@@ -193,8 +193,7 @@ function! unite#helper#get_input(...) "{{{
     setlocal modifiable
 
     " Restore prompt.
-    call setline(unite.prompt_linenr, unite.prompt
-          \ . getline(unite.prompt_linenr))
+    call setline(unite.prompt_linenr, unite.prompt)
 
     let &l:modifiable = modifiable_save
   endif
@@ -221,18 +220,22 @@ function! unite#helper#get_postfix(prefix, is_create, ...) "{{{
 endfunction"}}}
 
 function! unite#helper#convert_source_name(source_name) "{{{
-  let context = unite#get_context()
-  return !context.short_source_names ? a:source_name :
+  let unite = unite#get_current_unite()
+  return (len(unite.sources) == 1 ||
+        \  !unite.context.short_source_names) ? a:source_name :
         \ a:source_name !~ '\A'  ? a:source_name[:1] :
         \ substitute(a:source_name, '\a\zs\a\+', '', 'g')
 endfunction"}}}
 
 function! unite#helper#loaded_source_names_with_args() "{{{
+  let len_source = len(unite#loaded_sources_list())
   return map(copy(unite#loaded_sources_list()), "
+        \ (len_source == 0) ? ['interactive'] :
+        \ (len_source > 1 && v:val.unite__len_candidates == 0) ? '_' :
         \ join(insert(filter(copy(v:val.args),
         \  'type(v:val) <= 1'),
         \   unite#helper#convert_source_name(v:val.name)), ':')
-        \ . (v:val.unite__orig_len_candidates == 0 ? '' :
+        \ . (v:val.unite__len_candidates == 0 ? '' :
         \      v:val.unite__orig_len_candidates ==
         \            v:val.unite__len_candidates ?
         \            '(' .  v:val.unite__len_candidates . ')' :
@@ -300,6 +303,8 @@ function! unite#helper#get_current_candidate(...) "{{{
     let num = linenr == unite.prompt_linenr ?
           \ 0 : linenr - 1 - unite.prompt_linenr
   endif
+
+  let unite.candidate_cursor = num
 
   return get(unite#get_unite_candidates(), num, {})
 endfunction"}}}

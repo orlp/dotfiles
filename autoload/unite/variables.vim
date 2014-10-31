@@ -186,6 +186,7 @@ function! s:initialize_default() "{{{
         \ 'winwidth' : 90,
         \ 'winheight' : 20,
         \ 'immediately' : 0,
+        \ 'force_immediately' : 0,
         \ 'empty' : 1,
         \ 'auto_preview' : 0,
         \ 'auto_highlight' : 0,
@@ -229,6 +230,10 @@ function! s:initialize_default() "{{{
         \ 'cursor_line_time' : '0.10',
         \ 'is_redraw' : 0,
         \ 'wipe' : 0,
+        \ 'ignorecase' : &ignorecase,
+        \ 'smartcase' : &smartcase,
+        \ 'restore' : 1,
+        \ 'vertical_preview' : 0,
         \ 'unite__old_buffer_info' : [],
         \ 'unite__direct_switch' : 0,
         \ 'unite__is_interactive' : 1,
@@ -259,6 +264,7 @@ function! s:initialize_default() "{{{
         \ ['candidate_icon', 'g:unite_candidate_icon'],
         \ ['marked_icon', 'g:unite_marked_icon'],
         \ ['cursor_line_time', 'g:unite_cursor_line_time'],
+        \ ['vertical_preview', 'g:unite_kind_file_vertical_preview'],
         \ ], "exists(v:val[1])")
     let s:default_context[context] = {var}
   endfor
