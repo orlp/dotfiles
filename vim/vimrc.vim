@@ -1,6 +1,10 @@
 " remove legacy
 set nocompatible
 
+" --------------------------------------------------------------------------------------------------
+" Directories and environment meta-setups
+" --------------------------------------------------------------------------------------------------
+
 " http://stackoverflow.com/questions/3377298/how-can-i-override-vim-and-vimrc-paths-but-no-others-in-vim
 " set default 'runtimepath' (without ~/.vim folders)
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
@@ -53,11 +57,29 @@ set tags=./tags;/
 " pathogen
 execute pathogen#infect()
 
+" --------------------------------------------------------------------------------------------------
+"  Settings
+" --------------------------------------------------------------------------------------------------
+
 " this is just mandatory
 set hidden
 
-" change the mapleader from \ to space
-let mapleader=' '
+" wrapping
+set linebreak
+if v:version > 704 || v:version == 704 && has("patch338")
+  set breakindent
+endif
+set textwidth=100
+set formatoptions-=t
+
+if exists('+colorcolumn')
+    set colorcolumn=+1
+end
+
+augroup highlight_long_lines
+  autocmd BufEnter * highlight OverLength ctermbg=0 guibg=#d7d7af
+  autocmd BufEnter * match OverLength /\%>100v.\+/
+augroup END
 
 " status line
 set laststatus=2
@@ -72,80 +94,15 @@ set statusline+=%{strlen(&fenc)?&fenc:&enc}\ \|\ " encoding
 set statusline+=%{&fileformat}                   " file format
 set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 
-" NERDTree
-let g:nerdtree_tabs_open_on_gui_startup = 0
-let g:NERDTreeDirArrows=1
-let g:NERDChristmasTree=0
-let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
-nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
-nmap <silent> <leader>N :NERDTreeFind<CR>
-
-" unite
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
-
-" easymotion
-map <Leader>m <Plug>(easymotion-prefix)
-map <Leader><Leader> <Plug>(easymotion-s)
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
-
-let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
-
-" search
-set ignorecase
-set smartcase
-set incsearch
-set hlsearch
-set wrapscan
-
-" autocomplete
-set completeopt+=longest
-
-" <leader> commands
-" quick clear highlighting
-map <silent> <leader>l :nohlsearch<CR>
-
-" open current file in explorer
-if has('win32')
-    nmap <silent> <leader>ee :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
+" syntax highlighting
+set t_Co=16
+syntax on
+if has("gui_running")
+    set background=light
+else
+    set background=dark " this is flipped on gui for some reason
 endif
-
-" quick copy/paste to/from system clipboard
-map <leader>p "+p
-map <leader>P "+P
-map <leader>y "+y
-
-" keep clipboard contents on vim exit
-if has('unix')
-    autocmd VimLeave * call system('xclip -selection clipboard', getreg('+'))
-endif
-
-" quick swap implementation/header
-map <leader>a :A<CR>
-
-" cd to the directory containing the file in the buffer
-nmap <silent> <leader>cd :lcd %:h<CR>
-
-" easily edit vimrc and reload
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
-
-" close buffer
-nmap <leader>x :bd<CR>
-
-" easier indenting of code
-vnoremap < <gv
-vnoremap > >gv
-
-" split navigation
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
+colorscheme solarized
 
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
@@ -194,31 +151,91 @@ set mouse=a
 " use UTF-8
 set encoding=utf-8
 
-" wrapping
-set linebreak
-if v:version > 704 || v:version == 704 && has("patch338")
-  set breakindent
+" NERDTree
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:NERDTreeDirArrows=1
+let g:NERDChristmasTree=0
+let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
+
+" Unite
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+
+" EasyMotion
+let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
+
+" search
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set wrapscan
+
+" autocomplete
+set completeopt+=longest
+
+" don't autocomplete these kind of files
+set wildignore+=*.swp,*.pyc,*.o,*.pyo
+
+" keep clipboard contents on vim exit
+if has('unix')
+    autocmd VimLeave * call system('xclip -selection clipboard', getreg('+'))
 endif
-set textwidth=100
-set formatoptions-=t
+
+" skin gvim
+if has("gui_running")
+    " font
+    if has('win32')
+        set guifont=Consolas:h11
+    else
+        set guifont=Monaco\ 10
+    endif
+
+    " hide the menu bar
+    set guioptions-=m
+
+    " hide the toolbar
+    set guioptions-=T
+
+    " hide scrollbarif
+    set guioptions-=r
+    set guioptions-=l
+    set guioptions-=R
+    set guioptions-=L
+
+    " don't use these strange menu snips
+    set guioptions-=t
+
+
+    " better cursor
+    set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
+
+    " make gvim remember pos
+    let g:screen_size_restore_pos = 1
+    source $VIMHOME/winsize_persistent.vim
+endif
+
+" --------------------------------------------------------------------------------------------------
+"  Mappings
+" --------------------------------------------------------------------------------------------------
+
+" easier indenting of code
+vnoremap < <gv
+vnoremap > >gv
+
+" split navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" better j/k with long lines
 nnoremap j gj
 nnoremap k gk
-
-if exists('+colorcolumn')
-    set colorcolumn=+1
-end
-
-augroup highlight_long_lines
-  autocmd BufEnter * highlight OverLength ctermbg=0 guibg=#d7d7af
-  autocmd BufEnter * match OverLength /\%>100v.\+/
-augroup END
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gw
 nmap Q gwap
-
-" don't autocomplete these kind of files
-set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
 
 " search for visual selected text
 vnoremap <silent> * :<C-U>
@@ -231,6 +248,48 @@ vnoremap <silent> # :<C-U>
     \gvy?<C-R><C-R>=substitute(
     \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
     \gV:call setreg('"', old_reg, old_regtype)<CR>
+
+" change the mapleader from \ to space
+let mapleader=' '
+
+" quick clear highlighting
+map <silent> <leader>l :nohlsearch<CR>
+
+" open current file in explorer
+if has('win32')
+    nmap <silent> <leader>ee :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
+endif
+
+" quick copy/paste to/from system clipboard
+map <leader>p "+p
+map <leader>P "+P
+map <leader>y "+y
+
+" quick swap implementation/header
+map <leader>a :A<CR>
+
+" cd to the directory containing the file in the buffer
+nmap <silent> <leader>cd :lcd %:h<CR>
+
+" easily edit vimrc and reload
+nmap <silent> <leader>ev :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+" close buffer
+nmap <leader>x :bd<CR>
+
+" Unite, NERDTree
+nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
+nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
+nmap <silent> <leader>N :NERDTreeFind<CR>
+
+" easymotion
+map <Leader>m <Plug>(easymotion-prefix)
+map <Leader><Leader> <Plug>(easymotion-s)
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
 
 " quick replace occurences
 let g:should_inject_replace_occurences = 0
@@ -276,46 +335,3 @@ function! ReplaceOccurence()
     call feedkeys("n")
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
-
-" better cursor
-set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
-
-" skin gvim
-if has("gui_running")
-    " font
-    if has('win32')
-        set guifont=Consolas:h11
-    else
-        set guifont=Monaco\ 10
-    endif
-
-    " hide the menu bar
-    set guioptions-=m
-
-    " hide the toolbar
-    set guioptions-=T
-
-    " hide scrollbarif
-    set guioptions-=r
-    set guioptions-=l
-    set guioptions-=R
-    set guioptions-=L
-
-    " don't use these strange menu snips
-    set guioptions-=t
-
-    " make gvim remember pos
-    let g:screen_size_restore_pos = 1
-    source $VIMHOME/winsize_persistent.vim
-endif
-
-
-" syntax highlighting
-set t_Co=16
-syntax on
-if has("gui_running")
-    set background=light
-else
-    set background=dark " this is flipped on gui for some reason
-endif
-colorscheme solarized
