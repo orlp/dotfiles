@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+ptpython --vi --interactive="$(dirname "$(readlink -f ${(%):-%N})")/setup_env.py"

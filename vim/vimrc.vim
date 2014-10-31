@@ -178,26 +178,34 @@ set autoread
 " fix backspace
 set backspace=2
 
+" fix mouse
+set mouse=a
+
 " use UTF-8
 set encoding=utf-8
 
 " wrapping
 set linebreak
-set textwidth=99
+if v:version > 704 || v:version == 704 && has("patch338")
+  set breakindent
+endif
+set textwidth=100
 set formatoptions-=t
 nnoremap j gj
 nnoremap k gk
 
+if exists('+colorcolumn')
+    set colorcolumn=+1
+end
+
 augroup highlight_long_lines
-  autocmd BufEnter * highlight OverLength ctermbg=255 guibg=#d7d7af
-  autocmd BufEnter * match OverLength /\%101v.*/
+  autocmd BufEnter * highlight OverLength ctermbg=0 guibg=#d7d7af
+  autocmd BufEnter * match OverLength /\%>100v.\+/
 augroup END
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gw
 nmap Q gwap
-
-
 
 " don't autocomplete these kind of files
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
