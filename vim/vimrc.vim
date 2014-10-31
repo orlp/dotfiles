@@ -121,7 +121,7 @@ map <leader>y "+y
 
 " keep clipboard contents on vim exit
 if has('unix')
-    autocmd VimLeavePre * call system('xsel -ikb', getreg('+'))
+    autocmd VimLeave * call system('xclip -selection clipboard', getreg('+'))
 endif
 
 " quick swap implementation/header
@@ -130,12 +130,22 @@ map <leader>a :A<CR>
 " cd to the directory containing the file in the buffer
 nmap <silent> <leader>cd :lcd %:h<CR>
 
-" easily edit vimrc and automatically reload
+" easily edit vimrc and reload
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+" close buffer
+nmap <leader>x :bd<CR>
 
 " easier indenting of code
 vnoremap < <gv
 vnoremap > >gv
+
+" split navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
 
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
@@ -209,12 +219,6 @@ nmap Q gwap
 
 " don't autocomplete these kind of files
 set wildignore+=*.swp,*.zip,*.exe,*.pyc,*.o,*.pyo
-
-" automatically reload vimrc on save
-augroup reload_vimrc
-    autocmd!
-    autocmd BufWritePost $MYVIMRC NERDTreeToggle|source $MYVIMRC|NERDTreeToggle
-augroup END
 
 " search for visual selected text
 vnoremap <silent> * :<C-U>
