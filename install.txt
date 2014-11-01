@@ -18,6 +18,8 @@ Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and change it's contents 
 
     source C:\\Program Files\ (x86)\\dotfiles\\vim\\vimrc.vim
 
+Run :PlugInstall in vim.
+
 Linux
 =====
 Installation instructions for linux.
@@ -32,6 +34,8 @@ vim
 Edit ~/.vimrc to contain:
 
     source ~/dotfiles/vim/vimrc.vim
+
+Run :PlugInstall in vim.
 
 zsh
 ---
