@@ -54,8 +54,22 @@ endif
 " ctags
 set tags=./tags;/
 
-" pathogen
-execute pathogen#infect()
+" vim-plug
+call plug#begin($VIMHOME . '/bundle')
+Plug 'vim-scripts/a.vim'
+Plug  'haya14busa/incsearch.vim'
+Plug  'scrooloose/nerdtree'
+Plug       'wting/rust.vim'
+Plug    'ervandew/supertab'
+Plug   'godlygeek/tabular'
+Plug  'majutsushi/tagbar'
+Plug      'Shougo/unite.vim'
+Plug       'bling/vim-bufferline'
+Plug    'Lokaltog/vim-easymotion'
+Plug       'jistr/vim-nerdtree-tabs'
+Plug       'tpope/vim-repeat'
+Plug       'tpope/vim-surround'
+call plug#end()
 
 " --------------------------------------------------------------------------------------------------
 "  Settings
