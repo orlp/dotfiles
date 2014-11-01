@@ -46,6 +46,11 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 ZSH_TMUX_AUTOCONNECT="true"
 plugins=(git tmux)
 
+# CTRL-Z to bring back to foreground
+foreground-current-job() { fg; }
+zle -N foreground-current-job
+bindkey '^Z' fancy-ctrl-z
+
 source $ZSH/oh-my-zsh.sh
 
 # user config
