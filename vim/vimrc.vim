@@ -170,6 +170,7 @@ set smartcase
 set incsearch
 set hlsearch
 set wrapscan
+let g:incsearch#magic = '\v'
 
 " autocomplete
 set completeopt+=longest
@@ -191,21 +192,12 @@ if has("gui_running")
         set guifont=Monaco\ 10
     endif
 
-    " hide the menu bar
-    set guioptions-=m
+    " hide cruft
+    set guioptions+=mtTbrlRL
+    set guioptions-=mtTbrlRL
 
-    " hide the toolbar
-    set guioptions-=T
-
-    " hide scrollbarif
-    set guioptions-=r
-    set guioptions-=l
-    set guioptions-=R
-    set guioptions-=L
-
-    " don't use these strange menu snips
-    set guioptions-=t
-
+    " no dialogs please
+    set guioptions+=c
 
     " better cursor
     set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
@@ -232,6 +224,11 @@ map <C-l> <C-w>l
 " better j/k with long lines
 nnoremap j gj
 nnoremap k gk
+
+" incsearch
+map  / <Plug>(incsearch-forward)
+map  ? <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gw
@@ -286,10 +283,8 @@ nmap <silent> <leader>N :NERDTreeFind<CR>
 " easymotion
 map <Leader>m <Plug>(easymotion-prefix)
 map <Leader><Leader> <Plug>(easymotion-s)
-map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
 
 " quick replace occurences
 let g:should_inject_replace_occurences = 0
