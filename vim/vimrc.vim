@@ -10,7 +10,7 @@ set nocompatible
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 
 " what is the name of the directory containing this file?
-let s:portable = expand('<sfile>:p:h')
+let s:portable = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let $VIMHOME = s:portable
 
 " add the directory to 'runtimepath'
@@ -124,6 +124,9 @@ colorscheme solarized
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
 
+" allow the cursor to go everywhere in block mode
+set virtualedit=block
+
 " indent settings
 set tabstop=4
 set shiftwidth=4
@@ -229,8 +232,18 @@ endif
 " --------------------------------------------------------------------------------------------------
 
 " easier indenting of code
+nnoremap > >>
+nnoremap < <<
 vnoremap < <gv
 vnoremap > >gv
+vnoremap <TAB> >gv
+vnoremap <S-TAB> <gv
+
+" select until end of line using vv
+vnoremap v $h
+
+" substitute in selection
+vnoremap s :s//g<Left><Left>
 
 " split navigation
 map <C-h> <C-w>h
@@ -264,7 +277,7 @@ vnoremap <silent> # :<C-U>
     \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 " change the mapleader from \ to space
-let mapleader=' '
+let mapleader=" "
 
 " quick clear highlighting
 map <silent> <leader>l :nohlsearch<CR>
