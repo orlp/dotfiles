@@ -68,7 +68,6 @@ Plug       'bling/vim-bufferline'
 Plug       'tpope/vim-commentary'
 Plug    'Lokaltog/vim-easymotion'
 Plug       'tpope/vim-fugitive'
-Plug    'justinmk/vim-matchparenalways'
 Plug       'jistr/vim-nerdtree-tabs'
 Plug       'tpope/vim-repeat'
 Plug       'tpope/vim-surround'
@@ -332,7 +331,7 @@ augroup auto_move_to_next
 augroup END
 
 nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
-nmap <silent> <Leader>r :let @/ = '\<'.expand('<cword>').'\>'<CR>
+nmap <silent> <Leader>r :let @/ = '\C\<'.expand('<cword>').'\>'<CR>
     \:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
 vmap <silent> <Leader>r :<C-U>
     \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
