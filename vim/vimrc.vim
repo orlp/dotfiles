@@ -195,8 +195,9 @@ let g:incsearch#magic = '\v'
 " autocomplete
 set completeopt+=longest
 
-" don't autocomplete these kind of files
+" autocomplete
 set wildignore+=*.swp,*.pyc,*.o,*.pyo
+set wildmode=longest,list
 
 " keep clipboard contents on vim exit
 if has('unix')
