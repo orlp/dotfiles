@@ -189,6 +189,7 @@ set smartcase
 set incsearch
 set hlsearch
 set wrapscan
+set gdefault
 let g:incsearch#magic = '\v'
 
 " autocomplete
