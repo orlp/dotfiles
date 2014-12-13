@@ -79,6 +79,7 @@ call plug#end()
 
 " this is just mandatory
 set hidden
+filetype plugin on
 
 " wrapping
 set linebreak
@@ -114,7 +115,7 @@ set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 set t_Co=16
 syntax on
 if has("gui_running")
-    set background=light
+    set background=dark
 else
     set background=dark " this is flipped on gui for some reason
 endif
