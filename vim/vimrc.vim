@@ -60,6 +60,7 @@ call plug#begin($VIMHOME . '/bundle')
 Plug 'vim-scripts/a.vim'
 Plug  'haya14busa/incsearch.vim'
 Plug  'scrooloose/nerdtree'
+Plug 'vim-scripts/OnSyntaxChange'
 Plug       'wting/rust.vim'
 Plug    'ervandew/supertab'
 Plug  'majutsushi/tagbar'
@@ -94,6 +95,11 @@ set textwidth=100
 set formatoptions-=t
 set formatoptions+=c
 
+" enable wrapping in multiline comments
+call OnSyntaxChange#Install('Comment', '^Comment$', 0, 'a')
+autocmd User SyntaxCommentEnterA setlocal formatoptions+=t
+autocmd User SyntaxCommentLeaveA setlocal formatoptions-=t
+
 if exists('+colorcolumn')
     set colorcolumn=+1
 else
@@ -102,6 +108,7 @@ else
       autocmd BufEnter * match OverLength /\%>100v.\+/
     augroup END
 end
+
 
 " status line
 set laststatus=2
@@ -285,7 +292,7 @@ map g/ <Plug>(incsearch-stay)
 vmap <Enter> <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
-" who the hell uses Ex mode? remap to paragraph reformat
+" paragraph reformat
 vmap Q gw
 nmap Q gwap
 
@@ -316,6 +323,10 @@ endif
 map <leader>p "+p
 map <leader>P "+P
 map <leader>y "+y
+map <leader>Y "+Y
+
+" make yanking consistent with deleting
+nnoremap Y y$
 
 " quick swap implementation/header
 map <leader>a :A<CR>

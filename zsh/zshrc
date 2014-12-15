@@ -49,7 +49,7 @@ plugins=(git tmux)
 # CTRL-Z to bring back to foreground
 foreground-current-job() { fg; }
 zle -N foreground-current-job
-bindkey '^Z' fancy-ctrl-z
+bindkey '^Z' foreground-current-job
 
 source $ZSH/oh-my-zsh.sh
 
