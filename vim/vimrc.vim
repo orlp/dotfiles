@@ -54,6 +54,7 @@ endif
 " ctags
 set tags=./tags;/
 
+
 " vim-plug
 call plug#begin($VIMHOME . '/bundle')
 Plug 'vim-scripts/a.vim'
@@ -61,16 +62,19 @@ Plug  'haya14busa/incsearch.vim'
 Plug  'scrooloose/nerdtree'
 Plug       'wting/rust.vim'
 Plug    'ervandew/supertab'
-Plug   'godlygeek/tabular'
 Plug  'majutsushi/tagbar'
 Plug      'Shougo/unite.vim'
 Plug       'bling/vim-bufferline'
 Plug       'tpope/vim-commentary'
+Plug    'junegunn/vim-easy-align'
 Plug    'Lokaltog/vim-easymotion'
 Plug       'tpope/vim-fugitive'
 Plug       'jistr/vim-nerdtree-tabs'
 Plug       'tpope/vim-repeat'
 Plug       'tpope/vim-surround'
+
+Plug 'kana/vim-textobj-user'
+Plug 'glts/vim-textobj-comment'
 call plug#end()
 
 " --------------------------------------------------------------------------------------------------
@@ -79,6 +83,7 @@ call plug#end()
 
 " this is just mandatory
 set hidden
+filetype plugin on
 
 " wrapping
 set linebreak
@@ -87,15 +92,16 @@ if v:version > 704 || v:version == 704 && has("patch338")
 endif
 set textwidth=100
 set formatoptions-=t
+set formatoptions+=c
 
 if exists('+colorcolumn')
     set colorcolumn=+1
+else
+    augroup highlight_long_lines
+      autocmd BufEnter * highlight OverLength ctermbg=0 guibg=#d7d7af
+      autocmd BufEnter * match OverLength /\%>100v.\+/
+    augroup END
 end
-
-augroup highlight_long_lines
-  autocmd BufEnter * highlight OverLength ctermbg=0 guibg=#d7d7af
-  autocmd BufEnter * match OverLength /\%>100v.\+/
-augroup END
 
 " status line
 set laststatus=2
@@ -114,7 +120,7 @@ set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 set t_Co=16
 syntax on
 if has("gui_running")
-    set background=light
+    set background=dark
 else
     set background=dark " this is flipped on gui for some reason
 endif
@@ -204,6 +210,9 @@ if has('unix')
     autocmd VimLeave * call system('xclip -selection clipboard', getreg('+'))
 endif
 
+" .md is Markdown for me, not Modula2
+au BufRead,BufNewFile *.md set filetype=markdown
+
 " skin gvim
 if has("gui_running")
     " font
@@ -273,6 +282,10 @@ nnoremap k gk
 map  / <Plug>(incsearch-forward)
 map  ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
+
+" easyalign
+vmap <Enter> <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
 
 " who the hell uses Ex mode? remap to paragraph reformat
 vmap Q gw
