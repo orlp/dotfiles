@@ -71,8 +71,10 @@ Plug    'junegunn/vim-easy-align'
 Plug    'Lokaltog/vim-easymotion'
 Plug       'tpope/vim-fugitive'
 Plug       'jistr/vim-nerdtree-tabs'
+Plug        'amdt/vim-niji'
 Plug       'tpope/vim-repeat'
 Plug       'tpope/vim-surround'
+
 
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
@@ -127,7 +129,7 @@ set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 set t_Co=16
 syntax on
 if has("gui_running")
-    set background=dark
+    set background=light
 else
     set background=dark " this is flipped on gui for some reason
 endif
