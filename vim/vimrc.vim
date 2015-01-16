@@ -74,6 +74,9 @@ Plug       'jistr/vim-nerdtree-tabs'
 Plug       'tpope/vim-repeat'
 Plug       'tpope/vim-surround'
 
+Plug 'luochen1990/rainbow'
+Plug 'guns/xterm-color-table.vim'
+
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
 call plug#end()
@@ -149,10 +152,10 @@ set smarttab
 set backspace=indent,eol,start
 
 " override default indent to ignore blank lines
-set indentexpr=GetIndent(v:lnum)
-function! GetIndent(lnum)
-   return indent(prevnonblank(a:lnum - 1))
-endfunction
+" set indentexpr=GetIndent(v:lnum)
+" function! GetIndent(lnum)
+"    return indent(prevnonblank(a:lnum - 1))
+" endfunction
 
 " line numbers
 set number
@@ -196,6 +199,28 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 " EasyMotion
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
 
+" Rainbow Parentheses
+let g:rainbow_active = 1
+let g:rainbow_conf = {
+\   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+\   'ctermfgs': ['88', '94','106', '97', '99', '38'],
+\   'operators': '_,_',
+\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+\   'separately': {
+\       '*': {},
+\       'tex': {
+\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+\       },
+\       'lisp': {
+\           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+\       },
+\       'vim': {
+\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+\       },
+\       'css': 0,
+\   }
+\}
+
 " search
 set ignorecase
 set smartcase
@@ -219,6 +244,9 @@ endif
 
 " .md is Markdown for me, not Modula2
 au BufRead,BufNewFile *.md set filetype=markdown
+
+" comments in C and co using double slashes
+autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
 
 " skin gvim
 if has("gui_running")
