@@ -74,7 +74,7 @@ Plug       'jistr/vim-nerdtree-tabs'
 Plug        'amdt/vim-niji'
 Plug       'tpope/vim-repeat'
 Plug       'tpope/vim-surround'
-
+Plug        'gcmt/wildfire.vim'
 
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
@@ -295,6 +295,10 @@ map g/ <Plug>(incsearch-stay)
 " easyalign
 vmap <Enter> <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
+
+" select closest text object
+map <ENTER> <Plug>(wildfire-fuel)
+vmap <S-ENTER> <Plug>(wildfire-water)
 
 " paragraph reformat
 vmap Q gw
