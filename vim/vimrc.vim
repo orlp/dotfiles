@@ -321,8 +321,7 @@ map  ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
 " easyalign
-vmap <Enter> <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
+map <leader>a <Plug>(EasyAlign)
 
 " select closest text object
 map <ENTER> <Plug>(wildfire-fuel)
@@ -365,7 +364,7 @@ map <leader>Y "+Y
 nnoremap Y y$
 
 " quick swap implementation/header
-map <leader>a :A<CR>
+map <leader>h :A<CR>
 
 " cd to the directory containing the file in the buffer
 nmap <silent> <leader>cd :lcd %:h<CR>
