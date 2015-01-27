@@ -1,9 +1,17 @@
+# add this dir to include path
+import os
+import sys
+import inspect
+
+sys.path.append(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
+
 # builtins
 import builtins
 
 # math.pow is shit, import rest
 from math import *
 pow = builtins.pow
+phi = (1 + 5 ** 0.5) / 2
 
 # fractions and co
 from fractions import *
@@ -93,3 +101,12 @@ def avg(*args):
 
 # pretty printing
 from pprint import pprint as pp
+
+# clipboard
+import pyperclip
+
+def copy(s):
+    if isinstance(s, bytes): s = s.decode("utf-8")
+    return pyperclip.copy(str(s))
+
+def paste(): return pyperclip.paste()
