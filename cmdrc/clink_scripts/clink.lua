@@ -437,7 +437,7 @@ local is_parser
 local is_sub_parser
 local new_sub_parser
 local parser_go_impl
-local merge_parsers
+--local merge_parsers
 
 local parser_meta_table     = {}
 local sub_parser_meta_table = {}
@@ -485,8 +485,7 @@ local function parser_is_flag(parser, part)
 end
 
 --------------------------------------------------------------------------------
-local function parser_set_arguments(parser, ...)
-    parser.arguments = {}
+local function parser_add_arguments(parser, ...)
     for _, i in ipairs({...}) do
         -- Check all arguments are tables.
         if type(i) ~= "table" then
@@ -513,7 +512,13 @@ local function parser_set_arguments(parser, ...)
 end
 
 --------------------------------------------------------------------------------
-local function parser_set_flags(parser, ...)
+local function parser_set_arguments(parser, ...)
+    parser.arguments = {}
+    return parser:add_arguments(...)
+end
+
+--------------------------------------------------------------------------------
+local function parser_add_flags(parser, ...)
     local flags = {}
     unfold_table({...}, flags)
 
@@ -534,8 +539,18 @@ local function parser_set_flags(parser, ...)
         end
     end
 
-    parser.flags = flags
+    -- Append flags to parser's existing table of flags.
+    for _, i in ipairs(flags) do
+        table.insert(parser.flags, i)
+    end
+
     return parser
+end
+
+--------------------------------------------------------------------------------
+local function parser_set_flags(parser, ...)
+    parser.flags = {}
+    return parser:add_flags(...)
 end
 
 --------------------------------------------------------------------------------
@@ -648,13 +663,18 @@ local function parser_go_args(parser, state)
         end
     end
 
-    -- If we've no more arguments to traverse but there's still parts
-    -- remaining then default Readline's file matching (unless
-    -- otherwise disabled).
+    -- If we've no more arguments to traverse but there's still parts remaining
+    -- then we start skipping arguments but keep going so that flags still get
+    -- parsed (as flags have no position).
     if exhausted_args then
         state.part_index = state.part_index - 1
 
         if not exhausted_parts then
+            if state.depth <= 1 then
+                state.skip_args = true
+                return
+            end
+
             return parser.use_file_matching
         end
     end
@@ -676,13 +696,19 @@ local function parser_go_flags(parser, state)
         if is_sub_parser(arg_opt) then
             if arg_opt.key == part then
                 local arg_index_cache = state.arg_index
+                local skip_args_cache = state.skip_args
+
                 state.arg_index = 1
+                state.skip_args = false
+                state.depth = state.depth + 1
 
                 local ret = parser_go_impl(arg_opt.parser, state)
                 if type(ret) == "table" then
                     return ret
                 end
 
+                state.depth = state.depth - 1
+                state.skip_args = skip_args_cache
                 state.arg_index = arg_index_cache
             end
         end
@@ -691,23 +717,25 @@ end
 
 --------------------------------------------------------------------------------
 function parser_go_impl(parser, state)
-    local part
-    local dispatch_func
-    local ret
     local has_flags = #parser.flags > 0
 
     while state.part_index <= #state.parts do
-        part = state.parts[state.part_index]
+        local part = state.parts[state.part_index]
+        local dispatch_func
 
         if has_flags and parser:is_flag(part) then
             dispatch_func = parser_go_flags
-        else
+        elseif not state.skip_args then
             dispatch_func = parser_go_args
         end
 
-        ret = dispatch_func(parser, state)
-        if ret ~= nil then
-            return ret
+        if dispatch_func ~= nil then
+            local ret = dispatch_func(parser, state)
+            if ret ~= nil then
+                return ret
+            end
+        else
+            state.part_index = state.part_index + 1
         end
     end
 
@@ -736,6 +764,8 @@ local function parser_go(parser, parts)
         arg_index = 1,
         part_index = 1,
         parts = parts,
+        skip_args = false,
+        depth = 1,
     }
 
     return parser_go_impl(parser, state)
@@ -791,6 +821,17 @@ function is_sub_parser(sp)
 end
 
 --------------------------------------------------------------------------------
+local function get_sub_parser(argument, str)
+    for _, arg in ipairs(argument) do
+        if is_sub_parser(arg) then
+            if arg.key == str then
+                return arg.parser
+            end
+        end
+    end
+end
+
+--------------------------------------------------------------------------------
 function new_sub_parser(key, parser)
     local sub_parser = {}
     sub_parser.key = key
@@ -817,12 +858,14 @@ local function parser_loop(parser, loop_point)
 end
 
 --------------------------------------------------------------------------------
-function clink.arg.new_parser()
+function clink.arg.new_parser(...)
     local parser = {}
 
     -- Methods
     parser.set_flags = parser_set_flags
+    parser.add_flags = parser_add_flags
     parser.set_arguments = parser_set_arguments
+    parser.add_arguments = parser_add_arguments
     parser.dump = parser_dump
     parser.go = parser_go
     parser.flatten_argument = parser_flatten_argument
@@ -839,6 +882,23 @@ function clink.arg.new_parser()
     parser.loop_point = 0
 
     setmetatable(parser, parser_meta_table)
+
+    -- If any arguments are provided, treat them as parser's arguments or flags
+    if ... and #... > 0 then
+
+        local arguments = {}
+        local flags = {}
+        
+        for _, word in ipairs({...}) do
+            if type(word) == "string" then table.insert(flags, word)
+            elseif type(word) == "table" then table.insert(arguments, word) end
+        end
+
+        for _, a in ipairs(arguments) do parser:add_arguments(a) end
+        parser:set_flags(flags)
+
+    end
+
     return parser
 end
 
@@ -862,18 +922,29 @@ function merge_parsers(lhs, rhs)
 
     -- Link RHS to LHS through sub-parsers.
     for _, rarg in ipairs(rhs_arg_1) do
-        local child = nil
+        local child
 
         -- Split sub parser
         if is_sub_parser(rarg) then
             child = rarg.parser     
             rarg = rarg.key
+        else
+            child = rhs
         end
 
-        -- If LHS's first argument has rarg in it that links to a sub-parser
-        -- then we need to recursively merge them
+        -- If LHS's first argument has rarg in it which links to a sub-parser
+        -- then we need to recursively merge them.
+        local lhs_sub_parser = get_sub_parser(lhs_arg_1, rarg)
+        if lhs_sub_parser then
+            merge_parsers(lhs_sub_parser, child)
+        else
+            local to_add = rarg
+            if type(rarg) ~= "function" then
+                to_add = rarg .. child
+            end
 
-        table.insert(lhs_arg_1, rarg .. (child or rhs))
+            table.insert(lhs_arg_1, to_add)
+        end
     end
 
     -- Merge flags.
@@ -1258,9 +1329,24 @@ local function exec_match_generator(text, first, last)
         prefix = text:sub(1, i)
     end
 
+    -- Extract any possible extension that maybe on the text being completed.
+    local ext = nil
+    local dot = text:find("%.[^.]*")
+    if dot then
+        ext = text:sub(dot):lower()
+    end
+
     local suffices = clink.split(clink.get_env("pathext"), ";")
     for i = 1, #suffices, 1 do
-        suffices[i] = text.."*"..suffices[i]
+        local suffix = suffices[i]
+
+        -- Does 'text' contain some of the suffix (i.e. "cmd.e")? If it does
+        -- then merge them so we get "cmd.exe" rather than "cmd.*.exe".
+        if ext and suffix:sub(1, #ext):lower() == ext then
+            suffix = ""
+        end
+
+        suffices[i] = text.."*"..suffix
     end
 
     -- First step is to match executables in the environment's path.
@@ -1389,13 +1475,37 @@ end
 local go_tool_parser = clink.arg.new_parser()
 go_tool_parser:set_flags("-n")
 go_tool_parser:set_arguments({
-    "8a", "8c", "8g", "8l", "addr2line", "api", "cgo", "colcmp", "dist",
-    "ebnflint", "gotype", "nm", "objdump", "pack", "pprof", "yacc",
-    "cov"  .. flags("-l", "-s", "-v", "-g", "-m"),
-    "fix"  .. flags("-diff", "-r", "-?"),
-    "prof" .. flags("-p", "-t", "-d", "-P", "-h", "-f", "-l", "-r", "-s"),
-    "vet"  .. flags("-printf", "-methods", "-structtags", "-composites", "-v",
-                    "-printfuncs"),
+    "8a", "8c", "8g", "8l", "addr2line", "cgo", "dist", "nm", "objdump",
+    "pack",
+    "cover" .. flags("-func", "-html", "-mode", "-o", "-var"),
+    "fix"   .. flags("-diff", "-force", "-r"),
+    "prof"  .. flags("-p", "-t", "-d", "-P", "-h", "-f", "-l", "-r", "-s",
+                     "-hs"),
+    "pprof" .. flags(-- Options:
+                     "--cum", "--base", "--interactive", "--seconds",
+                     "--add_lib", "--lib_prefix",
+                     -- Reporting Granularity:
+                     "--addresses", "--lines", "--functions", "--files",
+                     -- Output type:
+                     "--text", "--callgrind", "--gv", "--web", "--list",
+                     "--disasm", "--symbols", "--dot", "--ps", "--pdf",
+                     "--svg", "--gif", "--raw",
+                     -- Heap-Profile Options:
+                     "--inuse_space", "--inuse_objects", "--alloc_space",
+                     "--alloc_objects", "--show_bytes", "--drop_negative",
+                     -- Contention-profile options:
+                     "--total_delay", "--contentions", "--mean_delay",
+                     -- Call-graph Options:
+                     "--nodecount", "--nodefraction", "--edgefraction",
+                     "--focus", "--ignore", "--scale", "--heapcheck",
+                     -- Miscellaneous:
+                     "--tools", "--test", "--help", "--version"),
+    "vet"   .. flags("-all", "-asmdecl", "-assign", "-atomic", "-buildtags",
+                     "-composites", "-compositewhitelist", "-copylocks",
+                     "-methods", "-nilfunc", "-printf", "-printfuncs",
+                     "-rangeloops", "-shadow", "-shadowstrict", "-structtags",
+                     "-test", "-unreachable", "-v"),
+    "yacc"  .. flags("-l", "-o", "-p", "-v"),
 })
 
 --------------------------------------------------------------------------------
@@ -1404,23 +1514,38 @@ go_parser:set_arguments({
     "env",
     "fix",
     "version",
-    "build"    .. flags("-a", "-n", "-p", "-v", "-work", "-x", "-race",
-                        "-ccflags", "-compiler", "-gccgoflags", "-gcflags",
-                        "-ldflags", "-tags"),
+    "build"    .. flags("-o", "-a", "-n", "-p", "-installsuffix", "-v", "-x",
+                        "-work", "-gcflags", "-ccflags", "-ldflags",
+                        "-gccgoflags", "-tags", "-compiler", "-race"),
     "clean"    .. flags("-i", "-n", "-r", "-x"),
-    "doc"      .. flags("-n", "-x"),
     "fmt"      .. flags("-n", "-x"),
-    "get"      .. flags("-a", "-d", "-fix", "-n", "-p", "-u", "-v", "-x"),
-    "install"  .. flags("-a", "-n", "-p", "-v", "-work", "-x", "-race",
-                        "-ccflags", "-compiler", "-gccgoflags", "-gcflags",
-                        "-ldflags", "-tags"),
-    "list"     .. flags("-e", "-f", "-json"),
-    "run"      .. flags("-a", "-n", "-p", "-v", "-work", "-x", "-race",
-                        "-ccflags", "-compiler", "-gccgoflags", "-gcflags",
-                        "-ldflags", "-tags"),
-    "test"     .. flags("-c", "-i", "-a", "-n", "-p", "-v", "-work", "-x",
-                        "-race", "-ccflags", "-compiler", "-gccgoflags",
-                        "-gcflags", "-ldflags", "-tags"),
+    "get"      .. flags("-d", "-fix", "-t", "-u",
+                        -- Build flags
+                        "-a", "-n", "-p", "-installsuffix", "-v", "-x",
+                        "-work", "-gcflags", "-ccflags", "-ldflags",
+                        "-gccgoflags", "-tags", "-compiler", "-race"),
+    "install"  .. flags(-- All `go build` flags
+                        "-o", "-a", "-n", "-p", "-installsuffix", "-v", "-x",
+                        "-work", "-gcflags", "-ccflags", "-ldflags",
+                        "-gccgoflags", "-tags", "-compiler", "-race"),
+    "list"     .. flags("-e", "-race", "-f", "-json", "-tags"),
+    "run"      .. flags("-exec",
+                        -- Build flags
+                        "-a", "-n", "-p", "-installsuffix", "-v", "-x",
+                        "-work", "-gcflags", "-ccflags", "-ldflags",
+                        "-gccgoflags", "-tags", "-compiler", "-race"),
+    "test"     .. flags(-- Local.
+                        "-c", "-file", "-i", "-cover", "-coverpkg",
+                        -- Build flags
+                        "-a", "-n", "-p", "-x", "-work", "-ccflags",
+                        "-gcflags", "-exec", "-ldflags", "-gccgoflags",
+                        "-tags", "-compiler", "-race", "-installsuffix", 
+                        -- Passed to 6.out
+                        "-bench", "-benchmem", "-benchtime", "-covermode",
+                        "-coverprofile", "-cpu", "-cpuprofile", "-memprofile",
+                        "-memprofilerate", "-blockprofile",
+                        "-blockprofilerate", "-outputdir", "-parallel", "-run",
+                        "-short", "-timeout", "-v"),
     "tool"     .. go_tool_parser,
     "vet"      .. flags("-n", "-x"),
 })
@@ -1436,17 +1561,16 @@ go_help_parser:set_arguments({
 --------------------------------------------------------------------------------
 local godoc_parser = clink.arg.new_parser()
 godoc_parser:set_flags(
-    "-goroot", "-html", "-http", "-index", "-index_files", "-index_throttle",
-    "-maxresults", "-play", "-q", "-server", "-src", "-tabwidth", "-templates",
-    "-testdir", "-timestamps", "-url", "-v", "-write_index", "-zip"
+    "-zip", "-write_index", "-analysis", "-http", "-server", "-html","-src",
+    "-url", "-q", "-v", "-goroot", "-tabwidth", "-timestamps", "-templates",
+    "-play", "-ex", "-links", "-index", "-index_files", "-maxresults",
+    "-index_throttle", "-notes", "-httptest.serve"
 )
 
 --------------------------------------------------------------------------------
 local gofmt_parser = clink.arg.new_parser()
 gofmt_parser:set_flags(
-    "-d", "-e", "-l", "-r", "-s", "-w",
-    -- Formatting control flags
-    "-comments", "-tabs", "-tabwidth"
+    "-cpuprofile", "-d", "-e", "-l", "-r", "-s", "-w"
 )
 
 --------------------------------------------------------------------------------
@@ -1646,6 +1770,7 @@ set_parser:set_arguments(
         "prompt_colour",
         "space_prefix_match_files",
         "terminate_autoanswer",
+        "use_altgr_substitute",
     }
 )
 
