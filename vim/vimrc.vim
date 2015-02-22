@@ -325,23 +325,22 @@ map <leader>a <Plug>(EasyAlign)
 
 " select closest text object
 map <ENTER> <Plug>(wildfire-fuel)
-vmap <S-ENTER> <Plug>(wildfire-water)
+xmap <S-ENTER> <Plug>(wildfire-water)
 
 " paragraph reformat
 vmap Q gw
 nmap Q gwap
 
 " search for visual selected text
-vnoremap <silent> * :<C-U>
-    \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-    \gvy/<C-R><C-R>=substitute(
-    \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-    \gV:call setreg('"', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
-    \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-    \gvy?<C-R><C-R>=substitute(
-    \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-    \gV:call setreg('"', old_reg, old_regtype)<CR>
+function! s:match_visual()
+    let old = @@
+    normal! gvy
+    let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+    let @@ = old
+endfunction
+
+xnoremap <silent> * :<C-U>call <SID>match_visual()<CR>n
+xnoremap <silent> # :<C-U>call <SID>match_visual()<Bar>let v:searchforward=0<CR>n
 
 " change the mapleader from \ to space
 let mapleader=" "
@@ -403,13 +402,72 @@ augroup auto_move_to_next
 augroup END
 
 nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
-nmap <silent> <Leader>r :let @/ = '\C\<'.expand('<cword>').'\>'<CR>
-    \:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
 vmap <silent> <Leader>r :<C-U>
     \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
     \gvy:let @/ = substitute(
     \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
     \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
+
+
+function! s:post_cgn()
+    augroup post_cgn
+        autocmd!
+        autocmd InsertLeave <buffer> 
+            \ execute "autocmd! post_cgn" |
+            \ silent! call repeat#set("\<Plug>(cgn-next)") |
+            \ silent! call feedkeys("n")
+    augroup END
+endfunction
+
+function! s:cgn_next()
+    " Check if we are on top of an occurence.
+    let winview = winsaveview()
+    let [lcur, ccur] = getpos(".")[1:2] 
+    let [lstart, cstart] = searchpos(@/, 'bcW')
+    let [lend, cend] = searchpos(@/, 'ceW')
+    call winrestview(winview)
+
+    if lstart != 0 && lcur >= lstart && lcur <= lend
+       \ && (lcur != lstart || ccur >= cstart) && (lcur != lend || ccur <= cend)
+        call s:post_cgn()
+        return ":\<C-U>let &hlsearch=&hlsearch\<cr>cgn\<C-A>\<Esc>"
+    else
+        return ":\<C-U>silent! call search(@/)"
+    endif
+
+endfunction
+
+function! g:next()
+    try
+        normal! n
+    catch
+        echo errmsg
+    endtry
+endfunction
+
+map <leader>u :<C-U>call g:next()<CR>
+
+function! s:cgn_first()
+    call s:post_cgn()
+    return ":\<C-U>let &hlsearch=&hlsearch\<CR>cgn"
+endfunction
+
+nnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
+xnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
+
+nnoremap <expr> <Plug>(quick-replace)
+    \ ':let @/ = ''\V\<'' . escape(expand(''<cword>''), ''\'') . ''\>''<CR>' . <SID>cgn_first()
+xnoremap <expr> <Plug>(quick-replace) <SID>cgn_first()
+
+" nmap <Plug>(quick-replace) :let @/ = '\V\<' . escape(expand('<cword>'), '\') . '\>'<Bar>
+"     \ let &hlsearch=&hlsearch<Bar>
+"     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
+" xmap <Plug>(quick-replace) :<C-U>call <SID>match_visual()<Bar>
+"     \ let &hlsearch=&hlsearch<Bar>
+"     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
+
+nmap <leader>r <Plug>(quick-replace)
+xmap <leader>r <Plug>(quick-replace)
 
 function! ReplaceOccurence()
     " check if we are on top of an occurence
