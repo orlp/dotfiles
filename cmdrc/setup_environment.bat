@@ -25,7 +25,7 @@ REM sublime text 2 shortcut
 doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
 
 REM gvim shortcut
-doskey vim="C:\Program Files (x86)\Vim\vim74\gvim.exe" $*
+doskey vim="C:\Program Files\Vim\vim74\gvim.exe" $*
 
 REM environment variables
 endlocal
