@@ -1,3 +1,4 @@
 /vim/.*
 /vim/bundle/*
+/pcalc/__pycache__/*
 tags
