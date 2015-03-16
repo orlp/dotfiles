@@ -15,8 +15,8 @@ echo on
 @exit
 
 :administrator
-reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v vim_caps_remap /t REG_EXPAND_SZ /d "\"%~dp0vim_caps_remap.exe\"" /f
-start "%~dp0vim_caps_remap.exe"
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v vim_caps_remap /t REG_EXPAND_SZ /d "\"%~dp0caps_remap.exe\"" /f
+start "%~dp0caps_remap.exe"
 
 pause
 echo on

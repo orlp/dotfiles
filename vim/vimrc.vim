@@ -324,7 +324,9 @@ map g/ <Plug>(incsearch-stay)
 map <leader>a <Plug>(EasyAlign)
 
 " select closest text object
+" nmap <ENTER> vib
 map <ENTER> <Plug>(wildfire-fuel)
+omap <ENTER> <Plug>(wildfire-fuel)
 xmap <S-ENTER> <Plug>(wildfire-water)
 
 " paragraph reformat
@@ -436,16 +438,6 @@ function! s:cgn_next()
     endif
 
 endfunction
-
-function! g:next()
-    try
-        normal! n
-    catch
-        echo errmsg
-    endtry
-endfunction
-
-map <leader>u :<C-U>call g:next()<CR>
 
 function! s:cgn_first()
     call s:post_cgn()
