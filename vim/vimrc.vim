@@ -72,7 +72,8 @@ Plug    'Lokaltog/vim-easymotion'
 Plug       'tpope/vim-fugitive'
 Plug       'jistr/vim-nerdtree-tabs'
 Plug        'amdt/vim-niji'
-Plug       'tpope/vim-repeat'
+" Plug       'tpope/vim-repeat'
+Plug        'orlp/vim-repeat'
 Plug       'tpope/vim-surround'
 Plug        'gcmt/wildfire.vim'
 
@@ -320,9 +321,6 @@ map  / <Plug>(incsearch-forward)
 map  ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
-" easyalign
-map <leader>a <Plug>(EasyAlign)
-
 " select closest text object
 " nmap <ENTER> vib
 map <ENTER> <Plug>(wildfire-fuel)
@@ -360,6 +358,9 @@ map <leader>p "+p
 map <leader>P "+P
 map <leader>y "+y
 map <leader>Y "+Y
+
+" easyalign
+map <leader>a <Plug>(EasyAlign)
 
 " make yanking consistent with deleting
 nnoremap Y y$
@@ -404,62 +405,13 @@ augroup auto_move_to_next
 augroup END
 
 nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
+nmap <silent> <Leader>r :let @/ = '\C\<'.expand('<cword>').'\>'<CR>
+    \:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
 vmap <silent> <Leader>r :<C-U>
     \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
     \gvy:let @/ = substitute(
     \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
     \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
-
-
-function! s:post_cgn()
-    augroup post_cgn
-        autocmd!
-        autocmd InsertLeave <buffer> 
-            \ execute "autocmd! post_cgn" |
-            \ silent! call repeat#set("\<Plug>(cgn-next)") |
-            \ silent! call feedkeys("n")
-    augroup END
-endfunction
-
-function! s:cgn_next()
-    " Check if we are on top of an occurence.
-    let winview = winsaveview()
-    let [lcur, ccur] = getpos(".")[1:2] 
-    let [lstart, cstart] = searchpos(@/, 'bcW')
-    let [lend, cend] = searchpos(@/, 'ceW')
-    call winrestview(winview)
-
-    if lstart != 0 && lcur >= lstart && lcur <= lend
-       \ && (lcur != lstart || ccur >= cstart) && (lcur != lend || ccur <= cend)
-        call s:post_cgn()
-        return ":\<C-U>let &hlsearch=&hlsearch\<cr>cgn\<C-A>\<Esc>"
-    else
-        return ":\<C-U>silent! call search(@/)"
-    endif
-
-endfunction
-
-function! s:cgn_first()
-    call s:post_cgn()
-    return ":\<C-U>let &hlsearch=&hlsearch\<CR>cgn"
-endfunction
-
-nnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
-xnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
-
-nnoremap <expr> <Plug>(quick-replace)
-    \ ':let @/ = ''\V\<'' . escape(expand(''<cword>''), ''\'') . ''\>''<CR>' . <SID>cgn_first()
-xnoremap <expr> <Plug>(quick-replace) <SID>cgn_first()
-
-" nmap <Plug>(quick-replace) :let @/ = '\V\<' . escape(expand('<cword>'), '\') . '\>'<Bar>
-"     \ let &hlsearch=&hlsearch<Bar>
-"     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
-" xmap <Plug>(quick-replace) :<C-U>call <SID>match_visual()<Bar>
-"     \ let &hlsearch=&hlsearch<Bar>
-"     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
-
-nmap <leader>r <Plug>(quick-replace)
-xmap <leader>r <Plug>(quick-replace)
 
 function! ReplaceOccurence()
     " check if we are on top of an occurence
@@ -481,3 +433,96 @@ function! ReplaceOccurence()
     call feedkeys("n")
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
+
+" let g:should_inject_replace_occurences = 0
+" function! MoveToNext()
+"     if g:should_inject_replace_occurences
+"         call feedkeys("n")
+"         call repeat#set("\<Plug>ReplaceOccurences")
+"     endif
+
+"     let g:should_inject_replace_occurences = 0
+" endfunction
+
+" augroup auto_move_to_next
+"     autocmd! InsertLeave * :call MoveToNext()
+" augroup END
+
+" nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
+" vmap <silent> <Leader>r :<C-U>
+"     \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+"     \gvy:let @/ = substitute(
+"     \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
+"     \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
+
+
+" function! s:post_cgn()
+"     augroup post_cgn
+"         autocmd!
+"         autocmd InsertLeave <buffer> 
+"             \ execute "autocmd! post_cgn" |
+"             \ silent! call repeat#set("\<Plug>(cgn-next)") |
+"             \ silent! call feedkeys("n")
+"     augroup END
+" endfunction
+
+" function! s:cgn_next()
+"     " Check if we are on top of an occurence.
+"     let winview = winsaveview()
+"     let [lcur, ccur] = getpos(".")[1:2] 
+"     let [lstart, cstart] = searchpos(@/, 'bcW')
+"     let [lend, cend] = searchpos(@/, 'ceW')
+"     call winrestview(winview)
+
+"     if lstart != 0 && lcur >= lstart && lcur <= lend
+"        \ && (lcur != lstart || ccur >= cstart) && (lcur != lend || ccur <= cend)
+"         call s:post_cgn()
+"         return ":\<C-U>let &hlsearch=&hlsearch\<cr>cgn\<C-A>\<Esc>"
+"     else
+"         return ":\<C-U>silent! call search(@/)"
+"     endif
+
+" endfunction
+
+" function! s:cgn_first()
+"     call s:post_cgn()
+"     return ":\<C-U>let &hlsearch=&hlsearch\<CR>cgn"
+" endfunction
+
+" nnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
+" xnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
+
+" nnoremap <expr> <Plug>(quick-replace)
+"     \ ':let @/ = ''\V\<'' . escape(expand(''<cword>''), ''\'') . ''\>''<CR>' . <SID>cgn_first()
+" xnoremap <expr> <Plug>(quick-replace) <SID>cgn_first()
+
+" " nmap <Plug>(quick-replace) :let @/ = '\V\<' . escape(expand('<cword>'), '\') . '\>'<Bar>
+" "     \ let &hlsearch=&hlsearch<Bar>
+" "     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
+" " xmap <Plug>(quick-replace) :<C-U>call <SID>match_visual()<Bar>
+" "     \ let &hlsearch=&hlsearch<Bar>
+" "     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
+
+" nmap <leader>r <Plug>(quick-replace)
+" xmap <leader>r <Plug>(quick-replace)
+
+" function! ReplaceOccurence()
+"     " check if we are on top of an occurence
+"     let l:winview = winsaveview()
+"     let l:save_reg = getreg('"')
+"     let l:save_regmode = getregtype('"')
+"     let [l:lnum_cur, l:col_cur] = getpos(".")[1:2] 
+"     normal! ygn
+"     let [l:lnum1, l:col1] = getpos("'[")[1:2]
+"     let [l:lnum2, l:col2] = getpos("']")[1:2]
+"     call setreg('"', l:save_reg, l:save_regmode)
+"     call winrestview(winview)
+    
+"     " if we are on top of an occurence, replace it
+"     if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
+"         exe "normal! cgn\<c-a>\<esc>"
+"     endif
+    
+"     call feedkeys("n")
+"     call repeat#set("\<Plug>ReplaceOccurences")
+" endfunction
