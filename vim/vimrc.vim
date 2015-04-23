@@ -153,6 +153,8 @@ filetype plugin indent on
 set smarttab
 set backspace=indent,eol,start
 
+autocmd! FileType pyth setlocal shiftwidth=2 tabstop=2
+
 " override default indent to ignore blank lines
 " set indentexpr=GetIndent(v:lnum)
 " function! GetIndent(lnum)
@@ -244,8 +246,9 @@ if has('unix')
     autocmd VimLeave * call system('xclip -selection clipboard', getreg('+'))
 endif
 
-" .md is Markdown for me, not Modula2
+" file extensions
 au BufRead,BufNewFile *.md set filetype=markdown
+au BufRead,BufNewFile *.pyth set filetype=pyth
 
 " comments in C and co using double slashes
 autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
