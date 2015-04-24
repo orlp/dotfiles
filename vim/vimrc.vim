@@ -322,7 +322,6 @@ map  ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
 " select closest text object
-" nmap <ENTER> vib
 map <ENTER> <Plug>(wildfire-fuel)
 omap <ENTER> <Plug>(wildfire-fuel)
 xmap <S-ENTER> <Plug>(wildfire-water)
