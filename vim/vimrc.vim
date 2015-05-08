@@ -318,6 +318,12 @@ map <C-l> <C-w>l
 " better j/k with long lines
 nnoremap j gj
 nnoremap k gk
+nnoremap gj j
+nnoremap gk k
+xnoremap j gj
+xnoremap k gk
+xnoremap gj j
+xnoremap gk k
 
 " incsearch
 map  / <Plug>(incsearch-forward)
