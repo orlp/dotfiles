@@ -58,7 +58,7 @@ function prompt()
         status_char = "█"
     end
 
-    clink.prompt.value = "\27[0;".. file_dir_color .. "m" .. status_char .. "\27[0;1;37m " .. path .. " \27[1;34m| \27[1;37m"
+    clink.prompt.value = "\27[0;".. file_dir_color .. "m" .. status_char .. "\27[0;1;37m " .. path .. " \27[1;34m| \27[0m"
     
     return false
 end
