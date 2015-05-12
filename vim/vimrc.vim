@@ -56,7 +56,28 @@ set tags=./tags;/
 
 
 " vim-plug
+function! BuildVimProc(info)
+    if a:info.status != 'unchanged' || a:info.force
+        if has('win32')
+            !start x86_64-w64-mingw32-gcc -O2 -shared -m64 -o autoload/vimproc_win64.dll autoload/proc_w32.c -lwsock32
+            !start i686-w64-mingw32-gcc -O2 -shared -m32 -o autoload/vimproc_win32.dll autoload/proc_w32.c -lwsock32
+        elseif has('win32unix')
+            !make -f make_cygwin.mak
+        elseif has('mac') || has('macunix') || has('gui_macvim') ||
+               \ (!isdirectory('/proc') && executable('sw_vers'))
+            !make -f make_mac.mak'
+        elseif !has('win32') && !executable('gmake')
+            !make
+        elseif !has('win32')
+            !gmake
+        endif
+    endif
+endfunction
+
 call plug#begin($VIMHOME . '/bundle')
+Plug 'Shougo/unite.vim'
+Plug 'orlp/unite-git-root'
+
 Plug 'vim-scripts/a.vim'
 Plug  'haya14busa/incsearch.vim'
 Plug  'scrooloose/nerdtree'
@@ -65,6 +86,7 @@ Plug       'wting/rust.vim'
 Plug    'ervandew/supertab'
 Plug  'majutsushi/tagbar'
 Plug      'Shougo/unite.vim'
+Plug      'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
 Plug       'bling/vim-bufferline'
 Plug       'tpope/vim-commentary'
 Plug    'junegunn/vim-easy-align'
@@ -81,6 +103,7 @@ Plug 'guns/xterm-color-table.vim'
 
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
+
 call plug#end()
 
 " --------------------------------------------------------------------------------------------------
@@ -199,6 +222,7 @@ let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
 " Unite
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
+
 
 " EasyMotion
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
@@ -387,7 +411,12 @@ nmap <silent> <leader>sv :so $MYVIMRC<CR>
 nmap <leader>x :bd<CR>
 
 " Unite, NERDTree
-nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
+if has("win32") || has("win32unix")
+    nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
+else
+    nmap <silent> <C-p> :Unite -start-insert file_rec/async<CR>
+end
+nmap <silent> <leader>g :Unite file_rec/git_root<CR>
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 nmap <silent> <leader>N :NERDTreeFind<CR>
 
