@@ -76,7 +76,7 @@ endfunction
 
 call plug#begin($VIMHOME . '/bundle')
 Plug 'Shougo/unite.vim'
-Plug 'orlp/unite-git-root'
+Plug 'orlp/unite-git-repo'
 
 Plug 'vim-scripts/a.vim'
 Plug  'haya14busa/incsearch.vim'
@@ -85,9 +85,9 @@ Plug 'vim-scripts/OnSyntaxChange'
 Plug       'wting/rust.vim'
 Plug    'ervandew/supertab'
 Plug  'majutsushi/tagbar'
-Plug      'Shougo/unite.vim'
 Plug      'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
-Plug       'bling/vim-bufferline'
+" Plug       'bling/vim-bufferline'
+Plug        'orlp/vim-bufferline'
 Plug       'tpope/vim-commentary'
 Plug    'junegunn/vim-easy-align'
 Plug    'Lokaltog/vim-easymotion'
@@ -281,7 +281,8 @@ autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
 if has("gui_running")
     " font
     if has('win32')
-        set guifont=Consolas:h11
+        " set guifont=Consolas:h11
+        set guifont=Monaco:h10:w6
     else
         set guifont=Monaco\ 10
     endif
@@ -347,6 +348,10 @@ xnoremap j gj
 xnoremap k gk
 xnoremap gj j
 xnoremap gk k
+
+" faster scrolling with mouse wheel
+map <ScrollWheelUp> 3<C-Y>
+map <ScrollWheelDown> 3<C-E>
 
 " incsearch
 map  / <Plug>(incsearch-forward)
@@ -416,7 +421,7 @@ if has("win32") || has("win32unix")
 else
     nmap <silent> <C-p> :Unite -start-insert file_rec/async<CR>
 end
-nmap <silent> <leader>g :Unite file_rec/git_root<CR>
+nmap <silent> <leader>g :Unite -start-insert git_repo:--cached:--others:--exclude-standard<CR>
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 nmap <silent> <leader>N :NERDTreeFind<CR>
 
@@ -449,6 +454,7 @@ vmap <silent> <Leader>r :<C-U>
     \gvy:let @/ = substitute(
     \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
     \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
+
 
 function! ReplaceOccurence()
     " check if we are on top of an occurence
