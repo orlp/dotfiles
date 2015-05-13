@@ -59,8 +59,8 @@ set tags=./tags;/
 function! BuildVimProc(info)
     if a:info.status != 'unchanged' || a:info.force
         if has('win32')
-            !start x86_64-w64-mingw32-gcc -O2 -shared -m64 -o autoload/vimproc_win64.dll autoload/proc_w32.c -lwsock32
-            !start i686-w64-mingw32-gcc -O2 -shared -m32 -o autoload/vimproc_win32.dll autoload/proc_w32.c -lwsock32
+            !start mingw32-make -f make_mingw32.mak CC=i686-w64-mingw32-gcc
+            !start mingw32-make -f make_mingw64.mak CC=x86_64-w64-mingw32-gcc
         elseif has('win32unix')
             !make -f make_cygwin.mak
         elseif has('mac') || has('macunix') || has('gui_macvim') ||
