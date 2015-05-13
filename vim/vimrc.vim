@@ -273,9 +273,11 @@ endif
 " file extensions
 au BufRead,BufNewFile *.md set filetype=markdown
 au BufRead,BufNewFile *.pyth set filetype=pyth
+au BufRead,BufNewFile *.golf set filetype=golf
 
 " comments in C and co using double slashes
 autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
+autocmd FileType golf setlocal commentstring=#\ %s
 
 " skin gvim
 if has("gui_running")
@@ -359,7 +361,6 @@ map  ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
 " select closest text object
-" nmap <ENTER> vib
 map <ENTER> <Plug>(wildfire-fuel)
 omap <ENTER> <Plug>(wildfire-fuel)
 xmap <S-ENTER> <Plug>(wildfire-water)
