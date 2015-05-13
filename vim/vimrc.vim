@@ -422,7 +422,7 @@ if has("win32") || has("win32unix")
 else
     nmap <silent> <C-p> :Unite -start-insert file_rec/async<CR>
 end
-nmap <silent> <leader>g :Unite -start-insert git_repo:--cached:--others:--exclude-standard<CR>
+nmap <silent> <leader>g :Unite -start-insert file_rec/git_repo:-c:-o:--exclude-standard<CR>
 nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
 nmap <silent> <leader>N :NERDTreeFind<CR>
 
