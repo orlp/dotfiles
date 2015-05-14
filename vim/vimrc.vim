@@ -74,26 +74,29 @@ function! BuildVimProc(info)
     endif
 endfunction
 
-call plug#begin($VIMHOME . '/bundle')
-Plug 'Shougo/unite.vim'
-Plug 'orlp/unite-git-repo'
+" let g:plug_threads = 16
 
+call plug#begin($VIMHOME . '/bundle')
 Plug 'vim-scripts/a.vim'
 Plug  'haya14busa/incsearch.vim'
 Plug  'scrooloose/nerdtree'
 Plug 'vim-scripts/OnSyntaxChange'
+Plug        'klen/python-mode'
 Plug       'wting/rust.vim'
 Plug    'ervandew/supertab'
 Plug  'majutsushi/tagbar'
+Plug      'Shougo/unite.vim'
+Plug        'orlp/unite-git-repo'
 Plug      'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
+
 " Plug       'bling/vim-bufferline'
 Plug        'orlp/vim-bufferline'
+
 Plug       'tpope/vim-commentary'
 Plug    'junegunn/vim-easy-align'
 Plug    'Lokaltog/vim-easymotion'
 Plug       'tpope/vim-fugitive'
 Plug       'jistr/vim-nerdtree-tabs'
-Plug        'amdt/vim-niji'
 Plug       'tpope/vim-repeat'
 Plug       'tpope/vim-surround'
 Plug        'gcmt/wildfire.vim'
@@ -103,7 +106,6 @@ Plug 'guns/xterm-color-table.vim'
 
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
-
 call plug#end()
 
 " --------------------------------------------------------------------------------------------------
@@ -155,7 +157,7 @@ set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 set t_Co=16
 syntax on
 if has("gui_running")
-    set background=light
+    set background=dark
 else
     set background=dark " this is flipped on gui for some reason
 endif
@@ -383,6 +385,10 @@ xnoremap <silent> # :<C-U>call <SID>match_visual()<Bar>let v:searchforward=0<CR>
 " change the mapleader from \ to space
 let mapleader=" "
 
+" easily edit vimrc and reload
+nmap <silent> <leader>ev :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
 " quick clear highlighting
 map <silent> <leader>l :nohlsearch<CR>
 
@@ -408,10 +414,6 @@ map <leader>h :A<CR>
 
 " cd to the directory containing the file in the buffer
 nmap <silent> <leader>cd :lcd %:h<CR>
-
-" easily edit vimrc and reload
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
 " close buffer
 nmap <leader>x :bd<CR>

@@ -7,9 +7,9 @@ if not errorlevel 1 goto exit
 REM set up environment/commands
 
 REM always use pushd
-doskey dirs=pushd
-doskey pd=popd $*
-doskey cd="%~dp0pushd_cd_alias" $*
+REM doskey dirs=pushd
+REM doskey pd=popd $*
+REM doskey cd="%~dp0pushd_cd_alias" $*
 
 REM set up msls
 doskey ls="%~dp0msls"\ls.exe $*
@@ -25,7 +25,7 @@ REM sublime text 2 shortcut
 doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
 
 REM gvim shortcut
-doskey vim="C:\Program Files\Vim\vim74\gvim.exe" $*
+doskey vim="C:\Program Files (x86)\vim74\gvim.exe" $*
 
 REM environment variables
 endlocal

@@ -14,9 +14,10 @@ Execute: nocaps/caps_remap_install.bat
 
 vim
 ---
+Install Vim from https://tuxproject.de/projects/vim/.
 Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and change it's contents to this (change to the proper install path):
 
-    source C:/Program\ Files\ (x86)/dotfiles/vim/vimrc.vim
+    source C:/dev/dotfiles/vim/vimrc.vim
 
 Run :PlugInstall in vim.
 
