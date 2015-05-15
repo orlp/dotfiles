@@ -263,7 +263,7 @@ let g:pymode_options_max_line_length = 79 " PEP8
 let g:pymode_folding = 0
 let g:pymode_run_bind = '<leader>f'
 let g:pymode_rope = 0
-
+let g:pymode_lint_checkers = ['pyflakes', 'pep8']
 
 " search
 set ignorecase
