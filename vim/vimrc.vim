@@ -77,29 +77,30 @@ endfunction
 " let g:plug_threads = 16
 
 call plug#begin($VIMHOME . '/bundle')
-Plug 'vim-scripts/a.vim'
-Plug  'haya14busa/incsearch.vim'
-Plug  'scrooloose/nerdtree'
-Plug 'vim-scripts/OnSyntaxChange'
-Plug        'klen/python-mode'
-Plug       'wting/rust.vim'
-Plug    'ervandew/supertab'
-Plug  'majutsushi/tagbar'
-Plug      'Shougo/unite.vim'
-Plug        'orlp/unite-git-repo'
-Plug      'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
+Plug    'vim-scripts/a.vim'
+Plug     'haya14busa/incsearch.vim'
+Plug     'scrooloose/nerdtree'
+Plug    'vim-scripts/OnSyntaxChange'
+Plug           'klen/python-mode'
+Plug          'wting/rust.vim'
+Plug       'ervandew/supertab'
+Plug     'majutsushi/tagbar'
+Plug         'Shougo/unite.vim'
+Plug           'orlp/unite-git-repo'
+Plug         'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
 
-" Plug       'bling/vim-bufferline'
-Plug        'orlp/vim-bufferline'
+" Plug          'bling/vim-bufferline'
+Plug           'orlp/vim-bufferline'
 
-Plug       'tpope/vim-commentary'
-Plug    'junegunn/vim-easy-align'
-Plug    'Lokaltog/vim-easymotion'
-Plug       'tpope/vim-fugitive'
-Plug       'jistr/vim-nerdtree-tabs'
-Plug       'tpope/vim-repeat'
-Plug       'tpope/vim-surround'
-Plug        'gcmt/wildfire.vim'
+Plug          'tpope/vim-commentary'
+Plug       'junegunn/vim-easy-align'
+Plug       'Lokaltog/vim-easymotion'
+Plug          'tpope/vim-fugitive'
+Plug 'ludovicchabant/vim-gutentags'
+Plug          'jistr/vim-nerdtree-tabs'
+Plug          'tpope/vim-repeat'
+Plug          'tpope/vim-surround'
+Plug           'gcmt/wildfire.vim'
 
 Plug 'luochen1990/rainbow'
 Plug 'guns/xterm-color-table.vim'
@@ -225,7 +226,6 @@ let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 
-
 " EasyMotion
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
 
@@ -250,6 +250,17 @@ let g:rainbow_conf = {
 \       'css': 0,
 \   }
 \}
+
+" python-mode
+let g:pymode = 1
+let g:pymode_python = 'python3'
+let g:pymode_trim_whitespaces = 0
+let g:pymode_options = 0
+let g:pymode_options_max_line_length = 79 " PEP8
+let g:pymode_folding = 0
+let g:pymode_run_bind = '<leader>f'
+let g:pymode_rope = 0
+
 
 " search
 set ignorecase
