@@ -1,11 +1,5 @@
 @echo off
 
-REM don't bother setting up a nice environment if we're not interactive
-echo %CMDCMDLINE% | C:\Windows\System32\find.exe /i "/c" >nul
-if not errorlevel 1 goto exit
-
-REM set up environment/commands
-
 REM always use pushd
 REM doskey dirs=pushd
 REM doskey pd=popd $*
@@ -26,7 +20,6 @@ doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
 
 REM gvim shortcut
 doskey vim="C:\Program Files (x86)\vim74\gvim.exe" $*
-
 REM environment variables
 endlocal
 if NOT "%1" == "" set CONSOLE_NR=%1

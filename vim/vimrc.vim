@@ -74,7 +74,7 @@ function! BuildVimProc(info)
     endif
 endfunction
 
-" let g:plug_threads = 16
+let g:plug_threads = 16
 
 call plug#begin($VIMHOME . '/bundle')
 Plug    'vim-scripts/a.vim'
@@ -215,6 +215,9 @@ set mouse=a
 
 " use UTF-8
 set encoding=utf-8
+
+" Gutentags
+let g:gutentags_generate_on_new = 0
 
 " NERDTree
 let g:nerdtree_tabs_open_on_gui_startup = 0
