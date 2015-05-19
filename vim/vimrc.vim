@@ -257,7 +257,6 @@ let g:rainbow_conf = {
 " python-mode
 let g:pymode = 1
 let g:pymode_python = 'python3'
-let g:pymode_trim_whitespaces = 0
 let g:pymode_options = 0
 let g:pymode_options_max_line_length = 79 " PEP8
 let g:pymode_folding = 0
