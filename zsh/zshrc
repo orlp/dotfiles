@@ -55,4 +55,13 @@ source $ZSH/oh-my-zsh.sh
 
 # user config
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+path=(
+    ~/bin
+    ~/.local/bin
+    $path
+)
+
+# unique path please
+typeset -U path
+
 export TERM=xterm-256color

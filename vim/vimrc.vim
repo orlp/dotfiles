@@ -81,7 +81,7 @@ Plug    'vim-scripts/a.vim'
 Plug     'haya14busa/incsearch.vim'
 Plug     'scrooloose/nerdtree'
 Plug    'vim-scripts/OnSyntaxChange'
-Plug           'klen/python-mode'
+Plug           'klen/python-mode', { 'branch': 'develop' }
 Plug          'wting/rust.vim'
 Plug       'ervandew/supertab'
 Plug     'majutsushi/tagbar'
@@ -258,11 +258,12 @@ let g:rainbow_conf = {
 let g:pymode = 1
 let g:pymode_python = 'python3'
 let g:pymode_options = 0
-let g:pymode_options_max_line_length = 79 " PEP8
+let g:pymode_options_max_line_length = 120 " PEP8
 let g:pymode_folding = 0
 let g:pymode_run_bind = '<leader>f'
 let g:pymode_rope = 0
 let g:pymode_lint_checkers = ['pyflakes', 'pep8']
+let g:pymode_lint_ignore = 'E501'
 
 " search
 set ignorecase
