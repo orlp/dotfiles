@@ -81,7 +81,7 @@ Plug    'vim-scripts/a.vim'
 Plug     'haya14busa/incsearch.vim'
 Plug     'scrooloose/nerdtree'
 Plug    'vim-scripts/OnSyntaxChange'
-Plug           'klen/python-mode'
+Plug           'klen/python-mode', { 'branch': 'develop' }
 Plug          'wting/rust.vim'
 Plug       'ervandew/supertab'
 Plug     'majutsushi/tagbar'
@@ -263,6 +263,7 @@ let g:pymode_folding = 0
 let g:pymode_run_bind = '<leader>f'
 let g:pymode_rope = 0
 let g:pymode_lint_checkers = ['pyflakes', 'pep8']
+let g:pymode_lint_ignore = 'E501'
 
 " search
 set ignorecase
