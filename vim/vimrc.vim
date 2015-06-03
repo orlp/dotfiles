@@ -258,7 +258,7 @@ let g:rainbow_conf = {
 let g:pymode = 1
 let g:pymode_python = 'python3'
 let g:pymode_options = 0
-let g:pymode_options_max_line_length = 79 " PEP8
+let g:pymode_options_max_line_length = 120 " PEP8
 let g:pymode_folding = 0
 let g:pymode_run_bind = '<leader>f'
 let g:pymode_rope = 0
@@ -298,8 +298,8 @@ autocmd FileType golf setlocal commentstring=#\ %s
 if has("gui_running")
     " font
     if has('win32')
-        " set guifont=Consolas:h11
-        set guifont=Monaco:h10:w6
+        set guifont=Consolas:h11
+        " set guifont=Monaco:h10:w6
     else
         set guifont=Monaco\ 10
     endif
