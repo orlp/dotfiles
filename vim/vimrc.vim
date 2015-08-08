@@ -88,10 +88,7 @@ Plug     'majutsushi/tagbar'
 Plug         'Shougo/unite.vim'
 Plug           'orlp/unite-git-repo'
 Plug         'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
-
-" Plug          'bling/vim-bufferline'
-Plug           'orlp/vim-bufferline'
-
+Plug          'bling/vim-bufferline'
 Plug          'tpope/vim-commentary'
 Plug       'junegunn/vim-easy-align'
 Plug       'Lokaltog/vim-easymotion'
