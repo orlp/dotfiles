@@ -400,8 +400,11 @@ xnoremap <silent> # :<C-U>call <SID>match_visual()<Bar>let v:searchforward=0<CR>
 let mapleader=" "
 
 " easily edit vimrc and reload
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
+nmap <silent> <leader>ve :e $MYVIMRC<CR>
+nmap <silent> <leader>vo :so $MYVIMRC<CR>
+
+" start/stop spellchecking
+nmap <silent> <leader>s :set spell!<CR>
 
 " quick clear highlighting
 map <silent> <leader>l :nohlsearch<CR>
