@@ -46,3 +46,9 @@ chsh -s /bin/zsh
 tmux
 ----
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
+
+rxvt
+----
+ln -s ~/dotfiles/Xresources ~/.Xresources
+cd ~/.fonts
+wget http://laemeur.sdf.org/fonts/LessPerfectDOSVGA.ttf
