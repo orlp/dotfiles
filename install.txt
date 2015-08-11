@@ -23,7 +23,7 @@ Run :PlugInstall in vim.
 
 Linux
 =====
-Installation instructions for linux.
+Installation instructions for linux. Hint: :.w !bash executes the current line in bash.
 
 nocaps
 ------
@@ -50,5 +50,5 @@ ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
 rxvt
 ----
 ln -s ~/dotfiles/Xresources ~/.Xresources
-cd ~/.fonts
-wget http://laemeur.sdf.org/fonts/LessPerfectDOSVGA.ttf
+mkdir -p ~/.fonts
+wget http://laemeur.sdf.org/fonts/LessPerfectDOSVGA.ttf -P ~/.fonts/
