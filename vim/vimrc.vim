@@ -122,6 +122,7 @@ endif
 set textwidth=100
 set formatoptions-=t
 set formatoptions+=c
+set formatoptions+=j
 
 " enable wrapping in multiline comments
 call OnSyntaxChange#Install('Comment', '^Comment$', 0, 'a')
