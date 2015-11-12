@@ -51,4 +51,4 @@ rxvt
 ----
 ln -s ~/dotfiles/Xresources ~/.Xresources
 mkdir -p ~/.fonts
-wget http://laemeur.sdf.org/fonts/LessPerfectDOSVGA.ttf -P ~/.fonts/
+wget https://github.com/orlp/dotfiles/releases/download/font/u_vga16.ttf -P ~/.fonts/
