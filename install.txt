@@ -23,7 +23,11 @@ Run :PlugInstall in vim.
 
 Linux
 =====
-Installation instructions for linux. Hint: :.w !bash executes the current line in bash.
+Installation instructions for linux. Hint: :exec '!'.getline('.') executes the current line.
+
+pcalc
+-----
+pip3 install --user --upgrade ptpython pygments-style-solarized
 
 nocaps
 ------
