@@ -67,3 +67,6 @@ typeset -U path
 export TERM=xterm-256color
 export VISUAL=vim
 export EDITOR="$VISUAL"
+
+# please don't make ctrl-s kill my terminal
+stty -ixon

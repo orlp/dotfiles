@@ -17,8 +17,8 @@ URxvt.color7: #eee8d5
 URxvt.color8: #002b36
 URxvt.color9: #cb4b16
 URxvt.cursorColor: #93a1a1
-URxvt.font: xft:Less Perfect DOS VGA:size=12:antialias=false
-URxvt.letterSpace: -1
+URxvt.font: xft:u_vga16:style=Medium:size=12:antialias=true
+URxvt.letterSpace: 0
 URxvt.lineSpace: 0
 URxvt.foreground: #839496
 URxvt.saveLines: 50000
@@ -27,5 +27,7 @@ URxvt.scrollWithBuffer: true
 URxvt.iso14755: false
 URxvt.iso14755_52: false
 
-URxvt.perl-ext-common:  fullscreen
+URxvt.perl-ext-common:  default,clipboard,fullscreen
 URxvt.keysym.F11:       perl:fullscreen:switch
+URxvt.keysym.Shift-Control-C: perl:clipboard:copy
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste

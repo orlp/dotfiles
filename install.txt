@@ -50,5 +50,7 @@ ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
 rxvt
 ----
 ln -s ~/dotfiles/Xresources ~/.Xresources
+mkdir -p ~/.urxvt/
+ln -s ~/dotfiles/urxvt-ext ~/.urxvt/ext
 mkdir -p ~/.fonts
 wget https://github.com/orlp/dotfiles/releases/download/font/u_vga16.ttf -P ~/.fonts/
