@@ -18,7 +18,7 @@ URxvt.color8: #002b36
 URxvt.color9: #cb4b16
 URxvt.cursorColor: #93a1a1
 URxvt.font: xft:u_vga16:style=Medium:size=12:antialias=true
-URxvt.letterSpace: 0
+URxvt.letterSpace: -1
 URxvt.lineSpace: 0
 URxvt.foreground: #839496
 URxvt.saveLines: 50000
