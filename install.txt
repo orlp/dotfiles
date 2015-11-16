@@ -12,6 +12,13 @@ nocaps
 ------
 Execute: nocaps/caps_remap_install.bat
 
+X11 forwarding
+--------------
+Install VcXsrv. Create a VBS script with following contents:
+
+CreateObject("Wscript.Shell").Run """C:\Program Files\VcXsrv\vcxsrv.exe"" :0 -ac -terminate -lesspointer -multiwindow -clipboard -noprimary -wgl -silent-dup-error", 0, True
+CreateObject("Wscript.Shell").Run "cmd /c ""C:\Program Files\VcXsrv\plink.exe"" -ssh -X -C usr@domain -pw **** urxvt", 0, True
+
 vim
 ---
 Install Vim from https://tuxproject.de/projects/vim/.
