@@ -276,7 +276,7 @@ let g:incsearch#magic = '\v'
 set completeopt+=longest
 
 " autocomplete
-set wildignore+=*.swp,*.pyc,*.o,*.pyo
+set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d
 set wildmode=longest,list
 
 " keep clipboard contents on vim exit
