@@ -217,6 +217,11 @@ set mouse=a
 " use UTF-8
 set encoding=utf-8
 
+" use ag if available
+if executable('ag')
+    set grepprg=ag\ --vimgrep
+endif
+
 " Gutentags
 let g:gutentags_generate_on_new = 0
 
@@ -304,7 +309,8 @@ autocmd FileType golf setlocal commentstring=#\ %s
 if has("gui_running")
     " font
     if has('win32')
-        set guifont=Consolas:h11
+        " set guifont=Consolas:h11
+        set guifont=u_vga16:h13
         " set guifont=Monaco:h10:w6
     else
         set guifont=Monaco\ 10
