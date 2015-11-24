@@ -221,7 +221,7 @@ let g:gutentags_generate_on_new = 0
 let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:NERDTreeDirArrows=1
 let g:NERDChristmasTree=0
-let g:NERDTreeIgnore=["\.pyc$", "\.o$"]
+let g:NERDTreeRespectWildIgnore=1
 
 " Unite
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -276,7 +276,7 @@ let g:incsearch#magic = '\v'
 set completeopt+=longest
 
 " autocomplete
-set wildignore+=*.swp,*.pyc,*.o,*.pyo
+set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d
 set wildmode=longest,list
 
 " keep clipboard contents on vim exit
