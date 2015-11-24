@@ -90,6 +90,7 @@ Plug           'orlp/unite-git-repo'
 Plug         'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
 Plug          'bling/vim-bufferline'
 Plug          'tpope/vim-commentary'
+Plug          'tpope/vim-dispatch'
 Plug       'junegunn/vim-easy-align'
 Plug       'Lokaltog/vim-easymotion'
 Plug          'tpope/vim-fugitive'
@@ -97,6 +98,7 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug          'jistr/vim-nerdtree-tabs'
 Plug          'tpope/vim-repeat'
 Plug          'tpope/vim-surround'
+Plug          'tpope/vim-unimpaired'
 Plug           'gcmt/wildfire.vim'
 
 Plug 'luochen1990/rainbow'
@@ -175,6 +177,7 @@ set expandtab
 set autoindent
 filetype plugin indent on
 set smarttab
+set cino+=(0
 set backspace=indent,eol,start
 
 autocmd! FileType pyth setlocal shiftwidth=2 tabstop=2
@@ -271,6 +274,10 @@ set hlsearch
 set wrapscan
 set gdefault
 let g:incsearch#magic = '\v'
+
+" automatically open quickfix window
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
 
 " autocomplete
 set completeopt+=longest
