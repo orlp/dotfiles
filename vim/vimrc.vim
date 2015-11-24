@@ -214,6 +214,11 @@ set mouse=a
 " use UTF-8
 set encoding=utf-8
 
+" use ag if available
+if executable('ag')
+    set grepprg=ag\ --vimgrep
+endif
+
 " Gutentags
 let g:gutentags_generate_on_new = 0
 
