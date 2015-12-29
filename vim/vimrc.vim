@@ -159,10 +159,11 @@ set t_Co=16
 syntax on
 if has("gui_running")
     set background=dark
+    colorscheme papercolor
 else
     set background=dark " this is flipped on gui for some reason
+    colorscheme solarized
 endif
-colorscheme solarized
 
 " keep some distance from the edge of the screen while scrolling
 set scrolloff=5
@@ -194,7 +195,7 @@ set cursorline
 
 " make vim faster
 set ttyfast
-set lazyredraw 
+set lazyredraw
 
 " don't time out on mappings, do on key codes
 set notimeout
@@ -280,9 +281,9 @@ set wrapscan
 set gdefault
 let g:incsearch#magic = '\v'
 
-" automatically open quickfix window
-autocmd QuickFixCmdPost [^l]* nested cwindow
-autocmd QuickFixCmdPost    l* nested lwindow
+" automatically open quickfix window (not needed with vim-dispatch)
+" autocmd QuickFixCmdPost [^l]* nested cwindow
+" autocmd QuickFixCmdPost    l* nested lwindow
 
 " autocomplete
 set completeopt+=longest
@@ -434,6 +435,9 @@ map <leader>Y "+Y
 " easyalign
 map <leader>a <Plug>(EasyAlign)
 
+" dispatch
+map <leader>d :wa<CR>:Dispatch<CR>
+
 " make yanking consistent with deleting
 nnoremap Y y$
 
@@ -492,18 +496,18 @@ function! ReplaceOccurence()
     let l:winview = winsaveview()
     let l:save_reg = getreg('"')
     let l:save_regmode = getregtype('"')
-    let [l:lnum_cur, l:col_cur] = getpos(".")[1:2] 
+    let [l:lnum_cur, l:col_cur] = getpos(".")[1:2]
     normal! ygn
     let [l:lnum1, l:col1] = getpos("'[")[1:2]
     let [l:lnum2, l:col2] = getpos("']")[1:2]
     call setreg('"', l:save_reg, l:save_regmode)
     call winrestview(winview)
-    
+
     " if we are on top of an occurence, replace it
     if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
         exe "normal! cgn\<c-a>\<esc>"
     endif
-    
+
     call feedkeys("n")
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
@@ -533,7 +537,7 @@ endfunction
 " function! s:post_cgn()
 "     augroup post_cgn
 "         autocmd!
-"         autocmd InsertLeave <buffer> 
+"         autocmd InsertLeave <buffer>
 "             \ execute "autocmd! post_cgn" |
 "             \ silent! call repeat#set("\<Plug>(cgn-next)") |
 "             \ silent! call feedkeys("n")
@@ -543,7 +547,7 @@ endfunction
 " function! s:cgn_next()
 "     " Check if we are on top of an occurence.
 "     let winview = winsaveview()
-"     let [lcur, ccur] = getpos(".")[1:2] 
+"     let [lcur, ccur] = getpos(".")[1:2]
 "     let [lstart, cstart] = searchpos(@/, 'bcW')
 "     let [lend, cend] = searchpos(@/, 'ceW')
 "     call winrestview(winview)
@@ -585,18 +589,18 @@ endfunction
 "     let l:winview = winsaveview()
 "     let l:save_reg = getreg('"')
 "     let l:save_regmode = getregtype('"')
-"     let [l:lnum_cur, l:col_cur] = getpos(".")[1:2] 
+"     let [l:lnum_cur, l:col_cur] = getpos(".")[1:2]
 "     normal! ygn
 "     let [l:lnum1, l:col1] = getpos("'[")[1:2]
 "     let [l:lnum2, l:col2] = getpos("']")[1:2]
 "     call setreg('"', l:save_reg, l:save_regmode)
 "     call winrestview(winview)
-    
+
 "     " if we are on top of an occurence, replace it
 "     if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
 "         exe "normal! cgn\<c-a>\<esc>"
 "     endif
-    
+
 "     call feedkeys("n")
 "     call repeat#set("\<Plug>ReplaceOccurences")
 " endfunction
