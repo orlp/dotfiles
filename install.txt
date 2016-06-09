@@ -8,6 +8,10 @@ Execute: cmdrc/install.bat
 Add to path: cmdrc/bin/
 Recommended: Install qcon from https://github.com/orlp/qcon
 
+pcalc
+-----
+python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
+
 nocaps
 ------
 Execute: nocaps/caps_remap_install.bat
@@ -34,7 +38,7 @@ Installation instructions for linux. Hint: :exec '!'.getline('.') executes the c
 
 pcalc
 -----
-pip3 install --user --upgrade ptpython pygments-style-solarized
+python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
 
 nocaps
 ------

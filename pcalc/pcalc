@@ -1,46 +1,67 @@
 #!/usr/bin/env python3
 
-# add this dir to include path
-import os
 import sys
-import inspect
 
-sys.path.append(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
+# Clipboard.
+# PyQt4 clipboard support is pretty broken, so we disable it.
+class BlockPyQt4:
+    def find_spec(self, fullname, path, target=None):
+        if fullname == "PyQt4": raise ImportError("PyQt4 disabled")
+        return None
+    find_module = find_spec
 
-# builtins
+sys.meta_path.insert(0, BlockPyQt4())
+import pyperclip
+sys.meta_path.pop(0)
+
+def paste(): return pyperclip.paste()
+def copy(s):
+    if isinstance(s, bytes): s = s.decode("utf-8")
+    return pyperclip.copy(str(s))
+
+# Builtins.
 import builtins
 
-# math.pow is shit, import rest
+# Itertools.
+import itertools
+from itertools import *
+
+# Collections.
+import collections
+from collections import Counter, defaultdict, OrderedDict
+
+# Functools.
+from functools import lru_cache, partial, reduce
+
+# Math.pow is shit, import rest.
+import math
 from math import *
 pow = builtins.pow
 phi = (1 + 5 ** 0.5) / 2
 
-# fractions and co
-from fractions import *
-F = Fraction
-def lcm(a, b):
-    return abs(a*b) // gcd(a, b)
+# Fractions and co.
+import fractions
+from fractions import Fraction, gcd as _gcd
+_lcm = lambda a, b: abs(a*b) // _gcd(a, b)
+def gcd(*l): return reduce(_gcd, l)
+def lcm(*l): return reduce(_lcm, l)
 
-# decimal
+F = Fraction
+
+# Decimal.
 import decimal
 from decimal import Decimal
 D = Decimal
 
-# random
+# Random.
 import random
 from random import randrange, randint, choice, shuffle, random as rand, uniform
 
-# itertools
-import itertools
-
-# collections
-from collections import *
-
-# operators
+# Operators.
 import operator
 op = operator
 
-# hashes
+# Hashes.
 import hashlib
 
 def md5(x):
@@ -55,7 +76,7 @@ def sha256(x):
 def sha512(x):
     return hashlib.sha256(x.encode("utf-8")).hexdigest()
 
-# better hex and bin
+# Better hex and bin.
 import binascii
 
 def hex(x):
@@ -78,37 +99,35 @@ def unhex(x):
 
     return binascii.unhexlify(x)
 
-# modular multiplicative inverse
+# Modular multiplicative inverse.
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return (g, x - (b // a) * y, y)
+
 def modinv(a, m):
-    def egcd(a, b):
-        if a == 0:
-            return (b, 0, 1)
-        else:
-            g, y, x = egcd(b % a, a)
-            return (g, x - (b // a) * y, y)
-
     g, x, y = egcd(a, m)
-
     if g != 1:
         raise Exception("modular multiplicative inverse does not exist")
     else:
         return x % m
 
-# average
+# Average.
 def avg(*args):
-    try:
-        return sum(args[0]) / len(args[0])
-    except TypeError:
+    if len(args) > 1:
         return sum(args) / len(args)
+    else:
+        l = list(args[0])
+        return sum(l) / len(l)
 
-# pretty printing
+# Pretty printing.
 from pprint import pprint as pp
 
-
-# prime functions
-def primesbelow(N):
+# Prime functions.
+def primes_below(N):
     # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
-    #""" Input N>=6, Returns a list of primes, 2 <= p < N """
     correction = N % 6 > 1
     N = {0:N, 1:N-1, 2:N+4, 3:N+3, 4:N+2, 5:N+1}[N%6]
     sieve = [True] * (N // 3)
@@ -120,7 +139,37 @@ def primesbelow(N):
             sieve[(k*k + 4*k - 2*k*(i%2)) // 3::2*k] = [False] * ((N // 6 - (k*k + 4*k - 2*k*(i%2))//6 - 1) // k + 1)
     return [2, 3] + [(3 * i + 1) | 1 for i in range(1, N//3 - correction) if sieve[i]]
 
-smallprimeset = set(primesbelow(100000))
+# http://stackoverflow.com/a/30563958/565635
+def _wsieve():
+    wh11 = [2,4,2,4,6,2,6,4,2,4,6,6, 2,6,4,2,6,4,6,8,4,2,4,2,
+            4,8,6,4,6,2,4,6,2,6,6,4, 2,4,6,2,6,4,2,4,2,10,2,10]
+    cs = accumulate(chain([11], cycle(wh11)))
+    yield next(cs)
+    ps = _wsieve()
+    p = next(ps)
+    psq = p*p
+    D = dict(zip(accumulate(chain([0], wh11)), count(0)))   # start from
+    mults = {}
+    for c in cs:
+        if c in mults:
+            wheel = mults.pop(c)
+        elif c < psq:
+            yield c; continue
+        else:
+            x = [p*d for d in wh11]
+            i = D[(p-11) % 210]
+            wheel = accumulate(chain([psq+x[i]], cycle(x[i+1:] + x[:i+1])))
+            p = next(ps); psq = p*p
+        for m in wheel:
+            if not m in mults:
+                break
+        mults[m] = wheel
+
+def primes():
+    yield from [2, 3, 5, 7]
+    yield from _wsieve()
+
+smallprimeset = set(primes_below(100000))
 _smallprimeset = 100000
 def isprime(n, precision=7):
     # http://en.wikipedia.org/wiki/Miller-Rabin_primality_test#Algorithm_and_running_time
@@ -154,7 +203,7 @@ def isprime(n, precision=7):
     return True
 
 # https://comeoncodeon.wordpress.com/2010/09/18/pollard-rho-brent-integer-factorization/
-def pollard_brent(n):
+def _pollard_brent(n):
     if n % 2 == 0: return 2
     if n % 3 == 0: return 3
 
@@ -183,8 +232,9 @@ def pollard_brent(n):
 
     return g
 
-smallprimes = primesbelow(1000) # might seem low, but 1000*1000 = 1000000, so this will fully factor every composite < 1000000
-def primefactors(n, sort=False):
+# Might seem low, but 1000*1000 = 1000000, so this will fully factor every composite < 1000000.
+smallprimes = primes_below(1000)
+def prime_factors(n):
     factors = []
 
     for checker in smallprimes:
@@ -199,45 +249,35 @@ def primefactors(n, sort=False):
         if isprime(n):
             factors.append(n)
             break
-        factor = pollard_brent(n) # trial division did not fully factor, switch to pollard-brent
-        factors.extend(primefactors(factor)) # recurse to factor the not necessarily prime factor returned by pollard-brent
+        # Trial division did not fully factor, switch to Pollard-Brent.
+        factor = _pollard_brent(n)
+        factors.extend(prime_factors(factor))  # Factor returned by Pollard-Brent may not be prime, recurse.
         n //= factor
 
-    if sort: factors.sort()
-
+    factors.sort()
     return factors
 
 def factorization(n):
     factors = {}
-    for p1 in primefactors(n):
+    for p1 in prime_factors(n):
         try:
             factors[p1] += 1
         except KeyError:
             factors[p1] = 1
     return factors
 
-totients = {}
+@lru_cache(None)
 def totient(n):
     if n == 0: return 1
-
-    try: return totients[n]
-    except KeyError: pass
 
     tot = 1
     for p, exp in factorization(n).items():
         tot *= (p - 1)  *  p ** (exp - 1)
 
-    totients[n] = tot
     return tot
 
-# clipboard
-import pyperclip
-
-def copy(s):
-    if isinstance(s, bytes): s = s.decode("utf-8")
-    return pyperclip.copy(str(s))
-
-def paste(): return pyperclip.paste()
+binom = lambda n, k: reduce(op.mul, ((n+1-i)/i for i in range(1, 1+k)))
+at_least_n_of_m = lambda p, n, m: sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
 
 if __name__ == "__main__":
     def configure_ptpython(repl):
@@ -249,4 +289,3 @@ if __name__ == "__main__":
 
     from ptpython.repl import embed
     embed(globals(), locals(), configure_ptpython)
-
