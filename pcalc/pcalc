@@ -26,6 +26,18 @@ import builtins
 import itertools
 from itertools import *
 
+_no_pad = object()
+def chunks(it, n, pad=_no_pad):
+    """Split iterable it up into n-length lists. If len(it) is not a
+    multiple of n and pad is given, the last chunk is padded with it."""
+    r = []
+    for e in it:
+        r.append(e)
+        if len(r) >= n:
+            yield r
+            r = []
+    if r: yield r + (n-len(r))*(pad is not _no_pad)*[pad]
+
 # Collections.
 import collections
 from collections import Counter, defaultdict, OrderedDict
@@ -276,8 +288,8 @@ def totient(n):
 
     return tot
 
-binom = lambda n, k: reduce(op.mul, ((n+1-i)/i for i in range(1, 1+k)))
-at_least_n_of_m = lambda p, n, m: sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
+def binom(n, k): return reduce(op.mul, ((n+1-i)/i for i in range(1, 1+k)))
+def at_least_n_of_m(p, n, m): return sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
 
 if __name__ == "__main__":
     def configure_ptpython(repl):
@@ -285,6 +297,7 @@ if __name__ == "__main__":
         repl.confirm_exit = False
         repl.show_line_numbers = False
         repl.enable_open_in_editor  = False
+        repl.insert_blank_line_after_output = False
         repl.use_code_colorscheme("solarizeddark")
 
     from ptpython.repl import embed

@@ -141,7 +141,6 @@ else
     augroup END
 end
 
-
 " status line
 set laststatus=2
 set showcmd
@@ -268,11 +267,11 @@ let g:pymode_python = 'python3'
 let g:pymode_options = 0
 let g:pymode_options_max_line_length = 120 " PEP8
 let g:pymode_folding = 0
-let g:pymode_run_bind = '<leader>f'
 let g:pymode_rope = 0
 let g:pymode_lint = 1
 let g:pymode_lint_checkers = ['pyflakes', 'pep8']
 let g:pymode_lint_ignore = 'E501,E701'  " line too long, multiple statements on one line
+call pymode#lint#toggle()
 
 " search
 set ignorecase
@@ -303,10 +302,13 @@ endif
 au BufRead,BufNewFile *.md set filetype=markdown
 au BufRead,BufNewFile *.pyth set filetype=pyth
 au BufRead,BufNewFile *.golf set filetype=golf
+au BufRead,BufNewFile *.bf set filetype=brainfuck
 
 " comments in C and co using double slashes
 autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
 autocmd FileType golf setlocal commentstring=#\ %s
+autocmd FileType brainfuck setlocal comments=
+autocmd FileType python setlocal comments=b:#
 
 " skin gvim
 if has("gui_running")
@@ -436,6 +438,9 @@ map <leader>Y "+Y
 
 " easyalign
 map <leader>a <Plug>(EasyAlign)
+
+" pymode
+let g:pymode_run_bind = '<leader>f'
 
 " dispatch
 map <leader>d :wa<CR>:Dispatch<CR>
