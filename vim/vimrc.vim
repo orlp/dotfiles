@@ -267,11 +267,11 @@ let g:pymode_python = 'python3'
 let g:pymode_options = 0
 let g:pymode_options_max_line_length = 120 " PEP8
 let g:pymode_folding = 0
+let g:pymode_run_bind = '<leader>f'
 let g:pymode_rope = 0
 let g:pymode_lint = 1
 let g:pymode_lint_checkers = ['pyflakes', 'pep8']
 let g:pymode_lint_ignore = 'E501,E701'  " line too long, multiple statements on one line
-call pymode#lint#toggle()
 
 " search
 set ignorecase
@@ -438,9 +438,6 @@ map <leader>Y "+Y
 
 " easyalign
 map <leader>a <Plug>(EasyAlign)
-
-" pymode
-let g:pymode_run_bind = '<leader>f'
 
 " dispatch
 map <leader>d :wa<CR>:Dispatch<CR>
