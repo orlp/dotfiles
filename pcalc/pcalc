@@ -298,6 +298,8 @@ if __name__ == "__main__":
         repl.show_line_numbers = False
         repl.enable_open_in_editor  = False
         repl.insert_blank_line_after_output = False
+        repl.show_signature = True
+        repl.highlight_matching_parenthesis = True
         repl.use_code_colorscheme("solarizeddark")
 
     from ptpython.repl import embed
