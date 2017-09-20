@@ -314,8 +314,8 @@ autocmd FileType python setlocal comments=b:#
 if has("gui_running")
     " font
     if has('win32')
-        " set guifont=Consolas:h11
-        set guifont=u_vga16:h13
+        set guifont=Consolas:h11
+        " set guifont=u_vga16:h13
         " set guifont=Monaco:h10:w6
     else
         set guifont=Monaco\ 10

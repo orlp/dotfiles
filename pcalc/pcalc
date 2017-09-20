@@ -4,13 +4,13 @@ import sys
 
 # Clipboard.
 # PyQt4 clipboard support is pretty broken, so we disable it.
-class BlockPyQt4:
+class _BlockPyQt4:
     def find_spec(self, fullname, path, target=None):
         if fullname == "PyQt4": raise ImportError("PyQt4 disabled")
         return None
     find_module = find_spec
 
-sys.meta_path.insert(0, BlockPyQt4())
+sys.meta_path.insert(0, _BlockPyQt4())
 import pyperclip
 sys.meta_path.pop(0)
 
@@ -19,8 +19,27 @@ def copy(s):
     if isinstance(s, bytes): s = s.decode("utf-8")
     return pyperclip.copy(str(s))
 
+# Simple stopwatch.
+import time
+def stopwatch():
+    start = time.monotonic()
+    last = ""
+    try:
+        while True:
+            msg = "{}{:.1f}".format("\b"*len(last), time.monotonic() - start)
+            sys.stdout.write(msg)
+            sys.stdout.flush()
+            last = msg
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        sys.stdout.write("\b" * len(last))
+        sys.stdout.flush()
+        return round(time.monotonic() - start, 1)
+
 # Builtins.
 import builtins
+import importlib
+reload = importlib.reload
 
 # Itertools.
 import itertools
@@ -113,11 +132,9 @@ def unhex(x):
 
 # Modular multiplicative inverse.
 def egcd(a, b):
-    if a == 0:
-        return (b, 0, 1)
-    else:
-        g, y, x = egcd(b % a, a)
-        return (g, x - (b // a) * y, y)
+    if a == 0: return (b, 0, 1)
+    g, y, x = egcd(b % a, a)
+    return (g, x - (b // a) * y, y)
 
 def modinv(a, m):
     g, x, y = egcd(a, m)
@@ -133,6 +150,10 @@ def avg(*args):
     else:
         l = list(args[0])
         return sum(l) / len(l)
+
+# Product.
+def prod(it):
+    return reduce(op.mul, it, 1)
 
 # Pretty printing.
 from pprint import pprint as pp
@@ -284,12 +305,21 @@ def totient(n):
 
     tot = 1
     for p, exp in factorization(n).items():
-        tot *= (p - 1)  *  p ** (exp - 1)
+        tot *= (p - 1) * p**(exp - 1)
 
     return tot
 
-def binom(n, k): return reduce(op.mul, ((n+1-i)/i for i in range(1, 1+k)))
-def at_least_n_of_m(p, n, m): return sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
+def binom(n, k):
+    if k > n: return 0
+    if n - k < k: k = n - k
+    r = 1
+    for d in range(1, k+1):
+        r = r*n//d
+        n -= 1
+    return r
+
+def at_least_n_of_m(p, n, m):
+    return sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
 
 if __name__ == "__main__":
     def configure_ptpython(repl):
@@ -300,7 +330,7 @@ if __name__ == "__main__":
         repl.insert_blank_line_after_output = False
         repl.show_signature = True
         repl.highlight_matching_parenthesis = True
-        repl.use_code_colorscheme("solarizeddark")
+        # repl.use_code_colorscheme("solarizeddark")
 
     from ptpython.repl import embed
     embed(globals(), locals(), configure_ptpython)
