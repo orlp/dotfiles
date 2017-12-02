@@ -42,7 +42,7 @@ python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperc
 
 nocaps
 ------
-Run the following command on startup:
+Run the following command on startup (probably ~/.xinitrc):
 setxkbmap -option caps:escape
 
 vim

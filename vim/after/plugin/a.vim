@@ -1,4 +1,4 @@
 " a.vim introduces terrible insert mode mappings, remove those
-iunmap <Leader>ih
-iunmap <Leader>is
-iunmap <Leader>ihn
+silent! iunmap <Leader>ih
+silent! iunmap <Leader>is
+silent! iunmap <Leader>ihn
