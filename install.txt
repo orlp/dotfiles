@@ -56,6 +56,7 @@ Run :PlugInstall in vim. For clipboard issues it's recommended to run Parcellite
 
 zsh
 ---
+git submodule update --init --recursive
 ln -s ~/dotfiles/zsh/zshrc ~/.zshrc
 chsh -s /bin/zsh
 
