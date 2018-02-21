@@ -82,6 +82,7 @@ Plug     'haya14busa/incsearch.vim'
 Plug     'scrooloose/nerdtree'
 Plug    'vim-scripts/OnSyntaxChange'
 Plug           'klen/python-mode', { 'branch': 'develop' }
+" Plug           'klen/python-mode'
 Plug          'wting/rust.vim'
 Plug       'ervandew/supertab'
 Plug     'majutsushi/tagbar'
@@ -161,7 +162,7 @@ if has("gui_running")
     set background=dark
     colorscheme papercolor
 else
-    set background=dark " this is flipped on gui for some reason
+    set background=light " this is flipped on gui for some reason
     colorscheme solarized
 endif
 

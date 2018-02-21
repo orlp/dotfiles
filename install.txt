@@ -39,6 +39,7 @@ Installation instructions for linux. Hint: :exec '!'.getline('.') executes the c
 pcalc
 -----
 python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
+ln -s ~/dotfiles/pcalc/pcalc ~/bin/pcalc
 
 nocaps
 ------
@@ -51,7 +52,7 @@ Edit ~/.vimrc to contain:
 
     source ~/dotfiles/vim/vimrc.vim
 
-Run :PlugInstall in vim.
+Run :PlugInstall in vim. For clipboard issues it's recommended to run Parcellite in daemon mode.
 
 zsh
 ---

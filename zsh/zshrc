@@ -44,22 +44,23 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Add wisely, as too many plugins slow down shell startup.
 
 ZSH_TMUX_AUTOCONNECT="true"
-plugins=(git tmux)
+plugins=(git tmux rust)
+
+source $ZSH/oh-my-zsh.sh
 
 # CTRL-Z to bring back to foreground
 foreground-current-job() { fg; }
 zle -N foreground-current-job
 bindkey '^Z' foreground-current-job
 
-source $ZSH/oh-my-zsh.sh
 
 # user config
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-path=(
-    ~/bin
-    ~/.local/bin
-    $path
-)
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# path=(
+#     ~/bin
+#     ~/.local/bin
+#     $path
+# )
 
 # unique path please
 typeset -U path
