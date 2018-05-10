@@ -52,7 +52,7 @@ if exists('+undofile')
 endif
 
 " ctags
-set tags=./tags;/
+set tags=./tags;
 
 
 " vim-plug
@@ -83,7 +83,10 @@ Plug     'scrooloose/nerdtree'
 Plug    'vim-scripts/OnSyntaxChange'
 Plug           'klen/python-mode', { 'branch': 'develop' }
 " Plug           'klen/python-mode'
-Plug          'wting/rust.vim'
+Plug       'rust-lang/rust.vim'
+Plug   'vim-syntastic/syntastic'
+
+
 Plug       'ervandew/supertab'
 Plug     'majutsushi/tagbar'
 Plug         'Shougo/unite.vim'
@@ -154,6 +157,17 @@ set statusline+=%{strlen(&ft)?&ft:'none'}\ \|\   " filetype
 set statusline+=%{strlen(&fenc)?&fenc:&enc}\ \|\ " encoding
 set statusline+=%{&fileformat}                   " file format
 set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
+
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_rust_checkers = ['cargo']
 
 " syntax highlighting
 set t_Co=16
@@ -291,7 +305,7 @@ let g:incsearch#magic = '\v'
 set completeopt+=longest
 
 " autocomplete
-set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d
+set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d,*.bz2,*.pdf
 set wildmode=longest,list
 
 " keep clipboard contents on vim exit
