@@ -5,13 +5,13 @@ export ZSH="$(dirname "$(readlink -f ${(%):-%N})")/oh-my-zsh"
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="lambda"
+ZSH_THEME=""
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 # export UPDATE_ZSH_DAYS=13
@@ -48,6 +48,23 @@ plugins=(git tmux rust)
 
 source $ZSH/oh-my-zsh.sh
 
+# prompt
+PROMPT='%~/ $(git_prompt_info)%{$reset_color%}%(!.#.$)'
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
+
+# isolate last command output
+local MARKER=$(echo -e '\u200b\u200b \u200b\u200b')
+PROMPT+=$MARKER
+
+show-last-cmd() {
+    tmux capture-pane -ep -S -5000 | tac | sed -e "0,/$MARKER/ d" | sed -e "/$MARKER/ q" | tac | less -r
+}
+zle -N show-last-cmd
+bindkey '^T' show-last-cmd
+
+# tmux bind-key b copy-mode \\\; send-keys -X start-of-line \\\; send-keys -X search-backward "$MARKER"
+
 # CTRL-Z to bring back to foreground
 foreground-current-job() { fg; }
 zle -N foreground-current-job
@@ -71,3 +88,6 @@ export EDITOR="$VISUAL"
 
 # please don't make ctrl-s kill my terminal
 stty -ixon
+
+# gp is pari/gp, not git push
+unalias gp
