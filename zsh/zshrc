@@ -49,19 +49,18 @@ plugins=(git tmux rust)
 source $ZSH/oh-my-zsh.sh
 
 # Prompt.
-PROMPT='%~/ $(git_prompt_info)%{$reset_color%}%(!.#.$)'
+PROMPT='%~/'
+PROMPT+=$'%{\e[2;8m%} %{\e[0m%}'  # Marked space.
+PROMPT+='$(git_prompt_info)%{$reset_color%}%(!.#.$) '
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
 
-# Isolate last command output.
-local MARKER=$(echo -e '\u200b\u200b \u200b\u200b')
-PROMPT+=$MARKER
-
-show-last-cmd() {
-    tmux capture-pane -ep -S -5000 | tac | sed -e "0,/$MARKER/ d" | sed -e "/$MARKER/ q" | tac | less -r
+less-last-cmd() {
+    local MARKER=$'\\/\e\\[2;8m \e\\[0m'
+    tmux capture-pane -ep -S -5000 | tac | sed -e "0,/$MARKER/ d" | sed -e "/$MARKER/ q" | tac | less -rK
 }
-zle -N show-last-cmd
-bindkey '^T' show-last-cmd
+zle -N less-last-cmd
+bindkey '^T' less-last-cmd
 
 # CTRL-Z to bring back to foreground.
 foreground-current-job() { fg; }
