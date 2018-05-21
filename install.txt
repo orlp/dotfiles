@@ -36,6 +36,10 @@ Linux
 =====
 Installation instructions for linux. Hint: :exec '!'.getline('.') executes the current line.
 
+local python
+------------
+./configure --prefix=$HOME/.localpython --enable-loadable-sqlite-extensions --with-system-expat --with-system-ffi --enable-ipv6 --with-threads --enable-shared LDFLAGS=-Wl,-rpath=$HOME/.localpython/lib
+
 pcalc
 -----
 python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
