@@ -48,12 +48,12 @@ plugins=(git tmux rust)
 
 source $ZSH/oh-my-zsh.sh
 
-# prompt
+# Prompt.
 PROMPT='%~/ $(git_prompt_info)%{$reset_color%}%(!.#.$)'
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[green]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
 
-# isolate last command output
+# Isolate last command output.
 local MARKER=$(echo -e '\u200b\u200b \u200b\u200b')
 PROMPT+=$MARKER
 
@@ -63,15 +63,13 @@ show-last-cmd() {
 zle -N show-last-cmd
 bindkey '^T' show-last-cmd
 
-# tmux bind-key b copy-mode \\\; send-keys -X start-of-line \\\; send-keys -X search-backward "$MARKER"
-
-# CTRL-Z to bring back to foreground
+# CTRL-Z to bring back to foreground.
 foreground-current-job() { fg; }
 zle -N foreground-current-job
 bindkey '^Z' foreground-current-job
 
 
-# user config
+# Path for interactive shells.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 # path=(
 #     ~/bin
@@ -79,15 +77,15 @@ bindkey '^Z' foreground-current-job
 #     $path
 # )
 
-# unique path please
+# Unique path please.
 typeset -U path
 
-export TERM=xterm-256color
+# export TERM=xterm-256color
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
-# please don't make ctrl-s kill my terminal
+# Please don't make ctrl-s kill my terminal.
 stty -ixon
 
-# gp is pari/gp, not git push
+# gp is pari/gp, not git push.
 unalias gp

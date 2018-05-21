@@ -1,3 +1,54 @@
+Linux
+=====
+Installation instructions for linux. Hint: :exec '!'.getline('.') executes the current line.
+
+nocaps
+------
+Run the following command on startup (probably ~/.xinitrc):
+setxkbmap -option caps:escape
+
+environment
+-----------
+Edit ~/.profile to contain:
+
+    source ~/dotfiles/profile
+
+vim
+---
+Edit ~/.vimrc to contain:
+
+    source ~/dotfiles/vim/vimrc.vim
+
+Run :PlugInstall in vim. For clipboard issues it's recommended to run Parcellite in daemon mode.
+
+zsh
+---
+git submodule update --init --recursive
+ln -s ~/dotfiles/zsh/zshrc ~/.zshrc
+chsh -s /bin/zsh
+
+tmux
+----
+ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
+
+rxvt
+----
+ln -s ~/dotfiles/Xresources ~/.Xresources
+mkdir -p ~/.urxvt/
+ln -s ~/dotfiles/urxvt-ext ~/.urxvt/ext
+mkdir -p ~/.fonts
+wget https://github.com/orlp/dotfiles/releases/download/font/u_vga16.ttf -P ~/.fonts/
+
+pcalc
+-----
+python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
+ln -s ~/dotfiles/pcalc/pcalc ~/bin/pcalc
+
+building python from source
+------------
+./configure --prefix=$HOME/.localpython --enable-loadable-sqlite-extensions --with-system-expat --with-system-ffi --enable-ipv6 --with-threads --enable-shared LDFLAGS=-Wl,-rpath=$HOME/.localpython/lib
+
+
 Windows
 =======
 Installation instructions for Windows.
@@ -32,46 +83,3 @@ Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and change it's contents 
 
 Run :PlugInstall in vim.
 
-Linux
-=====
-Installation instructions for linux. Hint: :exec '!'.getline('.') executes the current line.
-
-local python
-------------
-./configure --prefix=$HOME/.localpython --enable-loadable-sqlite-extensions --with-system-expat --with-system-ffi --enable-ipv6 --with-threads --enable-shared LDFLAGS=-Wl,-rpath=$HOME/.localpython/lib
-
-pcalc
------
-python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
-ln -s ~/dotfiles/pcalc/pcalc ~/bin/pcalc
-
-nocaps
-------
-Run the following command on startup (probably ~/.xinitrc):
-setxkbmap -option caps:escape
-
-vim
----
-Edit ~/.vimrc to contain:
-
-    source ~/dotfiles/vim/vimrc.vim
-
-Run :PlugInstall in vim. For clipboard issues it's recommended to run Parcellite in daemon mode.
-
-zsh
----
-git submodule update --init --recursive
-ln -s ~/dotfiles/zsh/zshrc ~/.zshrc
-chsh -s /bin/zsh
-
-tmux
-----
-ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
-
-rxvt
-----
-ln -s ~/dotfiles/Xresources ~/.Xresources
-mkdir -p ~/.urxvt/
-ln -s ~/dotfiles/urxvt-ext ~/.urxvt/ext
-mkdir -p ~/.fonts
-wget https://github.com/orlp/dotfiles/releases/download/font/u_vga16.ttf -P ~/.fonts/
