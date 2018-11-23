@@ -48,6 +48,25 @@ building python from source
 ------------
 ./configure --prefix=$HOME/.localpython --enable-loadable-sqlite-extensions --with-system-expat --with-system-ffi --enable-ipv6 --with-threads --enable-shared LDFLAGS=-Wl,-rpath=$HOME/.localpython/lib
 
+building vim from source
+------------------------
+sudo apt-get build-dep vim-gtk
+
+vi_cv_path_python=/home/orlp/.localpython/bin/python \
+vi_cv_path_python3=/home/orlp/.localpython/bin/python3 \
+./configure --with-features=huge \
+            --enable-multibyte \
+            --enable-rubyinterp=yes \
+            --enable-pythoninterp=yes \
+            --enable-python3interp=yes \
+            --enable-perlinterp=yes \
+            --enable-luainterp=yes \
+            --enable-gui=gtk2 \
+            --enable-cscope \
+            --prefix=/usr/local
+
+make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
+
 
 Windows
 =======
