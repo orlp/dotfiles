@@ -321,6 +321,13 @@ def binom(n, k):
 def at_least_n_of_m(p, n, m):
     return sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
 
+# Data science.
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scipy
+
+
 if __name__ == "__main__":
     def configure_ptpython(repl):
         repl.vi_mode = True
