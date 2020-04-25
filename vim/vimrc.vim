@@ -170,14 +170,17 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_rust_checkers = ['cargo']
 
 " syntax highlighting
-set t_Co=16
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
+" set t_Co=16
 syntax on
 if has("gui_running")
     set background=dark
     colorscheme papercolor
 else
-    set background=light " this is flipped on gui for some reason
-    colorscheme solarized
+    set background=light
+    colorscheme papercolor
 endif
 
 " keep some distance from the edge of the screen while scrolling
@@ -452,7 +455,8 @@ map <leader>y "+y
 map <leader>Y "+Y
 
 " easyalign
-map <leader>a <Plug>(EasyAlign)
+xmap <leader>a <Plug>(EasyAlign)
+nmap <leader>a <Plug>(EasyAlign)
 
 " dispatch
 map <leader>d :wa<CR>:Dispatch<CR>
