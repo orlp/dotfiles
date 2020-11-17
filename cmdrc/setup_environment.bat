@@ -12,14 +12,6 @@ REM emulate a bit of linux
 doskey cat=type $*
 doskey mv=move $*
 
-REM git
-doskey gm=git commit -am "$*" ^&^& git push
-
-REM sublime text 2 shortcut
-doskey subl="C:\Program Files (x86)\Sublime Text 2\sublime_text.exe" $*
-
-REM gvim shortcut
-doskey vim="C:\Program Files (x86)\vim74\gvim.exe" $*
 REM environment variables
 endlocal
 if NOT "%1" == "" set CONSOLE_NR=%1
@@ -29,7 +21,7 @@ cd c:\
 
 REM run clink (this HAS to be the last command, that's why we already put echo to on)
 echo on
-@"%~dp0clink\clink.bat" inject --quiet --profile "%~dp0clink_profile" --scripts "%~dp0clink_scripts"
+@"%~dp0clink\clink.bat" inject --quiet --profile "%~dp0clink_profile"
 
 :exit
 @echo on

@@ -62,4 +62,11 @@ $if cmd.exe
 $endif
 
 set keymap emacs
+
+# Uncomment these two lines for vanilla cmd.exe style completion.
+# "\t": clink-menu-completion-shim
+# "\e`Z": clink-backward-menu-completion-shim
+
 $include ~/clink_inputrc
+$include ~/_inputrc
+$include ~/.inputrc

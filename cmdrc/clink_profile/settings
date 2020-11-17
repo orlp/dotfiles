@@ -9,3 +9,4 @@ terminate_autoanswer=1
 history_dupe_mode=2
 history_file_lines=1000
 history_ignore_space=0
+history_shared=1
