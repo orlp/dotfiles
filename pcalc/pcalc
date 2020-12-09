@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+# FIX for https://github.com/prompt-toolkit/python-prompt-toolkit/issues/1023.
+import asyncio
+import selectors
+
+selector = selectors.SelectSelector()
+loop = asyncio.SelectorEventLoop(selector)
+asyncio.set_event_loop(loop)
+
 import sys
 
 # Clipboard.
@@ -72,7 +80,11 @@ phi = (1 + 5 ** 0.5) / 2
 
 # Fractions and co.
 import fractions
-from fractions import Fraction, gcd as _gcd
+from fractions import Fraction
+try:
+    from fractions import gcd as _gcd
+except ImportError:
+    from math import gcd as _gcd
 _lcm = lambda a, b: abs(a*b) // _gcd(a, b)
 def gcd(*l): return reduce(_gcd, l)
 def lcm(*l): return reduce(_lcm, l)
@@ -310,6 +322,7 @@ def totient(n):
     return tot
 
 def binom(n, k):
+    assert n >= 0 and k >= 0
     if k > n: return 0
     if n - k < k: k = n - k
     r = 1
@@ -327,6 +340,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy
 
+# Always end up importing these anyways.
+import re
 
 if __name__ == "__main__":
     def configure_ptpython(repl):
