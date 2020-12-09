@@ -51,6 +51,7 @@ reload = importlib.reload
 
 # Itertools.
 import itertools
+it = itertools
 from itertools import *
 
 _no_pad = object()
@@ -339,6 +340,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy
+import addcopyfighandler
 
 # Always end up importing these anyways.
 import re
