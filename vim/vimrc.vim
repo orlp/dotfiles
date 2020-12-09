@@ -84,7 +84,7 @@ Plug    'vim-scripts/OnSyntaxChange'
 Plug           'klen/python-mode', { 'branch': 'develop' }
 " Plug           'klen/python-mode'
 Plug       'rust-lang/rust.vim'
-Plug   'vim-syntastic/syntastic'
+" Plug   'vim-syntastic/syntastic'
 
 
 Plug       'ervandew/supertab'
@@ -159,15 +159,15 @@ set statusline+=%{&fileformat}                   " file format
 set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
 
 " syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_rust_checkers = ['cargo']
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_rust_checkers = ['cargo']
 
 " syntax highlighting
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
