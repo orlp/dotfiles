@@ -1,365 +1,240 @@
-" remove legacy
+" Disable legacy cruft and enable compatibility.
 set nocompatible
+set langnoremap
+filetype plugin indent on
+syntax on
 
 " --------------------------------------------------------------------------------------------------
-" Directories and environment meta-setups
+" Set VIM up such that it loads config from our dotfiles, and save data there.
 " --------------------------------------------------------------------------------------------------
 
 " http://stackoverflow.com/questions/3377298/how-can-i-override-vim-and-vimrc-paths-but-no-others-in-vim
-" set default 'runtimepath' (without ~/.vim folders)
+" Set default 'runtimepath' (without ~/.vim folders).
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 
-" what is the name of the directory containing this file?
+" What is the name of the directory containing this file?
 let s:portable = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let $VIMHOME = s:portable
 
-" add the directory to 'runtimepath'
+" Add the directory to 'runtimepath'.
 let &runtimepath = printf('%s,%s,%s/after', s:portable, &runtimepath, s:portable)
 
-" create portable directories
-if isdirectory($VIMHOME . '/.backup') == 0
-    call mkdir($VIMHOME . '/.backup')
+" Create data directories.
+if has('nvim')
+    let $VIMDATA = $VIMHOME . '/.nvimdata'
+else
+    let $VIMDATA = $VIMHOME . '/.vimdata'
 endif
 
-if isdirectory($VIMHOME . '/.cache') == 0
-    call mkdir($VIMHOME . '/.cache')
-endif
+call mkdir($VIMDATA . '/backup', 'p')
+call mkdir($VIMDATA . '/cache',  'p')
+call mkdir($VIMDATA . '/swap',   'p')
+call mkdir($VIMDATA . '/undo',   'p')
 
-if isdirectory($VIMHOME . '/.swap') == 0
-    call mkdir($VIMHOME . '/.swap')
-endif
-
-if isdirectory($VIMHOME . '/.undo') == 0
-    call mkdir($VIMHOME . '/.undo')
-endif
-
-" set portable file locations
+" Set portable file locations.
 let $MYVIMRC = $VIMHOME . '/vimrc.vim'
-let g:unite_data_directory = $VIMHOME . '/.cache'
-let g:NERDTreeBookmarksFile = $VIMHOME . '/.NERDTreeBookmarks'
+" let g:unite_data_directory = $VIMDATA . '/.cache'
+let g:NERDTreeBookmarksFile = $VIMDATA . '/NERDTreeBookmarks'
 
-set viminfo+=n$VIMHOME/.viminfo
-
-set backupdir=$VIMHOME/.backup/
+set backupdir=$VIMDATA/backup/
 set backup
 
-set directory=$VIMHOME/.swap// " two slashes intentional, prevents collisions (:help dir)
+set directory=$VIMDATA/swap//  " Two slashes intentional, see :help dir.
 set swapfile
 
 if exists('+undofile')
-    set undodir=$VIMHOME/.undo// " two slashes intentional, prevents collisions (:help dir)
+    set undodir=$VIMDATA/undo//  " Two slashes intentional, see :help dir.
     set undofile
 endif
 
-" ctags
-set tags=./tags;
-
-
-" vim-plug
-function! BuildVimProc(info)
-    if a:info.status != 'unchanged' || a:info.force
-        if has('win32')
-            !start mingw32-make -f make_mingw32.mak CC=i686-w64-mingw32-gcc
-            !start mingw32-make -f make_mingw64.mak CC=x86_64-w64-mingw32-gcc
-        elseif has('win32unix')
-            !make -f make_cygwin.mak
-        elseif has('mac') || has('macunix') || has('gui_macvim') ||
-               \ (!isdirectory('/proc') && executable('sw_vers'))
-            !make -f make_mac.mak'
-        elseif !has('win32') && !executable('gmake')
-            !make
-        elseif !has('win32')
-            !gmake
-        endif
+if has('nvim')
+    let &shadafile = $VIMDATA . '/shada'
+else
+    if exists('+viminfo')
+        let &viminfofile = $VIMDATA . '/viminfo'
+        set viminfo+=!
     endif
-endfunction
-
-let g:plug_threads = 16
-
-call plug#begin($VIMHOME . '/bundle')
-Plug    'vim-scripts/a.vim'
-Plug     'haya14busa/incsearch.vim'
-Plug     'scrooloose/nerdtree'
-Plug    'vim-scripts/OnSyntaxChange'
-Plug           'klen/python-mode', { 'branch': 'develop' }
-" Plug           'klen/python-mode'
-Plug       'rust-lang/rust.vim'
-" Plug   'vim-syntastic/syntastic'
+endif
 
 
-Plug       'ervandew/supertab'
-Plug     'majutsushi/tagbar'
-Plug         'Shougo/unite.vim'
-Plug           'orlp/unite-git-repo'
-Plug         'Shougo/vimproc.vim', { 'do': function('BuildVimProc') }
-Plug          'bling/vim-bufferline'
-Plug          'tpope/vim-commentary'
-Plug          'tpope/vim-dispatch'
-Plug       'junegunn/vim-easy-align'
-Plug       'Lokaltog/vim-easymotion'
-Plug          'tpope/vim-fugitive'
-Plug 'ludovicchabant/vim-gutentags'
-Plug          'jistr/vim-nerdtree-tabs'
-Plug          'tpope/vim-obsession'
-Plug          'tpope/vim-repeat'
-Plug          'tpope/vim-surround'
-Plug          'tpope/vim-unimpaired'
-Plug           'gcmt/wildfire.vim'
+" --------------------------------------------------------------------------------------------------
+" Plugins.
+" --------------------------------------------------------------------------------------------------
 
-Plug 'luochen1990/rainbow'
-Plug 'guns/xterm-color-table.vim'
+call plug#begin($VIMHOME . '/plugged')
+" Unsure about these for now.
 
-Plug 'kana/vim-textobj-user'
-Plug 'glts/vim-textobj-comment'
+" Plug 'scrooloose/nerdtree'           " File explorer.
+Plug 'justinmk/vim-dirvish'
+" Plug 'lambdalisue/fern.vim'
+
+" Plug 'bling/vim-bufferline'          " Show list of open buffers.
+Plug 'ap/vim-buftabline'
+
+
+Plug 'tpope/vim-surround'            " Adds surround text objects (e.g. s) for parentheses).
+Plug 'tpope/vim-commentary'          " Adds gc command to (un)comment.
+Plug 'tpope/vim-fugitive'            " Git support.
+Plug 'orlp/vim-repeat'               " Adds repeat support for plugin commands.
+Plug 'tpope/vim-unimpaired'          " Lots of neat paired mappings.
+Plug 'junegunn/vim-easy-align'       " Quick aligning.
+Plug 'kana/vim-textobj-user'         " Custom text objects.
+Plug 'kana/vim-textobj-line'         " al/il for current line object.
+Plug 'beloglazov/vim-textobj-quotes' " aq/iq for quotes.
+Plug 'kana/vim-textobj-entire'       " ae/ie for entire file.
+Plug 'AndrewRadev/sideways.vim'      " Argument shuffling and text objects.
+Plug 'gcmt/wildfire.vim'             " Fast automatic selection of object around cursor.
+Plug 'morhetz/gruvbox'               " Color scheme.
+Plug 'NLKNguyen/papercolor-theme'    " Color scheme.
+Plug 'ervandew/supertab'             " Use tab for code completion.
+Plug 'orlp/vim-quick-replace'        " Quick find/replace.
 call plug#end()
 
-" --------------------------------------------------------------------------------------------------
-"  Settings
-" --------------------------------------------------------------------------------------------------
-
-" this is just mandatory
-set hidden
-filetype plugin on
-
-" wrapping
-set linebreak
-if v:version > 704 || v:version == 704 && has("patch338")
-  set breakindent
-endif
-set textwidth=100
-set formatoptions-=t
-set formatoptions+=c
-set formatoptions+=j
-
-" enable wrapping in multiline comments
-call OnSyntaxChange#Install('Comment', '^Comment$', 0, 'a')
-autocmd User SyntaxCommentEnterA setlocal formatoptions+=t
-autocmd User SyntaxCommentLeaveA setlocal formatoptions-=t
-
-if exists('+colorcolumn')
-    set colorcolumn=+1
-else
-    augroup highlight_long_lines
-      autocmd BufEnter * highlight OverLength ctermbg=0 guibg=#d7d7af
-      autocmd BufEnter * match OverLength /\%>100v.\+/
-    augroup END
-end
-
-" status line
-set laststatus=2
-set showcmd
-
-set statusline=   " clear the statusline for when vimrc is reloaded
-set statusline+=%f\                              " file name
-set statusline+=%m%r%w                           " flags
-set statusline+=%=                               " right align
-set statusline+=%{strlen(&ft)?&ft:'none'}\ \|\   " filetype
-set statusline+=%{strlen(&fenc)?&fenc:&enc}\ \|\ " encoding
-set statusline+=%{&fileformat}                   " file format
-set statusline+=\ %5l/%L\ :\ %2v                 " line/column number
-
-" syntastic
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 0
-" let g:syntastic_rust_checkers = ['cargo']
-
-" syntax highlighting
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-set termguicolors
-" set t_Co=16
-syntax on
-if has("gui_running")
-    set background=dark
-    colorscheme papercolor
-else
-    set background=light
-    colorscheme papercolor
+" Use ripgrep if possible.
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 endif
 
-" keep some distance from the edge of the screen while scrolling
-set scrolloff=5
+let g:buftabline_show = 1        " Only show with 2+ buffers.
+let g:buftabline_indicators = 1  " Indicate modified buffers.
+let g:buftabline_numbers = 2     " Use ordinal numbering.
 
-" allow the cursor to go everywhere in block mode
+" " NERDTree config.
+" let g:NERDTreeRespectWildIgnore=1
+" let g:NERDTreeNaturalSort=1
+" let g:NERDTreeDirArrowExpandable="+"
+" let g:NERDTreeDirArrowCollapsible="-"
+" " Close NERDTree if it's the only window left.
+" autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+
+" --------------------------------------------------------------------------------------------------
+" Pure Vim settings.
+" --------------------------------------------------------------------------------------------------
+
+" This is mandatory for my Vim workflow, allows switch buffers with unsaved changes.
+set hidden  
+
+" Sane backspace behavior.
+set backspace=indent,eol,start  
+
+" Allow the cursor to go everywhere in block mode.
 set virtualedit=block
 
-" indent settings
-set tabstop=4
-set shiftwidth=4
-set expandtab
-set autoindent
-filetype plugin indent on
-set smarttab
-set cino+=(0
-set backspace=indent,eol,start
-
-autocmd! FileType pyth setlocal shiftwidth=2 tabstop=2
-
-" override default indent to ignore blank lines
-" set indentexpr=GetIndent(v:lnum)
-" function! GetIndent(lnum)
-"    return indent(prevnonblank(a:lnum - 1))
-" endfunction
-
-" line numbers
-set number
-set cursorline
-
-" make vim faster
-set ttyfast
-set lazyredraw
-
-" don't time out on mappings, do on key codes
-set notimeout
-set ttimeout
-set timeoutlen=100
-
-" no bells, please
-set noerrorbells visualbell t_vb=
-autocmd GUIEnter * set visualbell t_vb=
-
-" automatically read files
-set autoread
-
-" fix backspace
-set backspace=2
-
-" fix mouse
+" Enable mouse.
 set mouse=a
 
-" use UTF-8
-set encoding=utf-8
+" Indent settings.
+set tabstop=4    " One tab is equivalent to 4 spaces.
+set shiftwidth=4 " One 'indent' is 4 spaces.
+set expandtab    " Insert spaces instead of tab.
+set autoindent   " Copy indent from last line.
+set smarttab     " Sane tab and backspace behavior for indenting.
+set cino+=(0     " Don't add extra indent after opening parentheses.
 
-" use ag if available
-if executable('ag')
-    set grepprg=ag\ --vimgrep
+" Wrapping.
+set textwidth=100
+set linebreak          " Wrap at word boundaries (purely display).
+if has('nvim') || v:version > 704 || v:version == 704 && has("patch338")
+    set breakindent    " Wrapped lines keep indent (purely display).
 endif
+set formatoptions+=cj  " Automatically add/remove comment leaders when wrapping.
+if exists('+colorcolumn')
+    set colorcolumn=+1 " Render line indicating text width.
+endif
+set scrolloff=5        " Keep some distance from the edge of the screen while scrolling.
+set sidescroll=1       " When wrap is off, with what increment should we scroll horizontally?
 
-" Gutentags
-let g:gutentags_generate_on_new = 0
+" Search.
+set hlsearch   " Highlight all previous search results.
+set incsearch  " Incremental search.
+set ignorecase " Ignore case while searching (use \C for exact match)...
+set smartcase  " ...but don't ignore when there's a capital in query.
+set wrapscan   " Searches wrap around file end/start.
 
-" NERDTree
-let g:nerdtree_tabs_open_on_gui_startup = 0
-let g:NERDTreeDirArrows=1
-let g:NERDChristmasTree=0
-let g:NERDTreeRespectWildIgnore=1
+" Status line.
+set laststatus=2 " Always show status line.
+set showcmd      " Show (part of) the command we're typing, and visual mode stats.
 
-" Unite
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
+set statusline=                                  " Clear the statusline for when vimrc is reloaded.
+set statusline+=%f\                              " File name.
+set statusline+=%m%r%w                           " Flags.
+set statusline+=%=                               " Right align.
+set statusline+=%{strlen(&ft)?&ft:'none'}\ \|\   " Filetype.
+set statusline+=%{strlen(&fenc)?&fenc:&enc}\ \|\ " Encoding.
+set statusline+=%{&fileformat}                   " File format.
+set statusline+=\ %5l/%L\ :\ %2v                 " Line/column number.
 
-" EasyMotion
-let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
+" Line numbers.
+set number     " The line numbers.
+set cursorline " A line highlighting the currently selected line.
 
-" Rainbow Parentheses
-let g:rainbow_active = 1
-let g:rainbow_conf = {
-\   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-\   'ctermfgs': ['88', '94','106', '97', '99', '38'],
-\   'operators': '_,_',
-\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
-\   'separately': {
-\       '*': {},
-\       'tex': {
-\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
-\       },
-\       'lisp': {
-\           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-\       },
-\       'vim': {
-\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
-\       },
-\       'css': 0,
-\   }
-\}
+" Autocomplete.
+set complete-=i           " No included files (clutters).
+set completeopt+=longest  " Automatically complete up to longest shared prefix.
 
-" python-mode
-let g:pymode = 1
-let g:pymode_python = 'python3'
-let g:pymode_options = 0
-let g:pymode_options_max_line_length = 120 " PEP8
-let g:pymode_folding = 0
-let g:pymode_run_bind = '<leader>f'
-let g:pymode_rope = 0
-let g:pymode_lint = 1
-let g:pymode_lint_checkers = ['pyflakes', 'pep8']
-let g:pymode_lint_ignore = 'E501,E701'  " line too long, multiple statements on one line
+" Miscellaneous.
+set nrformats=bin,hex " When de/incrementing with CTRL-A/X, don't consider octal.
+set nostartofline     " Try to maintain column when using e.g. gg/G/ctrl-D.
+set autoread          " Automatically read files if updated.
 
-" search
-set ignorecase
-set smartcase
-set incsearch
-set hlsearch
-set wrapscan
-set gdefault
-let g:incsearch#magic = '\v'
-
-" automatically open quickfix window (not needed with vim-dispatch)
-" autocmd QuickFixCmdPost [^l]* nested cwindow
-" autocmd QuickFixCmdPost    l* nested lwindow
-
-" autocomplete
-set completeopt+=longest
-
-" autocomplete
+" Generic enhancements/sane defaults.
+set encoding=UTF-8              " Internal Vim encoding.
+set belloff=all                 " No bells please.
+set fsync                       " I never had problems with it; I don't want uncertainty.
+set history=10000               " Longer command history.
+if has('nvim')
+    set display=lastline,msgsep " Saner long line and command msg display.
+else
+    set display=lastline        " Saner long line display.
+endif
+set sessionoptions+=unix,slash  " Saner sessions.
+set sessionoptions-=options
+set viewoptions+=unix,slash
+set shortmess+=F                " Avoid hit-enter prompt when file is edited.
+set tabpagemax=50               " Allow more tabs to be opened.
+set ttyfast                     " Faster Vim.
+set lazyredraw                  " Don't redraw during macros, faster.
+set ttimeout                    " Time out key codes.
+set timeoutlen=50               " Short timeout for keycodes.
+set wildmenu                    " Better command-line completion.
+if has('nvim')
+    set wildoptions=tagfile,pum
+else
+    set wildoptions=tagfile
+endif
+set wildmode=longest:full,full
 set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d,*.bz2,*.pdf
-set wildmode=longest,list
 
-" keep clipboard contents on vim exit
-if has('unix')
-    autocmd VimLeave * call system('xclip -selection clipboard', getreg('+'))
-endif
-
-" file extensions
-au BufRead,BufNewFile *.md set filetype=markdown
-au BufRead,BufNewFile *.pyth set filetype=pyth
-au BufRead,BufNewFile *.golf set filetype=golf
-au BufRead,BufNewFile *.bf set filetype=brainfuck
-
-" comments in C and co using double slashes
-autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s
-autocmd FileType golf setlocal commentstring=#\ %s
-autocmd FileType brainfuck setlocal comments=
-autocmd FileType python setlocal comments=b:#
-
-" skin gvim
-if has("gui_running")
-    " font
-    if has('win32')
-        set guifont=Consolas:h11
-        " set guifont=u_vga16:h13
-        " set guifont=Monaco:h10:w6
-    else
-        set guifont=Monaco\ 10
-    endif
-
-    " hide cruft
-    set guioptions+=mtTbrlRL
-    set guioptions-=mtTbrlRL
-
-    " no dialogs please
-    set guioptions+=c
-
-    " better cursor
-    set guicursor=n-v-c:block-Cursor-blinkon0,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor,r-cr:hor20-Cursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
-
-    " make gvim remember pos
-    let g:screen_size_restore_pos = 1
-    source $VIMHOME/winsize_persistent.vim
-endif
+" Comments.
+autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s  " Double slashes please.
+autocmd FileType python setlocal comments=b:#  " Don't know why this includes - normally.
 
 " --------------------------------------------------------------------------------------------------
-"  Mappings
+" Aesthetics.
 " --------------------------------------------------------------------------------------------------
 
-" no typos
+" https://github.com/vim/vim/issues/993
+" Set Vim-specific sequences for RGB colors.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+colorscheme PaperColor
+set termguicolors
+set background=light
+
+
+" --------------------------------------------------------------------------------------------------
+" Mappings.
+" --------------------------------------------------------------------------------------------------
+
+" Never time out on mappings.
+set notimeout 
+
+" Change the mapleader from \ to space.
+let mapleader=" "
+
 if has("user_commands")
+    " No typos from holding shift.
     command! -bang -nargs=? -complete=file E e<bang> <args>
     command! -bang -nargs=? -complete=file W w<bang> <args>
     command! -bang -nargs=? -complete=file Wq wq<bang> <args>
@@ -371,27 +246,26 @@ if has("user_commands")
     command! -bang Qa qa<bang>
 endif
 
-" easier indenting of code
+" Free up s and S (use cl instead of s and cc for S). Prevent muscle-memory.
+nmap s <Nop>
+xmap s <Nop>
+nmap S <Nop>
+
+" Significantly easier de/indenting of code.
 nnoremap > >>
 nnoremap < <<
-vnoremap < <gv
-vnoremap > >gv
-vnoremap <TAB> >gv
-vnoremap <S-TAB> <gv
+xnoremap < <gv
+xnoremap > >gv
+xnoremap <TAB> >gv
+xnoremap <S-TAB> <gv
 
-" select until end of line using vv
+" Select until end of line using vv.
 vnoremap v $h
 
-" substitute in selection
-vnoremap s :s//g<Left><Left>
+" Make yanking consistent with deleting.
+nnoremap Y y$
 
-" split navigation
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
-
-" better j/k with long lines
+" Better j/k with wrapping.
 nnoremap j gj
 nnoremap k gk
 nnoremap gj j
@@ -401,229 +275,142 @@ xnoremap k gk
 xnoremap gj j
 xnoremap gk k
 
-" faster scrolling with mouse wheel
-map <ScrollWheelUp> 3<C-Y>
-map <ScrollWheelDown> 3<C-E>
+" Quick rewrapping.
+xmap Q gw
+nmap Q gwap
 
-" incsearch
-map  / <Plug>(incsearch-forward)
-map  ? <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
+" Split navigation.
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
 
-" select closest text object
-map <ENTER> <Plug>(wildfire-fuel)
+" Line shuffling (uses vim-unimpaired).
+nmap <A-j> ]e
+nmap <A-k> [e
+xmap <A-j> ]egv
+xmap <A-k> [egv
+
+" Argument shuffling.
+nnoremap <A-h> :SidewaysLeft<CR>
+nnoremap <A-l> :SidewaysRight<CR>
+
+" Argument append/insert.
+nmap si <Plug>SidewaysArgumentInsertBefore
+nmap sa <Plug>SidewaysArgumentAppendAfter
+nmap sI <Plug>SidewaysArgumentInsertFirst
+nmap sA <Plug>SidewaysArgumentAppendLast
+
+" Argument text object.
+xmap aa <Plug>SidewaysArgumentTextobjA
+omap aa <Plug>SidewaysArgumentTextobjA
+xmap ia <Plug>SidewaysArgumentTextobjI
+omap ia <Plug>SidewaysArgumentTextobjI
+omap , ia
+xmap , ia
+" When deleting an argument we also want to delete the comma.
+nmap d, daa
+
+" Quote text object.
+xmap q iq
+omap q iq
+xmap Q aq
+omap Q aq
+
+" Select closest text object.
+let g:wildfire_objects = ["ia", "i'", 'i"', "i)", "i]", "i}", "i>", "al", "ip", "it"]
+nmap <ENTER> <Plug>(wildfire-fuel)
+xmap <ENTER> <Plug>(wildfire-fuel)
 omap <ENTER> <Plug>(wildfire-fuel)
 xmap <S-ENTER> <Plug>(wildfire-water)
 
-" paragraph reformat
-vmap Q gw
-nmap Q gwap
+" Quick-replace and search.
+nmap <silent> <Leader>r <Plug>(QuickReplaceWord)
+nmap <silent> <Leader>R <Plug>(QuickReplaceWordBackward)
+xmap <silent> <Leader>r <Plug>(QuickReplaceSelection)
+xmap <silent> <Leader>R <Plug>(QuickReplaceSelectionBackward)
+xmap <silent> * <Plug>(StartSelectionSearch):<C-U>call feedkeys('n')<CR>
+xmap <silent> # <Plug>(StartSelectionSearchBackward):<C-U>call feedkeys('n')<CR>
 
-" search for visual selected text
-function! s:match_visual()
-    let old = @@
-    normal! gvy
-    let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
-    let @@ = old
-endfunction
-
-xnoremap <silent> * :<C-U>call <SID>match_visual()<CR>n
-xnoremap <silent> # :<C-U>call <SID>match_visual()<Bar>let v:searchforward=0<CR>n
-
-" change the mapleader from \ to space
-let mapleader=" "
-
-" easily edit vimrc and reload
+" Easily edit vimrc and reload.
 nmap <silent> <leader>ve :e $MYVIMRC<CR>
 nmap <silent> <leader>vo :so $MYVIMRC<CR>
 
-" start/stop spellchecking
+" Start/stop spellchecking.
 nmap <silent> <leader>s :set spell!<CR>
 
-" quick clear highlighting
-map <silent> <leader>l :nohlsearch<CR>
+" Quick clear highlighting.
+nmap <silent> <leader>l :nohlsearch<CR>
 
-" open current file in explorer
-if has('win32')
-    nmap <silent> <leader>ee :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
-endif
+" Quick copy/paste to/from system clipboard.
+nmap <leader>p "+p
+xmap <leader>p "+p
+nmap <leader>P "+P
+xmap <leader>P "+P
+nmap <leader>y "+y
+xmap <leader>y "+y
+nmap <leader>Y "+Y
+xmap <leader>Y "+Y
 
-" quick copy/paste to/from system clipboard
-map <leader>p "+p
-map <leader>P "+P
-map <leader>y "+y
-map <leader>Y "+Y
+" EasyAlign.
+nmap sa <Plug>(EasyAlign)
+xmap sa <Plug>(EasyAlign)
 
-" easyalign
-xmap <leader>a <Plug>(EasyAlign)
-nmap <leader>a <Plug>(EasyAlign)
-
-" dispatch
-map <leader>d :wa<CR>:Dispatch<CR>
-
-" make yanking consistent with deleting
-nnoremap Y y$
-
-" quick swap implementation/header
-map <leader>h :A<CR>
-
-" cd to the directory containing the file in the buffer
+" Change directory to the file contained in the buffer.
 nmap <silent> <leader>cd :lcd %:h<CR>
 
-" close buffer
-nmap <leader>x :bd<CR>
+" Change directory to the git root of the file contained in the buffer.
+nmap <silent> <leader>cg :Glcd<CR>
 
-" Unite, NERDTree
-if has("win32") || has("win32unix")
-    nmap <silent> <C-p> :Unite -start-insert file_rec<CR>
+" Close buffer.
+nmap <silent> <leader>x :bd<CR>
+nmap <silent> <leader>X :bd!<CR>
+
+nmap <silent> <leader>d :Dirvish<CR>
+nmap <silent> <leader>D :Dirvish %<CR>
+
+" " NERDTree.
+" nmap <leader>n :NERDTreeToggle<CR>
+" nmap <leader>N :call <SID>NERDTreeVCSFind(expand('%', ':p'))<CR>
+" 
+" function! s:NERDTreeVCSFind(path)
+"     execute 'NERDTreeVCS' . fnamemodify(a:path, ':p:h')
+"     execute 'NERDTreeFind' . fnamemodify(a:path, ':p')
+" endfunction
+
+" Open current file in system file explorer.
+if has('win32')
+    nmap <silent> <leader>e :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
 else
-    nmap <silent> <C-p> :Unite -start-insert file_rec/async<CR>
-end
-nmap <silent> <leader>g :Unite -start-insert file_rec/git_repo:-c:-o:--exclude-standard<CR>
-nmap <silent> <leader>n :NERDTreeTabsToggle<CR>
-nmap <silent> <leader>N :NERDTreeFind<CR>
+    nmap <silent> <leader>e :silent execute "!xdg-open " . shellescape(expand("%:p:h"))<CR>
+endif
 
-" easymotion
-map <Leader>m <Plug>(easymotion-prefix)
-map <Leader><Leader> <Plug>(easymotion-s)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
+" Buftabline.
+nmap <leader>1 <Plug>BufTabLine.Go(1)
+nmap <leader>2 <Plug>BufTabLine.Go(2)
+nmap <leader>3 <Plug>BufTabLine.Go(3)
+nmap <leader>4 <Plug>BufTabLine.Go(4)
+nmap <leader>5 <Plug>BufTabLine.Go(5)
+nmap <leader>6 <Plug>BufTabLine.Go(6)
+nmap <leader>7 <Plug>BufTabLine.Go(7)
+nmap <leader>8 <Plug>BufTabLine.Go(8)
+nmap <leader>9 <Plug>BufTabLine.Go(9)
+nmap <leader>0 <Plug>BufTabLine.Go(-1)
 
-" quick replace occurences
-let g:should_inject_replace_occurences = 0
-function! MoveToNext()
-    if g:should_inject_replace_occurences
-        call feedkeys("n")
-        call repeat#set("\<Plug>ReplaceOccurences")
-    endif
 
-    let g:should_inject_replace_occurences = 0
-endfunction
+" --------------------------------------------------------------------------------------------------
+" Other features.
+" --------------------------------------------------------------------------------------------------
 
-augroup auto_move_to_next
-    autocmd! InsertLeave * :call MoveToNext()
+" If path doesn't exist on write, ask to create it.
+" https://stackoverflow.com/a/42872275/565635
+augroup vimrc-auto-mkdir
+    autocmd!
+    autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+    function! s:auto_mkdir(dir, force)
+        if !isdirectory(a:dir)  && (a:force ||
+            \ input("Directory '" . a:dir . "' does not exist. Create? [y/N]") =~? '^y\%[es]$')
+            call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+        endif
+    endfunction
 augroup END
-
-nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
-nmap <silent> <Leader>r :let @/ = '\C\<'.expand('<cword>').'\>'<CR>
-    \:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>cgn
-vmap <silent> <Leader>r :<C-U>
-    \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-    \gvy:let @/ = substitute(
-    \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
-    \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
-
-
-function! ReplaceOccurence()
-    " check if we are on top of an occurence
-    let l:winview = winsaveview()
-    let l:save_reg = getreg('"')
-    let l:save_regmode = getregtype('"')
-    let [l:lnum_cur, l:col_cur] = getpos(".")[1:2]
-    normal! ygn
-    let [l:lnum1, l:col1] = getpos("'[")[1:2]
-    let [l:lnum2, l:col2] = getpos("']")[1:2]
-    call setreg('"', l:save_reg, l:save_regmode)
-    call winrestview(winview)
-
-    " if we are on top of an occurence, replace it
-    if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
-        exe "normal! cgn\<c-a>\<esc>"
-    endif
-
-    call feedkeys("n")
-    call repeat#set("\<Plug>ReplaceOccurences")
-endfunction
-
-" let g:should_inject_replace_occurences = 0
-" function! MoveToNext()
-"     if g:should_inject_replace_occurences
-"         call feedkeys("n")
-"         call repeat#set("\<Plug>ReplaceOccurences")
-"     endif
-
-"     let g:should_inject_replace_occurences = 0
-" endfunction
-
-" augroup auto_move_to_next
-"     autocmd! InsertLeave * :call MoveToNext()
-" augroup END
-
-" nmap <silent> <Plug>ReplaceOccurences :call ReplaceOccurence()<CR>
-" vmap <silent> <Leader>r :<C-U>
-"     \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-"     \gvy:let @/ = substitute(
-"     \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR>:set hlsearch<CR>:let g:should_inject_replace_occurences=1<CR>
-"     \gV:call setreg('"', old_reg, old_regtype)<CR>cgn
-
-
-" function! s:post_cgn()
-"     augroup post_cgn
-"         autocmd!
-"         autocmd InsertLeave <buffer>
-"             \ execute "autocmd! post_cgn" |
-"             \ silent! call repeat#set("\<Plug>(cgn-next)") |
-"             \ silent! call feedkeys("n")
-"     augroup END
-" endfunction
-
-" function! s:cgn_next()
-"     " Check if we are on top of an occurence.
-"     let winview = winsaveview()
-"     let [lcur, ccur] = getpos(".")[1:2]
-"     let [lstart, cstart] = searchpos(@/, 'bcW')
-"     let [lend, cend] = searchpos(@/, 'ceW')
-"     call winrestview(winview)
-
-"     if lstart != 0 && lcur >= lstart && lcur <= lend
-"        \ && (lcur != lstart || ccur >= cstart) && (lcur != lend || ccur <= cend)
-"         call s:post_cgn()
-"         return ":\<C-U>let &hlsearch=&hlsearch\<cr>cgn\<C-A>\<Esc>"
-"     else
-"         return ":\<C-U>silent! call search(@/)"
-"     endif
-
-" endfunction
-
-" function! s:cgn_first()
-"     call s:post_cgn()
-"     return ":\<C-U>let &hlsearch=&hlsearch\<CR>cgn"
-" endfunction
-
-" nnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
-" xnoremap <expr> <Plug>(cgn-next) <SID>cgn_next()
-
-" nnoremap <expr> <Plug>(quick-replace)
-"     \ ':let @/ = ''\V\<'' . escape(expand(''<cword>''), ''\'') . ''\>''<CR>' . <SID>cgn_first()
-" xnoremap <expr> <Plug>(quick-replace) <SID>cgn_first()
-
-" " nmap <Plug>(quick-replace) :let @/ = '\V\<' . escape(expand('<cword>'), '\') . '\>'<Bar>
-" "     \ let &hlsearch=&hlsearch<Bar>
-" "     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
-" " xmap <Plug>(quick-replace) :<C-U>call <SID>match_visual()<Bar>
-" "     \ let &hlsearch=&hlsearch<Bar>
-" "     \ call repeat#set("\<Plug>(cgn-next)")<CR>cgn
-
-" nmap <leader>r <Plug>(quick-replace)
-" xmap <leader>r <Plug>(quick-replace)
-
-" function! ReplaceOccurence()
-"     " check if we are on top of an occurence
-"     let l:winview = winsaveview()
-"     let l:save_reg = getreg('"')
-"     let l:save_regmode = getregtype('"')
-"     let [l:lnum_cur, l:col_cur] = getpos(".")[1:2]
-"     normal! ygn
-"     let [l:lnum1, l:col1] = getpos("'[")[1:2]
-"     let [l:lnum2, l:col2] = getpos("']")[1:2]
-"     call setreg('"', l:save_reg, l:save_regmode)
-"     call winrestview(winview)
-
-"     " if we are on top of an occurence, replace it
-"     if l:lnum_cur >= l:lnum1 && l:lnum_cur <= l:lnum2 && l:col_cur >= l:col1 && l:col_cur <= l:col2
-"         exe "normal! cgn\<c-a>\<esc>"
-"     endif
-
-"     call feedkeys("n")
-"     call repeat#set("\<Plug>ReplaceOccurences")
-" endfunction
