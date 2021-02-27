@@ -222,6 +222,15 @@ colorscheme PaperColor
 set termguicolors
 set background=light
 
+if has('gui_running')
+    set guioptions-=a " Don't constantly update clipboard.
+    set guioptions-=e " No GUI tab line.
+    set guioptions-=m " No menu bar.
+    set guioptions-=T " No toolbar.
+    set guioptions+=i " Icon is nice.
+    set guioptions+=c " No dialogs please.
+endif
+
 
 " --------------------------------------------------------------------------------------------------
 " Mappings.
