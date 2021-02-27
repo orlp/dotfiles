@@ -63,6 +63,7 @@ endif
 
 call plug#begin($VIMHOME . '/plugged')
 " Unsure about these for now.
+Plug 'lifepillar/vim-cheat40'
 
 " Plug 'scrooloose/nerdtree'           " File explorer.
 Plug 'justinmk/vim-dirvish'
@@ -94,6 +95,9 @@ call plug#end()
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 endif
+
+let g:cheat40_foldlevel = 0
+let g:cheat40_use_default = 0
 
 let g:buftabline_show = 1        " Only show with 2+ buffers.
 let g:buftabline_indicators = 1  " Indicate modified buffers.
@@ -207,8 +211,11 @@ set wildmode=longest:full,full
 set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d,*.bz2,*.pdf
 
 " Comments.
-autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s  " Double slashes please.
-autocmd FileType python setlocal comments=b:#  " Don't know why this includes - normally.
+augroup vimrc_comments
+    autocmd!
+    autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s  " Double slashes please.
+    autocmd FileType python setlocal comments=b:#  " Don't know why this includes - normally.
+augroup END
 
 " --------------------------------------------------------------------------------------------------
 " Aesthetics.
@@ -241,6 +248,8 @@ set notimeout
 
 " Change the mapleader from \ to space.
 let mapleader=" "
+nmap <Space> <Nop>
+xmap <Space> <Nop>
 
 if has("user_commands")
     " No typos from holding shift.
@@ -326,6 +335,10 @@ omap q iq
 xmap Q aq
 omap Q aq
 
+" EasyAlign.
+nmap sa <Plug>(EasyAlign)
+xmap sa <Plug>(EasyAlign)
+
 " Select closest text object.
 let g:wildfire_objects = ["ia", "i'", 'i"', "i)", "i]", "i}", "i>", "al", "ip", "it"]
 nmap <ENTER> <Plug>(wildfire-fuel)
@@ -361,10 +374,6 @@ xmap <leader>y "+y
 nmap <leader>Y "+Y
 xmap <leader>Y "+Y
 
-" EasyAlign.
-nmap sa <Plug>(EasyAlign)
-xmap sa <Plug>(EasyAlign)
-
 " Change directory to the file contained in the buffer.
 nmap <silent> <leader>cd :lcd %:h<CR>
 
@@ -377,6 +386,24 @@ nmap <silent> <leader>X :bd!<CR>
 
 nmap <silent> <leader>d :Dirvish<CR>
 nmap <silent> <leader>D :Dirvish %<CR>
+
+" Cheat sheet.
+let g:cheat40_buf_id = 0
+function s:toggle_cheatsheet()
+    if bufwinnr(g:cheat40_buf_id) == -1
+        call cheat40#open(0)
+    else
+        silent! exe 'bd ' . g:cheat40_buf_id
+    endif
+endfunction
+augroup vimrc_cheat40_enhance
+    autocmd!
+    autocmd FileType cheat40 nnoremap <silent><buffer> <ENTER> za
+    autocmd FileType cheat40 nnoremap <silent><buffer> q :bd<CR>
+    autocmd FileType cheat40 let g:cheat40_buf_id = bufnr('%')
+augroup END
+nmap <silent> <leader>h :call <SID>toggle_cheatsheet()<CR>
+nmap <silent> <leader>H :e $VIMHOME/cheat40.txt<CR>
 
 " " NERDTree.
 " nmap <leader>n :NERDTreeToggle<CR>
@@ -406,6 +433,11 @@ nmap <leader>8 <Plug>BufTabLine.Go(8)
 nmap <leader>9 <Plug>BufTabLine.Go(9)
 nmap <leader>0 <Plug>BufTabLine.Go(-1)
 
+" Quick quit help.
+augroup vimrc_help
+    autocmd!
+    autocmd Filetype help nnoremap <silent><buffer> q :bd<CR>
+augroup END
 
 " --------------------------------------------------------------------------------------------------
 " Other features.
@@ -413,7 +445,7 @@ nmap <leader>0 <Plug>BufTabLine.Go(-1)
 
 " If path doesn't exist on write, ask to create it.
 " https://stackoverflow.com/a/42872275/565635
-augroup vimrc-auto-mkdir
+augroup vimrc_auto_mkdir
     autocmd!
     autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
     function! s:auto_mkdir(dir, force)
