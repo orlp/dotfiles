@@ -15,7 +15,7 @@ Edit ~/.profile to contain:
 
 vim
 ---
-Edit ~/.vimrc to contain:
+Edit ~/.vimrc and ~/.config/nvim/init.vim to contain:
 
     source ~/dotfiles/vim/vimrc.vim
 
@@ -100,6 +100,8 @@ Install Vim from https://tuxproject.de/projects/vim/.
 Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and change it's contents to this (change to the proper install path):
 
     source C:/dev/dotfiles/vim/vimrc.vim
+
+For neovim it's %LOCALAPPDATA%\nvim\init.vim.
 
 Run :PlugInstall in vim.
 
