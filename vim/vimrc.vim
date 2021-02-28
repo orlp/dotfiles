@@ -200,7 +200,7 @@ set tabpagemax=50               " Allow more tabs to be opened.
 set ttyfast                     " Faster Vim.
 set lazyredraw                  " Don't redraw during macros, faster.
 set ttimeout                    " Time out key codes.
-set timeoutlen=50               " Short timeout for keycodes.
+set timeoutlen=10               " Short timeout for keycodes.
 set wildmenu                    " Better command-line completion.
 if has('nvim')
     set wildoptions=tagfile,pum
@@ -245,6 +245,17 @@ endif
 
 " Never time out on mappings.
 set notimeout 
+
+" Fix alt not working on terminal vim, and disable alt in insert mode.
+let s:alnum = map(range(48, 57) + range(97, 122) , 'nr2char(v:val)')
+for s:char in s:alnum
+    if !has('nvim') && !has('gui_running')
+        execute "set <A-" . s:char . ">=\e" . s:char
+    endif
+    execute "imap <A-" . s:char . "> <NOP>"
+endfor
+unlet s:alnum
+unlet s:char
 
 " Change the mapleader from \ to space.
 let mapleader=" "
@@ -355,41 +366,41 @@ xmap <silent> * <Plug>(StartSelectionSearch):<C-U>call feedkeys('n')<CR>
 xmap <silent> # <Plug>(StartSelectionSearchBackward):<C-U>call feedkeys('n')<CR>
 
 " Easily edit vimrc and reload.
-nmap <silent> <leader>ve :e $MYVIMRC<CR>
-nmap <silent> <leader>vo :so $MYVIMRC<CR>
+nnoremap <silent> <leader>ve :e $MYVIMRC<CR>
+nnoremap <silent> <leader>vo :so $MYVIMRC<CR>
 
 " Start/stop spellchecking.
-nmap <silent> <leader>s :set spell!<CR>
+nnoremap <silent> <leader>s :set spell!<CR>
 
 " Quick clear highlighting.
-nmap <silent> <leader>l :nohlsearch<CR>
+nnoremap <silent> <leader>l :nohlsearch<CR>
 
 " Quick copy/paste to/from system clipboard.
-nmap <leader>p "+p
-xmap <leader>p "+p
-nmap <leader>P "+P
-xmap <leader>P "+P
-nmap <leader>y "+y
-xmap <leader>y "+y
-nmap <leader>Y "+Y
-xmap <leader>Y "+Y
+nnoremap <leader>p "+p
+xnoremap <leader>p "+p
+nnoremap <leader>P "+P
+xnoremap <leader>P "+P
+nnoremap <leader>y "+y
+xnoremap <leader>y "+y
+nnoremap <leader>Y "+Y
+xnoremap <leader>Y "+Y
 
 " Change directory to the file contained in the buffer.
-nmap <silent> <leader>cd :lcd %:h<CR>
+nnoremap <silent> <leader>cd :lcd %:h<CR>
 
 " Change directory to the git root of the file contained in the buffer.
-nmap <silent> <leader>cg :Glcd<CR>
+nnoremap <silent> <leader>cg :Glcd<CR>
 
 " Close buffer.
-nmap <silent> <leader>x :bd<CR>
-nmap <silent> <leader>X :bd!<CR>
+nnoremap <silent> <leader>x :bd<CR>
+nnoremap <silent> <leader>X :bd!<CR>
 
-nmap <silent> <leader>d :Dirvish<CR>
-nmap <silent> <leader>D :Dirvish %<CR>
+nnoremap <silent> <leader>d :Dirvish<CR>
+nnoremap <silent> <leader>D :Dirvish %<CR>
 
 " Cheat sheet.
 let g:cheat40_buf_id = 0
-function s:toggle_cheatsheet()
+function! s:toggle_cheatsheet()
     if bufwinnr(g:cheat40_buf_id) == -1
         call cheat40#open(0)
     else
@@ -402,8 +413,8 @@ augroup vimrc_cheat40_enhance
     autocmd FileType cheat40 nnoremap <silent><buffer> q :bd<CR>
     autocmd FileType cheat40 let g:cheat40_buf_id = bufnr('%')
 augroup END
-nmap <silent> <leader>h :call <SID>toggle_cheatsheet()<CR>
-nmap <silent> <leader>H :e $VIMHOME/cheat40.txt<CR>
+nnoremap <silent> <leader>h :call <SID>toggle_cheatsheet()<CR>
+nnoremap <silent> <leader>H :e $VIMHOME/cheat40.txt<CR>
 
 " " NERDTree.
 " nmap <leader>n :NERDTreeToggle<CR>
@@ -420,6 +431,10 @@ if has('win32')
 else
     nmap <silent> <leader>e :silent execute "!xdg-open " . shellescape(expand("%:p:h"))<CR>
 endif
+
+" Execute line on terminal.
+nnoremap <leader>t :put =system(getline('.'))<cr>
+vnoremap <leader>t :<C-U>'>put =system(join(getline('''<','''>'),\"\n\").\"\n\")<cr>
 
 " Buftabline.
 nmap <leader>1 <Plug>BufTabLine.Go(1)

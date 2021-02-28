@@ -28,7 +28,8 @@ Clear search highlight   l             N
 Set CWD to current file  cd            N
 Set CWD to git root      cg            N
 Close buffer (force)     x (X)         N
-File explorer at file    e             N
+File explorer at file    f             N
+Pass line(s) to system() t            NV
 Dirvish at CWD           d             N
 Dirvish at file          D             N
 }}}
