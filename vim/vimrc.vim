@@ -8,7 +8,7 @@ syntax on
 " Set VIM up such that it loads config from our dotfiles, and save data there.
 " --------------------------------------------------------------------------------------------------
 
-" http://stackoverflow.com/questions/3377298/how-can-i-override-vim-and-vimrc-paths-but-no-others-in-vim
+" http://stackoverflow.com/questions/3377298
 " Set default 'runtimepath' (without ~/.vim folders).
 let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 
@@ -69,10 +69,9 @@ Plug 'lifepillar/vim-cheat40'
 Plug 'justinmk/vim-dirvish'
 " Plug 'lambdalisue/fern.vim'
 
-" Plug 'bling/vim-bufferline'          " Show list of open buffers.
-Plug 'ap/vim-buftabline'
+" Plug 'bling/vim-bufferline'        " Show list of open buffers in statusline.
 
-
+Plug 'ap/vim-buftabline'             " Uses tabline to show open buffers.
 Plug 'tpope/vim-surround'            " Adds surround text objects (e.g. s) for parentheses).
 Plug 'tpope/vim-commentary'          " Adds gc command to (un)comment.
 Plug 'tpope/vim-fugitive'            " Git support.
@@ -272,6 +271,9 @@ endfor
 unlet s:alnum
 unlet s:char
 
+" Fix ctrl+6 sometimes not working in gvim.
+nnoremap <silent> <C-6> <C-^>
+
 " Change the mapleader from \ to space.
 let mapleader=" "
 nmap <Space> <Nop>
@@ -442,9 +444,9 @@ nnoremap <silent> <leader>H :e $VIMHOME/cheat40.txt<CR>
 
 " Open current file in system file explorer.
 if has('win32')
-    nmap <silent> <leader>e :silent execute "!start explorer /select," . shellescape(expand("%:p"))<CR>
+    nmap <silent> <leader>e :silent exe "!start explorer /select," . shellescape(expand("%:p"))<CR>
 else
-    nmap <silent> <leader>e :silent execute "!xdg-open " . shellescape(expand("%:p:h"))<CR>
+    nmap <silent> <leader>e :silent exe "!xdg-open " . shellescape(expand("%:p:h"))<CR>
 endif
 
 " Execute line on terminal.
