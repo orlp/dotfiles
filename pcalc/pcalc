@@ -67,6 +67,7 @@ reload = importlib.reload
 
 # Itertools.
 import itertools
+it = itertools
 from itertools import *
 
 _no_pad = object()
@@ -343,6 +344,7 @@ def totient(n):
     return tot
 
 def binom(n, k):
+    assert n >= 0 and k >= 0
     if k > n: return 0
     if n - k < k: k = n - k
     r = 1
@@ -354,10 +356,14 @@ def binom(n, k):
 def at_least_n_of_m(p, n, m):
     return sum(binom(m, k)* p**k * (1-p)**(m-k) for k in range(n, m+1))
 
-# Always end up importing these anyways.
-import re
+# Data science.
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import scipy
+
+# Always end up importing these anyways.
+import re
 
 if __name__ == "__main__":
     def configure_ptpython(repl):

@@ -1,0 +1,199 @@
+% Page layout.
+\documentclass[11pt,a4paper,twocolumn]{article}
+\usepackage[margin=2.5cm]{geometry} 
+
+% Must-have for anything non-english. 
+\usepackage[utf8]{inputenc}
+\usepackage[USenglish]{babel}
+
+% Math.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+% Beautiful typography.
+\usepackage[T1]{fontenc}
+\usepackage[activate={true,nocompatibility},
+            tracking=true,kerning=true,spacing=true,
+            factor=1100,stretch=10,shrink=10]{microtype}
+\microtypecontext{spacing=nonfrench}
+\SetTracking{encoding={*}, shape=sc}{20} % Fix small-caps.
+%\usepackage{tgheros} % Better sans font if not using newtxtext.
+\usepackage{newtxtext}
+\usepackage[straightquotes]{newtxtt}
+\usepackage{newtxmath} 
+
+% Headers.
+\usepackage{titling}
+\pretitle{\begin{center}\sffamily\huge\bfseries}
+\usepackage[sf,bf]{titlesec}
+% Quick titlesec options:
+% rm sf tt md bf up it sl sc
+% big medium small tiny
+% raggedleft center raggedright
+% Or e.g. overriding a particular style:
+% \titleformat{\subsection}{\sffamily\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% Tabular data/formatting.
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{siunitx}
+
+% Graphics and plots.
+\usepackage{graphicx} % Including graphics.
+\usepackage{caption} % Better captions.
+\usepackage{wrapfig} % Floating figures.
+% \usepackage{tikz}
+% \usetikzlibrary{patterns}
+% \usepackage{pgfplots} % Plots.
+% \pgfplotsset{compat=1.15}
+
+% Source code listing (requires -shell-escape command-line option).
+\usepackage{minted}
+\usemintedstyle{vs}
+\setminted{xleftmargin=\parindent, breaklines,fontsize=\footnotesize}
+\newcommand{\listfile}[2]{\paragraph{\large\texttt{#1}} \inputminted[breaklines,linenos]{#2}{#1}}
+
+% References.
+\usepackage{csquotes}
+\usepackage[style=alphabetic]{biblatex}
+\bibliography{references}
+
+% Pretty hyperlinked references/links. Must be last in preamble.
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,                 % Prevents ugly boxes.
+    setpagesize=false,
+    linkcolor=[rgb]{0.10,0.05,0.67}, % Google link blue.
+    citecolor=[rgb]{0.10,0.05,0.67},
+    filecolor=[rgb]{0.10,0.05,0.67},
+     urlcolor=[rgb]{0.10,0.05,0.67},
+}
+
+
+
+\title{Your Document Title}
+\author{John K. Smith}
+\date{\today}
+
+\begin{document}
+
+% This can be simplified when using single-column, or if
+% the abstract shouldn't be full-width.
+\twocolumn[
+  \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+In this document we introduce some baseline LaTeX. It
+makes things a lot easier to get started.
+    \end{abstract}
+  \end{@twocolumnfalse}
+  \vspace{1em}
+]
+
+
+
+
+\section{Introduction}
+
+An introduction.
+
+\begin{enumerate}
+    \item One.
+    \item Two.
+    \item \texttt{abcdefg0123456789}
+\end{enumerate}
+
+\begin{itemize}
+    \item Just.
+    \item A.
+    \item List.
+\end{itemize}
+
+
+
+\section{Related work}
+
+Related work. For example in \cite{shannon-entropy} we find \textit{information}.
+
+\begin{theorem}
+    Your important theorem.
+\end{theorem}
+\begin{proof}
+    Your proof.
+    \begin{equation}
+        \begin{aligned}
+            x &= y\\
+            y &= z
+        \end{aligned}
+        \label{eq:example-eq}
+    \end{equation}
+\end{proof}
+
+\section{Experimental setup}
+
+\begin{minted}{c}
+#include <stdio.h>
+int main(int argc, char** argv) {
+    puts("Your code goes here.");
+    return 0;
+}
+\end{minted}
+
+
+
+\section{Results}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{example-image-a}
+    \caption{A single-column figure.}
+    \label{fig:example-figure}
+\end{figure}
+
+\begin{table}
+    \caption{An example table, of which the caption should go above.}
+    \centering
+    \begin{tabular}{lcr}
+    \toprule
+    Aaaaa & Bbbbb & Ccccc \\
+    \midrule
+    D & E & F \\
+    Gg & Hh & Ii \\
+    \bottomrule
+    \end{tabular}
+    \label{tab:example-table}
+\end{table}
+
+\begin{table}
+    \caption{Another example table, that stretches to fill the width.}
+    \centering
+    \begin{tabular*}{0.9\linewidth}{lc@{\extracolsep{\fill}}r}
+    \toprule
+    Aaaaa & Bbbbb & Ccccc \\
+    \midrule
+    D & E & F \\
+    Gg & Hh & Ii \\
+    \bottomrule
+    \end{tabular*}
+    \label{tab:example-table-fullwidth}
+\end{table}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.9\linewidth]{example-image-a}
+    \caption{A two-column figure.}
+    \label{fig:example-figure-double}
+\end{figure*}
+
+
+
+
+% \bibliographystyle{plain}
+% \bibliography{mybibliography}
+\printbibliography
+
+\end{document}

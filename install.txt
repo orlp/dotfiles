@@ -15,7 +15,7 @@ Edit ~/.profile to contain:
 
 vim
 ---
-Edit ~/.vimrc to contain:
+Edit ~/.vimrc and ~/.config/nvim/init.vim to contain:
 
     source ~/dotfiles/vim/vimrc.vim
 
@@ -52,6 +52,8 @@ building vim from source
 ------------------------
 sudo apt-get build-dep vim-gtk
 
+make distclean
+LDFLAGS="-Wl,-rpath=$HOME/.localpython/lib" \
 vi_cv_path_python=/home/orlp/.localpython/bin/python \
 vi_cv_path_python3=/home/orlp/.localpython/bin/python3 \
 ./configure --with-features=huge \
@@ -64,8 +66,7 @@ vi_cv_path_python3=/home/orlp/.localpython/bin/python3 \
             --enable-gui=gtk2 \
             --enable-cscope \
             --prefix=/usr/local
-
-make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
+make VIMRUNTIMEDIR=/usr/local/share/vim/vim81 -j 4
 
 
 Windows
@@ -99,6 +100,8 @@ Install Vim from https://tuxproject.de/projects/vim/.
 Find a vimrc that gets run (like %USERPROFILE%\_vimrc) and change it's contents to this (change to the proper install path):
 
     source C:/dev/dotfiles/vim/vimrc.vim
+
+For neovim it's %LOCALAPPDATA%\nvim\init.vim.
 
 Run :PlugInstall in vim.
 
