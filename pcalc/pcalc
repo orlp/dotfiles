@@ -44,6 +44,22 @@ def stopwatch():
         sys.stdout.flush()
         return round(time.monotonic() - start, 1)
 
+# 'Shell' stuff.
+import os
+import subprocess
+cd = os.chdir
+pwd = os.getcwd
+mkdir = os.makedirs
+def readfile(fname, mode="r"):
+    with open(fname, mode) as f:
+        return f.read()
+def writefile(fname, data, mode="w"):
+    with open(fname, mode) as f:
+        f.write(data)
+
+
+
+
 # Builtins.
 import builtins
 import importlib
@@ -107,17 +123,22 @@ op = operator
 # Hashes.
 import hashlib
 
+def asbytes(x):
+    if isinstance(x, str):
+        return x.encode("utf-8")
+    return bytes(x)
+
 def md5(x):
-    return hashlib.md5(x.encode("utf-8")).hexdigest()
+    return hashlib.md5(asbytes(x)).hexdigest()
 
 def sha1(x):
-    return hashlib.sha1(x.encode("utf-8")).hexdigest()
+    return hashlib.sha1(asbytes(x)).hexdigest()
 
 def sha256(x):
-    return hashlib.sha256(x.encode("utf-8")).hexdigest()
+    return hashlib.sha256(asbytes(x)).hexdigest()
 
 def sha512(x):
-    return hashlib.sha256(x.encode("utf-8")).hexdigest()
+    return hashlib.sha256(asbytes(x)).hexdigest()
 
 # Better hex and bin.
 import binascii
