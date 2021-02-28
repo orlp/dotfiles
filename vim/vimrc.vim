@@ -160,14 +160,25 @@ set wrapscan   " Searches wrap around file end/start.
 set laststatus=2 " Always show status line.
 set showcmd      " Show (part of) the command we're typing, and visual mode stats.
 
-set statusline=                                  " Clear the statusline for when vimrc is reloaded.
-set statusline+=%f\                              " File name.
-set statusline+=%m%r%w                           " Flags.
-set statusline+=%=                               " Right align.
-set statusline+=%{strlen(&ft)?&ft:'none'}\ \|\   " Filetype.
-set statusline+=%{strlen(&fenc)?&fenc:&enc}\ \|\ " Encoding.
-set statusline+=%{&fileformat}                   " File format.
-set statusline+=\ %5l/%L\ :\ %2v                 " Line/column number.
+
+function! vimrc#scrollbar()
+    let width = 9
+    let perc = (line('.') - 1.0) / (max([line('$'), 2]) - 1.0)
+    let before = float2nr(round(perc * (width - 3)))
+    let after = width - 3 - before
+    return '[' . repeat(' ',  before) . '=' . repeat(' ', after) . ']'
+endfunction
+
+set statusline=                                   " Clear the statusline for when vimrc is reloaded.
+set statusline+=%f\                               " File name.
+set statusline+=%m%r%w                            " Flags.
+set statusline+=%=                                " Right align.
+set statusline+=%{strlen(&ft)?&ft:'none'}         " Filetype.
+set statusline+=\ \|\ %{strlen(&fenc)?&fenc:&enc} " Encoding.
+" set statusline+=\ \|\ %{&fileformat}            " File format.
+" set statusline+=\ %3p%%                         " Percentage.
+set statusline+=\ \ %{vimrc#scrollbar()}          " Scrollbar
+set statusline+=\ \ %4l\:\%-3v                    " Line/column number.
 
 " Line numbers.
 set number     " The line numbers.
@@ -230,12 +241,16 @@ set termguicolors
 set background=light
 
 if has('gui_running')
-    set guioptions-=a " Don't constantly update clipboard.
-    set guioptions-=e " No GUI tab line.
-    set guioptions-=m " No menu bar.
-    set guioptions-=T " No toolbar.
-    set guioptions+=i " Icon is nice.
-    set guioptions+=c " No dialogs please.
+    set guioptions-=a    " Don't constantly update clipboard.
+    set guioptions-=e    " No GUI tab line.
+    set guioptions-=m    " No menu bar.
+    set guioptions-=T    " No toolbar.
+    set guioptions-=l    " No scrollbar.
+    set guioptions-=L    " No scrollbar.
+    set guioptions-=r    " No scrollbar.
+    set guioptions-=R    " No scrollbar.
+    set guioptions+=i    " Icon is nice.
+    set guioptions+=c    " No dialogs please.
 endif
 
 
