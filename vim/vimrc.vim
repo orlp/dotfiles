@@ -85,6 +85,7 @@ Plug 'kana/vim-textobj-entire'       " ae/ie for entire file.
 Plug 'AndrewRadev/sideways.vim'      " Argument shuffling and text objects.
 Plug 'gcmt/wildfire.vim'             " Fast automatic selection of object around cursor.
 Plug 'morhetz/gruvbox'               " Color scheme.
+Plug 'lifepillar/vim-solarized8'     " Color scheme.
 Plug 'NLKNguyen/papercolor-theme'    " Color scheme.
 Plug 'ervandew/supertab'             " Use tab for code completion.
 Plug 'orlp/vim-quick-replace'        " Quick find/replace.
@@ -235,9 +236,9 @@ augroup END
 " Set Vim-specific sequences for RGB colors.
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-colorscheme PaperColor
 set termguicolors
-set background=light
+set background=dark
+colorscheme gruvbox
 
 if has('gui_running')
     set guioptions-=a    " Don't constantly update clipboard.
@@ -250,6 +251,10 @@ if has('gui_running')
     set guioptions-=R    " No scrollbar.
     set guioptions+=i    " Icon is nice.
     set guioptions+=c    " No dialogs please.
+
+    if has('win32')
+        set guifont=Consolas:h11
+    endif
 endif
 
 
