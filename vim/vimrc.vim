@@ -281,8 +281,14 @@ nnoremap <silent> <C-6> <C-^>
 
 " Change the mapleader from \ to space.
 let mapleader=" "
-nmap <Space> <Nop>
-xmap <Space> <Nop>
+
+" Make space do nothing.
+nnoremap <Space> <Nop>
+xnoremap <Space> <Nop>
+
+" Ignore shift to make it easier to hit shift-leader mappings.
+nmap <S-Space> <Space> 
+
 
 if has("user_commands")
     " No typos from holding shift.
