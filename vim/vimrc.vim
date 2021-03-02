@@ -71,6 +71,9 @@ Plug 'justinmk/vim-dirvish'
 
 " Plug 'bling/vim-bufferline'        " Show list of open buffers in statusline.
 
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 Plug 'ap/vim-buftabline'             " Uses tabline to show open buffers.
 Plug 'tpope/vim-surround'            " Adds surround text objects (e.g. s) for parentheses).
 Plug 'tpope/vim-commentary'          " Adds gc command to (un)comment.
