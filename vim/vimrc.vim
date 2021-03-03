@@ -80,6 +80,9 @@ Plug 'tpope/vim-commentary'          " Adds gc command to (un)comment.
 Plug 'tpope/vim-fugitive'            " Git support.
 Plug 'orlp/vim-repeat'               " Adds repeat support for plugin commands.
 Plug 'tpope/vim-unimpaired'          " Lots of neat paired mappings.
+Plug 'tpope/vim-characterize'        " Improves ga character analysis output.
+Plug 'tpope/vim-eunuch'              " Filesystem commands.
+Plug 'mbbill/undotree'               " Visualize undos as a tree.
 Plug 'junegunn/vim-easy-align'       " Quick aligning.
 Plug 'kana/vim-textobj-user'         " Custom text objects.
 Plug 'kana/vim-textobj-line'         " al/il for current line object.
@@ -97,6 +100,11 @@ call plug#end()
 " Use ripgrep if possible.
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+endif
+
+" Use fd for fzf if possible.
+if executable("fd")
+    let $FZF_DEFAULT_COMMAND='fd --type file --hidden --exclude .git'
 endif
 
 let g:cheat40_foldlevel = 0
@@ -234,6 +242,19 @@ augroup END
 " --------------------------------------------------------------------------------------------------
 " Aesthetics.
 " --------------------------------------------------------------------------------------------------
+
+" Style bat colors based on our theme.
+augroup vimrc_update_bat_theme
+    autocmd!
+    autocmd colorscheme * call ToggleBatEnvVar()
+augroup end
+function! ToggleBatEnvVar()
+    if (&background == "light")
+        let $BAT_THEME='Monokai Extended Light'
+    else
+        let $BAT_THEME=''
+    endif
+endfunction
 
 " https://github.com/vim/vim/issues/993
 " Set Vim-specific sequences for RGB colors.
@@ -422,10 +443,18 @@ nnoremap <silent> <leader>cd :lcd %:h<CR>
 " Change directory to the git root of the file contained in the buffer.
 nnoremap <silent> <leader>cg :Glcd<CR>
 
+" Fzf.
+nnoremap <silent> <leader>f :Files<CR>
+" All files in git repository, except ignored.
+nnoremap <silent> <leader>g :Glcd<CR>:GFiles --others --cached --exclude-standard<CR>
+" Only tracked files.
+nnoremap <silent> <leader>G :Glcd<CR>:GFiles<CR>
+
 " Close buffer.
 nnoremap <silent> <leader>x :bd<CR>
 nnoremap <silent> <leader>X :bd!<CR>
 
+" Dirvish.
 nnoremap <silent> <leader>d :Dirvish<CR>
 nnoremap <silent> <leader>D :Dirvish %<CR>
 
@@ -446,6 +475,9 @@ augroup vimrc_cheat40_enhance
 augroup END
 nnoremap <silent> <leader>h :call <SID>toggle_cheatsheet()<CR>
 nnoremap <silent> <leader>H :e $VIMHOME/cheat40.txt<CR>
+
+" Undotree.
+nnoremap <leader>u :UndotreeToggle<CR>
 
 " " NERDTree.
 " nmap <leader>n :NERDTreeToggle<CR>

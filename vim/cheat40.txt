@@ -25,13 +25,17 @@ Edit vimrc               ve            N
 Source vimrc             vo            N
 Start/stop spellcheck    s             N
 Clear search highlight   l             N
-Set CWD to current file  cd            N
-Set CWD to git root      cg            N
 Close buffer (force)     x (X)         N
 File explorer at file    f             N
 Pass line(s) to system() t            NV
+Fuzzy find files in CWD  f             N
+FZF in git repository... g             N
+   ...tracked files only G             N
+Set CWD to current file  cd            N
+Set CWD to git root      cg            N
 Dirvish at CWD           d             N
 Dirvish at file          D             N
+Show undo tree           u             N
 }}}
 Original Cheat40 {{{
 About {{{
