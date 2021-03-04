@@ -16,11 +16,10 @@ About {{{
 }}}
 Leader mappings {{{
 #Leader prefix is assumed throughout
+Show this cheatsheet     cs            N
+Edit this cheatsheet     cS            N
 Yank to clipboard        y            NV
 Paste from clipboard     p / P        NV
-Quick-replace word       r             N
-Quick-replace selection  r             V
-Quick-replace backward   R            NV
 Edit vimrc               ve            N
 Source vimrc             vo            N
 Start/stop spellcheck    s             N
@@ -31,11 +30,24 @@ Pass line(s) to system() t            NV
 Fuzzy find files in CWD  f             N
 FZF in git repository... g             N
    ...tracked files only G             N
+FZF file history         h             N
 Set CWD to current file  cd            N
 Set CWD to git root      cg            N
 Dirvish at CWD           d             N
 Dirvish at file          D             N
 Show undo tree           u             N
+}}}
+Other personal mappings {{{
+Swap line down           <A-j>         N
+Swap line up             <A-k>         N
+Swap argument left       <A-h>         N
+Swap argument right      <A-l>         N
+Trim trailing whitespace st           NV
+Start easy-align         sa           NV
+Change key under cursor  ss            N
+Quick-replace word       sr            N
+Quick-replace selection  sr            V
+Quick-replace backward   sR           NV
 }}}
 Original Cheat40 {{{
 About {{{

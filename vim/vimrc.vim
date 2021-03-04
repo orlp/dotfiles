@@ -63,7 +63,6 @@ endif
 
 call plug#begin($VIMHOME . '/plugged')
 " Unsure about these for now.
-Plug 'lifepillar/vim-cheat40'
 
 " Plug 'scrooloose/nerdtree'           " File explorer.
 Plug 'justinmk/vim-dirvish'
@@ -71,14 +70,13 @@ Plug 'justinmk/vim-dirvish'
 
 " Plug 'bling/vim-bufferline'        " Show list of open buffers in statusline.
 
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 
+Plug 'orlp/vim-repeat'               " Adds repeat support for plugin commands.
+Plug 'orlp/vim-quick-replace'        " Quick find/replace.
 Plug 'ap/vim-buftabline'             " Uses tabline to show open buffers.
 Plug 'tpope/vim-surround'            " Adds surround text objects (e.g. s) for parentheses).
 Plug 'tpope/vim-commentary'          " Adds gc command to (un)comment.
 Plug 'tpope/vim-fugitive'            " Git support.
-Plug 'orlp/vim-repeat'               " Adds repeat support for plugin commands.
 Plug 'tpope/vim-unimpaired'          " Lots of neat paired mappings.
 Plug 'tpope/vim-characterize'        " Improves ga character analysis output.
 Plug 'tpope/vim-eunuch'              " Filesystem commands.
@@ -90,11 +88,15 @@ Plug 'beloglazov/vim-textobj-quotes' " aq/iq for quotes.
 Plug 'kana/vim-textobj-entire'       " ae/ie for entire file.
 Plug 'AndrewRadev/sideways.vim'      " Argument shuffling and text objects.
 Plug 'gcmt/wildfire.vim'             " Fast automatic selection of object around cursor.
+Plug 'ervandew/supertab'             " Use tab for code completion.
+Plug 'lifepillar/vim-cheat40'        " Cheat sheet.
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Color schemes.
 Plug 'morhetz/gruvbox'               " Color scheme.
 Plug 'lifepillar/vim-solarized8'     " Color scheme.
 Plug 'NLKNguyen/papercolor-theme'    " Color scheme.
-Plug 'ervandew/supertab'             " Use tab for code completion.
-Plug 'orlp/vim-quick-replace'        " Quick find/replace.
 call plug#end()
 
 " Use ripgrep if possible.
@@ -128,10 +130,10 @@ let g:buftabline_numbers = 2     " Use ordinal numbering.
 " --------------------------------------------------------------------------------------------------
 
 " This is mandatory for my Vim workflow, allows switch buffers with unsaved changes.
-set hidden  
+set hidden
 
 " Sane backspace behavior.
-set backspace=indent,eol,start  
+set backspace=indent,eol,start
 
 " Allow the cursor to go everywhere in block mode.
 set virtualedit=block
@@ -244,17 +246,27 @@ augroup END
 " --------------------------------------------------------------------------------------------------
 
 " Style bat colors based on our theme.
-augroup vimrc_update_bat_theme
-    autocmd!
-    autocmd colorscheme * call ToggleBatEnvVar()
-augroup end
-function! ToggleBatEnvVar()
+function! s:toggle_bat_envvar()
     if (&background == "light")
         let $BAT_THEME='Monokai Extended Light'
     else
         let $BAT_THEME=''
     endif
 endfunction
+augroup vimrc_update_bat_theme
+    autocmd!
+    autocmd ColorScheme * call s:toggle_bat_envvar()
+augroup end
+
+function! s:patch_colorscheme()
+    if g:colors_name == 'gruvbox'
+        hi link Function GruvboxGreen
+    endif
+endfunction
+augroup vimrc_colorscheme_patch
+    autocmd!
+    autocmd ColorScheme * call s:patch_colorscheme()
+augroup end
 
 " https://github.com/vim/vim/issues/993
 " Set Vim-specific sequences for RGB colors.
@@ -287,7 +299,7 @@ endif
 " --------------------------------------------------------------------------------------------------
 
 " Never time out on mappings.
-set notimeout 
+set notimeout
 
 " Fix alt not working on terminal vim, and disable alt in insert mode.
 let s:alnum = map(range(48, 57) + range(97, 122) , 'nr2char(v:val)')
@@ -311,7 +323,7 @@ nnoremap <Space> <Nop>
 xnoremap <Space> <Nop>
 
 " Ignore shift to make it easier to hit shift-leader mappings.
-nmap <S-Space> <Space> 
+nmap <S-Space> <Space>
 
 
 if has("user_commands")
@@ -398,10 +410,6 @@ omap q iq
 xmap Q aq
 omap Q aq
 
-" EasyAlign.
-nmap sa <Plug>(EasyAlign)
-xmap sa <Plug>(EasyAlign)
-
 " Select closest text object.
 let g:wildfire_objects = ["ia", "i'", 'i"', "i)", "i]", "i}", "i>", "al", "ip", "it"]
 nmap <ENTER> <Plug>(wildfire-fuel)
@@ -409,11 +417,34 @@ xmap <ENTER> <Plug>(wildfire-fuel)
 omap <ENTER> <Plug>(wildfire-fuel)
 xmap <S-ENTER> <Plug>(wildfire-water)
 
+" Change character under cursor.
+nnoremap ss cl
+
+" Trim trailing whitespace.
+function! s:trim_whitespace()
+    let l:save = winsaveview()
+    let l:search = @/
+    if mode() == 'n'
+        %s/\s\+$//e
+    else
+        '<,'>s/\s\+$//e
+    endif
+    call winrestview(l:save)
+    let @/ = l:search
+    nohl
+endfun
+nnoremap <silent> st :call <SID>trim_whitespace(0)<CR>
+xnoremap <silent> st :<C-U>call <SID>trim_whitespace(1)<CR>
+
+" EasyAlign.
+nmap sa <Plug>(EasyAlign)
+xmap sa <Plug>(EasyAlign)
+
 " Quick-replace and search.
-nmap <silent> <Leader>r <Plug>(QuickReplaceWord)
-nmap <silent> <Leader>R <Plug>(QuickReplaceWordBackward)
-xmap <silent> <Leader>r <Plug>(QuickReplaceSelection)
-xmap <silent> <Leader>R <Plug>(QuickReplaceSelectionBackward)
+nmap <silent> sr <Plug>(QuickReplaceWord)
+nmap <silent> sR <Plug>(QuickReplaceWordBackward)
+xmap <silent> sr <Plug>(QuickReplaceSelection)
+xmap <silent> sR <Plug>(QuickReplaceSelectionBackward)
 xmap <silent> * <Plug>(StartSelectionSearch):<C-U>call feedkeys('n')<CR>
 xmap <silent> # <Plug>(StartSelectionSearchBackward):<C-U>call feedkeys('n')<CR>
 
@@ -449,6 +480,7 @@ nnoremap <silent> <leader>f :Files<CR>
 nnoremap <silent> <leader>g :Glcd<CR>:GFiles --others --cached --exclude-standard<CR>
 " Only tracked files.
 nnoremap <silent> <leader>G :Glcd<CR>:GFiles<CR>
+nnoremap <silent> <leader>h :History<CR>
 
 " Close buffer.
 nnoremap <silent> <leader>x :bd<CR>
@@ -473,8 +505,8 @@ augroup vimrc_cheat40_enhance
     autocmd FileType cheat40 nnoremap <silent><buffer> q :bd<CR>
     autocmd FileType cheat40 let g:cheat40_buf_id = bufnr('%')
 augroup END
-nnoremap <silent> <leader>h :call <SID>toggle_cheatsheet()<CR>
-nnoremap <silent> <leader>H :e $VIMHOME/cheat40.txt<CR>
+nnoremap <silent> <leader>cs :call <SID>toggle_cheatsheet()<CR>
+nnoremap <silent> <leader>cS :e $VIMHOME/cheat40.txt<CR>
 
 " Undotree.
 nnoremap <leader>u :UndotreeToggle<CR>
@@ -482,7 +514,7 @@ nnoremap <leader>u :UndotreeToggle<CR>
 " " NERDTree.
 " nmap <leader>n :NERDTreeToggle<CR>
 " nmap <leader>N :call <SID>NERDTreeVCSFind(expand('%', ':p'))<CR>
-" 
+"
 " function! s:NERDTreeVCSFind(path)
 "     execute 'NERDTreeVCS' . fnamemodify(a:path, ':p:h')
 "     execute 'NERDTreeFind' . fnamemodify(a:path, ':p')
