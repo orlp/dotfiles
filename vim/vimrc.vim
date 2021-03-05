@@ -1,3 +1,5 @@
+" TODO: listchars
+
 " Disable legacy cruft and enable compatibility.
 set nocompatible
 set langnoremap

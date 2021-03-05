@@ -37,21 +37,22 @@ Dirvish at CWD           d             N
 Dirvish at file          D             N
 Show undo tree           u             N
 }}}
-Other personal mappings {{{
+Other mappings {{{
 Swap line down           <A-j>         N
 Swap line up             <A-k>         N
 Swap argument left       <A-h>         N
 Swap argument right      <A-l>         N
 Trim trailing whitespace st           NV
 Start easy-align         sa           NV
-Change key under cursor  ss           *N
+Change char under cursor ss           *N
 Quick-replace word       sr           *N
 Quick-replace selection  sr           *V
 Quick-replace backward   sR          *NV
+Toggle bg light/dark     yob           N
+Toggle wrap              yow           N
 }}}
 Folds {{{
-#By default all folds deeper than
-#the foldlevel will be closed.
+#Deeper than foldlevel = default closed
 Open (recursive)         zo (zO)     *NV
 Open all folds           zR           NV
 Close (recursive)        zc (zC)     *NV
@@ -65,6 +66,24 @@ Increase foldlevel       zm           NV
 Reduce foldlevel         zr           NV
 Go to start/end of fold  [z / ]z       M
 Go to next/prev fold     zj / zk       M
+}}}
+Pairwise {{{
+#] = next and [ = prev and implied
+Next lowercase mark      ]`            M
+  ...start of line (^)   ]'            M
+Next misspelled word     ]s            M
+Next unmatched )/}       ]) / ]}       M
+Next/last buffer         ]b / ]B       N
+Next/last tag            ]t / ]t       M
+Next/last in arglist     ]a / ]A       M
+... in location list     ]l / ]L       M
+... in quickfix list     ]q / ]Q       M   
+Next file in sorted dir  ]f            N
+Next SCM conflict/diff   ]n            M
+#[ = encode, ] = decode and implied
+XML encode (line)        [x ([xx)     NO
+URL encode (line)        [u ([uu)     NO
+C string encode (line)   [y ([yy)     NO
 }}}
 Original Cheat40 {{{
 About {{{
