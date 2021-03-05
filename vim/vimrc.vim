@@ -105,8 +105,13 @@ if executable('rg')
 endif
 
 " Use fd for fzf if possible.
-if executable("fd")
-    let $FZF_DEFAULT_COMMAND='fd --type file --hidden --exclude .git'
+if executable('fd')
+    let $FZF_DEFAULT_COMMAND = 'fd --type file --hidden --exclude .git'
+    command! -bang -nargs=? -complete=dir FilesNoIgnore call fzf#vim#files(<q-args>,
+        \ fzf#vim#with_preview({'source': 'fd --type file --hidden --no-ignore --exclude .git'}), <bang>0)
+else
+    command! -bang -nargs=? -complete=dir FilesNoIgnore
+        \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 endif
 
 let g:cheat40_foldlevel = 0
@@ -225,6 +230,7 @@ set ttyfast                     " Faster Vim.
 set lazyredraw                  " Don't redraw during macros, faster.
 set ttimeout                    " Time out key codes.
 set timeoutlen=10               " Short timeout for keycodes.
+let $ESCDELAY=10                " Faster escape timeout for FZF (might be problematic).
 set wildmenu                    " Better command-line completion.
 if has('nvim')
     set wildoptions=tagfile,pum
@@ -476,6 +482,7 @@ nnoremap <silent> <leader>cg :Glcd<CR>
 
 " Fzf.
 nnoremap <silent> <leader>f :Files<CR>
+nnoremap <silent> <leader>F :FilesNoIgnore<CR>
 " All files in git repository, except ignored.
 nnoremap <silent> <leader>g :Glcd<CR>:GFiles --others --cached --exclude-standard<CR>
 " Only tracked files.
@@ -495,7 +502,11 @@ let g:cheat40_buf_id = 0
 function! s:toggle_cheatsheet()
     if bufwinnr(g:cheat40_buf_id) == -1
         call cheat40#open(0)
+        normal! jj
     else
+        if bufwinnr(g:cheat40_buf_id) == winnr()
+            wincmd p
+        endif
         silent! exe 'bd ' . g:cheat40_buf_id
     endif
 endfunction

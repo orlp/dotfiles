@@ -28,7 +28,7 @@ Close buffer (force)     x (X)         N
 File explorer at file    f             N
 Pass line(s) to system() t            NV
 Fuzzy find files in CWD  f             N
-FZF in git repository... g             N
+FZF in git repository    g             N
    ...tracked files only G             N
 FZF file history         h             N
 Set CWD to current file  cd            N
@@ -44,10 +44,27 @@ Swap argument left       <A-h>         N
 Swap argument right      <A-l>         N
 Trim trailing whitespace st           NV
 Start easy-align         sa           NV
-Change key under cursor  ss            N
-Quick-replace word       sr            N
-Quick-replace selection  sr            V
-Quick-replace backward   sR           NV
+Change key under cursor  ss           *N
+Quick-replace word       sr           *N
+Quick-replace selection  sr           *V
+Quick-replace backward   sR          *NV
+}}}
+Folds {{{
+#By default all folds deeper than
+#the foldlevel will be closed.
+Open (recursive)         zo (zO)     *NV
+Open all folds           zR           NV
+Close (recursive)        zc (zC)     *NV
+Close all folds          zM           NV
+Toggle (recursive)       za (zA)     *NV
+Toggle folding           zi           NV
+Open until line unfolded zv          *NV
+Reset folds to auto      zX           NV
+   ... and apply zv      zx          *NV
+Increase foldlevel       zm           NV
+Reduce foldlevel         zr           NV
+Go to start/end of fold  [z / ]z       M
+Go to next/prev fold     zj / zk       M
 }}}
 Original Cheat40 {{{
 About {{{
