@@ -1,4 +1,4 @@
-" TODO: listchars
+" TODO: kill buffer but not split
 
 " Disable legacy cruft and enable compatibility.
 set nocompatible
@@ -120,6 +120,22 @@ endif
 command! -bang -nargs=? -complete=dir FileHistory
     \ call fzf#vim#history({'options': ['--tiebreak=index']}, <bang>0)
 
+" CTRL-A CTRL-Q to select all and build quickfix list.
+function! s:build_quickfix_list(lines)
+    call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+    copen
+    cc
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all,ctrl-d:half-page-down,ctrl-u:half-page-up,tab:toggle'
+
+
 let g:cheat40_foldlevel = 0
 let g:cheat40_use_default = 0
 
@@ -158,6 +174,7 @@ set shiftwidth=4 " One 'indent' is 4 spaces.
 set expandtab    " Insert spaces instead of tab.
 set autoindent   " Copy indent from last line.
 set smarttab     " Sane tab and backspace behavior for indenting.
+set shiftround   " Round indents (when using < and >) to multiple of shiftwidth.
 set cino+=(0     " Don't add extra indent after opening parentheses.
 
 " Wrapping.
@@ -222,6 +239,7 @@ set encoding=UTF-8              " Internal Vim encoding.
 set belloff=all                 " No bells please.
 set fsync                       " I never had problems with it; I don't want uncertainty.
 set history=10000               " Longer command history.
+set undolevels=10000            " Longer undo history.
 if has('nvim')
     set display=lastline,msgsep " Saner long line and command msg display.
 else
@@ -245,6 +263,7 @@ else
 endif
 set wildmode=longest:full,full
 set wildignore+=*.swp,*.pyc,*.o,*.pyo,*.gch,*.gch.d,*.bz2,*.pdf
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 
 " Comments.
 augroup vimrc_comments
@@ -384,6 +403,16 @@ xnoremap gk k
 xmap Q gw
 nmap Q gwap
 
+" Search results always in middle of screen.
+nmap n nzz
+nmap N Nzz
+nmap * *zz
+nmap # #zz
+nmap g* g*zz
+nmap g# g#zz
+nmap gn gnzz
+nmap gN gNzz
+
 " Split navigation.
 map <C-h> <C-w>h
 map <C-j> <C-w>j
@@ -459,6 +488,12 @@ xmap <silent> sr <Plug>(QuickReplaceSelection)
 xmap <silent> sR <Plug>(QuickReplaceSelectionBackward)
 xmap <silent> * <Plug>(StartSelectionSearch):<C-U>call feedkeys('n')<CR>
 xmap <silent> # <Plug>(StartSelectionSearchBackward):<C-U>call feedkeys('n')<CR>
+
+" Create splits.
+nnoremap <silent> sh :leftabove vsplit<CR>
+nnoremap <silent> sl :rightbelow vsplit<CR>
+nnoremap <silent> sk :leftabove split<CR>
+nnoremap <silent> sj :rightbelow split<CR>
 
 " Easily edit vimrc and reload.
 nnoremap <silent> <leader>ve :e $MYVIMRC<CR>
@@ -539,10 +574,13 @@ nnoremap <leader>u :UndotreeToggle<CR>
 
 " Open current file in system file explorer.
 if has('win32')
-    nmap <silent> <leader>e :silent exe "!start explorer /select," . shellescape(expand("%:p"))<CR>
+    nnoremap <silent> <leader>e :silent exe "!start explorer /select," . shellescape(expand("%:p"))<CR>
 else
-    nmap <silent> <leader>e :silent exe "!xdg-open " . shellescape(expand("%:p:h"))<CR>
+    nnoremap <silent> <leader>e :silent exe "!xdg-open " . shellescape(expand("%:p:h"))<CR>
 endif
+
+" Copy current filename to clipboard.
+nnoremap <leader>% :let @+ = expand('%:p')<CR>
 
 " Execute line on terminal.
 nnoremap <leader>t :put =system(getline('.'))<cr>

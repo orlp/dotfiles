@@ -26,6 +26,7 @@ Start/stop spellcheck    s             N
 Clear search highlight   l             N
 Close buffer (force)     x (X)         N
 File explorer at file    f             N
+File path to clipboard   %             N
 Pass line(s) to system() t            NV
 Fuzzy find files in CWD  f             N
 FZF in git repository    g             N
@@ -48,6 +49,7 @@ Change char under cursor ss           *N
 Quick-replace word       sr           *N
 Quick-replace selection  sr           *V
 Quick-replace backward   sR          *NV
+Open split in direction  s<hjkl>       N
 Toggle bg light/dark     yob           N
 Toggle wrap              yow           N
 }}}
