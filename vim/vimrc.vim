@@ -474,8 +474,8 @@ function! s:trim_whitespace()
     let @/ = l:search
     nohl
 endfun
-nnoremap <silent> st :call <SID>trim_whitespace(0)<CR>
-xnoremap <silent> st :<C-U>call <SID>trim_whitespace(1)<CR>
+nnoremap <silent> st :call <SID>trim_whitespace()<CR>
+xnoremap <silent> st :<C-U>call <SID>trim_whitespace()<CR>
 
 " EasyAlign.
 nmap sa <Plug>(EasyAlign)
