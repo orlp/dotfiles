@@ -114,6 +114,10 @@ else
         \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 endif
 
+" Prefer if file history just broke ties by recently used.
+command! -bang -nargs=? -complete=dir FileHistory
+    \ call fzf#vim#history({'options': ['--tiebreak=index']}, <bang>0)
+
 let g:cheat40_foldlevel = 0
 let g:cheat40_use_default = 0
 
@@ -487,7 +491,7 @@ nnoremap <silent> <leader>F :FilesNoIgnore<CR>
 nnoremap <silent> <leader>g :Glcd<CR>:GFiles --others --cached --exclude-standard<CR>
 " Only tracked files.
 nnoremap <silent> <leader>G :Glcd<CR>:GFiles<CR>
-nnoremap <silent> <leader>h :History<CR>
+nnoremap <silent> <leader>h :FileHistory<CR>
 
 " Close buffer.
 nnoremap <silent> <leader>x :bd<CR>
