@@ -326,6 +326,7 @@ if has('gui_running')
 
     if has('win32')
         set guifont=Consolas:h11
+        " set guifont=Iosevka Fixed:h11
     endif
 endif
 
