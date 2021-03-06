@@ -1,4 +1,4 @@
-" TODO: kill buffer but not split
+" TODO: easyalign cheat40
 
 " Disable legacy cruft and enable compatibility.
 set nocompatible
@@ -64,18 +64,18 @@ endif
 " --------------------------------------------------------------------------------------------------
 
 call plug#begin($VIMHOME . '/plugged')
+Plug 'orlp/vim-bunlink'
+Plug 'tweekmonster/helpful.vim'
+
 " Unsure about these for now.
-
-" Plug 'scrooloose/nerdtree'           " File explorer.
+Plug 'junegunn/goyo.vim'             " Distraction-free editing.
+Plug 'scrooloose/nerdtree'           " File explorer.
 Plug 'justinmk/vim-dirvish'
-" Plug 'lambdalisue/fern.vim'
-
-" Plug 'bling/vim-bufferline'        " Show list of open buffers in statusline.
-
 
 Plug 'orlp/vim-repeat'               " Adds repeat support for plugin commands.
 Plug 'orlp/vim-quick-replace'        " Quick find/replace.
 Plug 'ap/vim-buftabline'             " Uses tabline to show open buffers.
+" Plug 'bling/vim-bufferline'        " Uses statusline to show open buffers.
 Plug 'tpope/vim-surround'            " Adds surround text objects (e.g. s) for parentheses).
 Plug 'tpope/vim-commentary'          " Adds gc command to (un)comment.
 Plug 'tpope/vim-fugitive'            " Git support.
@@ -143,13 +143,13 @@ let g:buftabline_show = 1        " Only show with 2+ buffers.
 let g:buftabline_indicators = 1  " Indicate modified buffers.
 let g:buftabline_numbers = 2     " Use ordinal numbering.
 
-" " NERDTree config.
-" let g:NERDTreeRespectWildIgnore=1
-" let g:NERDTreeNaturalSort=1
-" let g:NERDTreeDirArrowExpandable="+"
-" let g:NERDTreeDirArrowCollapsible="-"
-" " Close NERDTree if it's the only window left.
-" autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" NERDTree config.
+let g:NERDTreeRespectWildIgnore=1
+let g:NERDTreeNaturalSort=1
+let g:NERDTreeDirArrowExpandable="+"
+let g:NERDTreeDirArrowCollapsible="-"
+" Close NERDTree if it's the only window left.
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
 " --------------------------------------------------------------------------------------------------
@@ -224,6 +224,11 @@ set statusline+=\ \ %4l\:\%-3v                    " Line/column number.
 " Line numbers.
 set number     " The line numbers.
 set cursorline " A line highlighting the currently selected line.
+augroup vimrc_cursorline_only_active_window
+    autocmd!
+    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
+augroup END  
 
 " Autocomplete.
 set complete-=i           " No included files (clutters).
@@ -269,7 +274,7 @@ set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 augroup vimrc_comments
     autocmd!
     autocmd FileType c,cpp,cs,java setlocal commentstring=//\ %s  " Double slashes please.
-    autocmd FileType python setlocal comments=b:#  " Don't know why this includes - normally.
+    " autocmd FileType python setlocal comments=b:#  " Don't know why this includes - normally.
 augroup END
 
 " --------------------------------------------------------------------------------------------------
@@ -403,16 +408,6 @@ xnoremap gk k
 xmap Q gw
 nmap Q gwap
 
-" Search results always in middle of screen.
-nmap n nzz
-nmap N Nzz
-nmap * *zz
-nmap # #zz
-nmap g* g*zz
-nmap g# g#zz
-nmap gn gnzz
-nmap gN gNzz
-
 " Split navigation.
 map <C-h> <C-w>h
 map <C-j> <C-w>j
@@ -502,8 +497,8 @@ nnoremap <silent> <leader>vo :so $MYVIMRC<CR>
 " Start/stop spellchecking.
 nnoremap <silent> <leader>s :set spell!<CR>
 
-" Quick clear highlighting.
-nnoremap <silent> <leader>l :nohlsearch<CR>
+" Quick clear highlighting / error msg.
+nnoremap <silent> <leader>l :nohlsearch <Bar> echon ''<CR>
 
 " Quick copy/paste to/from system clipboard.
 nnoremap <leader>p "+p
@@ -516,7 +511,7 @@ nnoremap <leader>Y "+Y
 xnoremap <leader>Y "+Y
 
 " Change directory to the file contained in the buffer.
-nnoremap <silent> <leader>cd :lcd %:h<CR>
+nnoremap <silent> <leader>cd :lcd %:h:p<CR>
 
 " Change directory to the git root of the file contained in the buffer.
 nnoremap <silent> <leader>cg :Glcd<CR>
@@ -530,9 +525,9 @@ nnoremap <silent> <leader>g :Glcd<CR>:GFiles --others --cached --exclude-standar
 nnoremap <silent> <leader>G :Glcd<CR>:GFiles<CR>
 nnoremap <silent> <leader>h :FileHistory<CR>
 
-" Close buffer.
-nnoremap <silent> <leader>x :bd<CR>
-nnoremap <silent> <leader>X :bd!<CR>
+" Unlink buffer.
+nnoremap <silent> <leader>x :Bunlink<CR>
+nnoremap <silent> <leader>X :Bunlink!<CR>
 
 " Dirvish.
 nnoremap <silent> <leader>d :Dirvish<CR>
