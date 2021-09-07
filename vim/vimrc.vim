@@ -325,8 +325,8 @@ if has('gui_running')
     set guioptions+=c    " No dialogs please.
 
     if has('win32')
-        set guifont=Consolas:h11
-        " set guifont=Iosevka Fixed:h11
+        " set guifont=Consolas:h10
+        set guifont=Iosevka_Fixed:h10
     endif
 endif
 
@@ -351,6 +351,9 @@ unlet s:char
 
 " Fix ctrl+6 sometimes not working in gvim.
 nnoremap <silent> <C-6> <C-^>
+
+" Fix visual mode ctrl-X on windows.
+silent! vunmap <C-X>
 
 " Change the mapleader from \ to space.
 let mapleader=" "
@@ -512,7 +515,7 @@ nnoremap <leader>Y "+Y
 xnoremap <leader>Y "+Y
 
 " Change directory to the file contained in the buffer.
-nnoremap <silent> <leader>cd :lcd %:h:p<CR>
+nnoremap <silent> <leader>cd :lcd %:p:h<CR>
 
 " Change directory to the git root of the file contained in the buffer.
 nnoremap <silent> <leader>cg :Glcd<CR>
@@ -559,14 +562,14 @@ nnoremap <silent> <leader>cS :e $VIMHOME/cheat40.txt<CR>
 " Undotree.
 nnoremap <leader>u :UndotreeToggle<CR>
 
-" " NERDTree.
-" nmap <leader>n :NERDTreeToggle<CR>
-" nmap <leader>N :call <SID>NERDTreeVCSFind(expand('%', ':p'))<CR>
-"
-" function! s:NERDTreeVCSFind(path)
-"     execute 'NERDTreeVCS' . fnamemodify(a:path, ':p:h')
-"     execute 'NERDTreeFind' . fnamemodify(a:path, ':p')
-" endfunction
+" NERDTree.
+nmap <leader>n :NERDTreeToggle<CR>
+nmap <leader>N :call <SID>NERDTreeVCSFind(expand('%', ':p'))<CR>
+
+function! s:NERDTreeVCSFind(path)
+    execute 'NERDTreeVCS ' . fnamemodify(a:path, ':p:h')
+    execute 'NERDTreeFind ' . fnamemodify(a:path, ':p')
+endfunction
 
 " Open current file in system file explorer.
 if has('win32')
