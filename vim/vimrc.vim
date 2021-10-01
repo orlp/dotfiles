@@ -257,8 +257,10 @@ set shortmess+=F                " Avoid hit-enter prompt when file is edited.
 set tabpagemax=50               " Allow more tabs to be opened.
 set ttyfast                     " Faster Vim.
 set lazyredraw                  " Don't redraw during macros, faster.
+set notimeout                   " Do not timeout mappings.
 set ttimeout                    " Time out key codes.
-set timeoutlen=10               " Short timeout for keycodes.
+" set timeoutlen=10               " Short timeout for keycodes.
+set ttimeoutlen=10              " Short timeout for keycodes.
 let $ESCDELAY=10                " Faster escape timeout for FZF (might be problematic).
 set wildmenu                    " Better command-line completion.
 if has('nvim')
