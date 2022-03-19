@@ -2,3 +2,4 @@
 /vim/plugged/*
 /pcalc/__pycache__/*
 tags
+.DS_Store
