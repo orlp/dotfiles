@@ -46,7 +46,8 @@ ln -s ~/dotfiles/pcalc/pcalc ~/bin/pcalc
 
 building python from source
 ------------
-./configure --prefix=$HOME/.localpython --enable-loadable-sqlite-extensions --with-system-expat --with-system-ffi --enable-ipv6 --with-threads --enable-shared LDFLAGS=-Wl,-rpath=$HOME/.localpython/lib
+./configure --prefix=$HOME/.localpython --with-system-expat --with-system-ffi --enable-shared LDFLAGS="-Wl,-rpath,$HOME/.localpython/lib"
+On MacOS add: --with-openssl=$(brew --prefix openssl) 
 
 building vim from source
 ------------------------
