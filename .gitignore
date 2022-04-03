@@ -1,5 +1,6 @@
 /vim/.*
 /vim/plugged/*
+/vim/autoload/plug.vim.old
 /pcalc/__pycache__/*
 tags
 .DS_Store
