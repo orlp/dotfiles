@@ -44,6 +44,10 @@ pcalc
 python3 -m pip install --user --upgrade ptpython pygments-style-solarized pyperclip
 ln -s ~/dotfiles/pcalc/pcalc ~/bin/pcalc
 
+On MacOS also (for a matplotlib backend):
+brew install qt
+python3 -m pip install pyqt6
+
 building python from source
 ------------
 ./configure --prefix=$HOME/.localpython --with-system-expat --with-system-ffi --enable-shared LDFLAGS="-Wl,-rpath,$HOME/.localpython/lib"
