@@ -364,6 +364,10 @@ try:
     matplotlib.use("QtAgg")
 except ImportError:
     pass
+try:
+    import addcopyfighandler
+except ImportError:
+    pass
 import matplotlib.pyplot as plt
 import scipy
 
