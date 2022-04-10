@@ -31,6 +31,10 @@ tmux
 ----
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
 
+git
+---
+git config --global core.excludesfile ~/.global_gitignore
+
 rxvt
 ----
 ln -s ~/dotfiles/Xresources ~/.Xresources
@@ -110,3 +114,6 @@ For neovim it's %LOCALAPPDATA%\nvim\init.vim.
 
 Run :PlugInstall in vim.
 
+git
+---
+git config --global core.excludesfile C:\dev\dotfiles\.global_gitignore
