@@ -87,6 +87,7 @@ import collections
 from collections import Counter, defaultdict, OrderedDict
 
 # Functools.
+import functools
 from functools import lru_cache, partial, reduce
 
 # Math.pow is shit, import rest.
@@ -103,8 +104,8 @@ try:
 except ImportError:
     from math import gcd as _gcd
 _lcm = lambda a, b: abs(a*b) // _gcd(a, b)
-def gcd(*l): return reduce(_gcd, l)
-def lcm(*l): return reduce(_lcm, l)
+def gcd(*l): return functools.reduce(_gcd, l)
+def lcm(*l): return functools.reduce(_lcm, l)
 
 F = Fraction
 
