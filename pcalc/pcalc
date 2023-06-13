@@ -188,7 +188,7 @@ def avg(*args):
 
 # Product.
 def prod(it):
-    return reduce(op.mul, it, 1)
+    return functools.reduce(op.mul, it, 1)
 
 # Pretty printing.
 from pprint import pprint as pp
@@ -333,6 +333,14 @@ def factorization(n):
         except KeyError:
             factors[p1] = 1
     return factors
+
+def divisors(n):
+    primes, max_exps = zip(*factorization(n).items())
+    exponent_combos = it.product(*(range(1+exp) for exp in max_exps))
+    return sorted(prod(p**e for p, e in zip(primes, exps))
+                  for exps in exponent_combos)
+
+
 
 @lru_cache(None)
 def totient(n):
