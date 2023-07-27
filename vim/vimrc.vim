@@ -184,7 +184,7 @@ if has('nvim') || v:version > 704 || v:version == 704 && has("patch338")
     set breakindent    " Wrapped lines keep indent (purely display).
 endif
 set formatoptions+=cj  " Automatically add/remove comment leaders when wrapping.
-if exists('+colorcolumn')
+if exists('+colorcolumn') && !exists('g:vscode')
     set colorcolumn=+1 " Render line indicating text width.
 endif
 set scrolloff=5        " Keep some distance from the edge of the screen while scrolling.
@@ -200,7 +200,6 @@ set wrapscan   " Searches wrap around file end/start.
 " Status line.
 set laststatus=2 " Always show status line.
 set showcmd      " Show (part of) the command we're typing, and visual mode stats.
-
 
 function! vimrc#scrollbar()
     let width = 9
@@ -223,12 +222,14 @@ set statusline+=\ \ %4l\:\%-3v                    " Line/column number.
 
 " Line numbers.
 set number     " The line numbers.
-set cursorline " A line highlighting the currently selected line.
-augroup vimrc_cursorline_only_active_window
-    autocmd!
-    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-    autocmd WinLeave * setlocal nocursorline
-augroup END  
+if !exists('g:vscode')
+    set cursorline " A line highlighting the currently selected line.
+    augroup vimrc_cursorline_only_active_window
+        autocmd!
+        autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+        autocmd WinLeave * setlocal nocursorline
+    augroup END  
+endif
 
 " Autocomplete.
 set complete-=i           " No included files (clutters).
