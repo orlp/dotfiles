@@ -70,7 +70,8 @@ Plug 'tweekmonster/helpful.vim'
 " Unsure about these for now.
 Plug 'junegunn/goyo.vim'             " Distraction-free editing.
 Plug 'scrooloose/nerdtree'           " File explorer.
-Plug 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-dirvish'          " File explorer.
+Plug 'metakirby5/codi.vim'           " Live evaluation.
 
 Plug 'orlp/vim-repeat'               " Adds repeat support for plugin commands.
 Plug 'orlp/vim-quick-replace'        " Quick find/replace.
