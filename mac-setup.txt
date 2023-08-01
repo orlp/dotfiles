@@ -19,7 +19,8 @@ Lunar
 LinearMouse
 AltTab
 Karabiner-Elements
-brew install --cask lunar linearmouse alt-tab karabiner-elements
+Easy Move+Resize
+brew install --cask lunar linearmouse alt-tab karabiner-elements easy-move-plus-resize
 
 # Manual steps
 
