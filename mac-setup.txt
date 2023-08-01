@@ -1,0 +1,49 @@
+# Software
+
+Homebrew
+Firefox
+Discord
+KeePassXC
+Visual Studio Code
+iTerm2
+Syncthing
+
+xcode-select --install
+brew install tmux git cmake binutils gcc llvm wget gdb neovim sqlite3
+
+Rust
+cargo install ripgrep fd-find hyperfine bacon
+
+## To make the system more usable
+Lunar
+LinearMouse
+AltTab
+Karabiner-Elements
+brew install --cask lunar linearmouse alt-tab karabiner-elements
+
+# Manual steps
+
+ - Using the built-in keyboard configuration I map Caps Lock to Escape.
+ 
+ - I set the option to use the F keys as regular keys, requiring Fn to be pressed for special functions.
+ 
+ - Using Karabiner-Elements I swap modifier keys. I lay stuff out such that for an external keyboard it becomes (physical on the left, logical on the right):
+
+       Left: Ctrl Win Alt => Command Ctrl Option
+       Right: Alt Win Ctrl => Option Fn Command
+
+   On the internal laptop keyboard:
+   
+       Left: Fn Ctrl Option Command => Command Ctrl Ctrl Option
+       Right: Command Option => Fn Option
+
+   `Fn` I put on the right command key.
+
+ - Within iTerm2's Keys -> Remap Modifiers settings I swap Ctrl and Command once more such that ^C and such work the way I'm used to in the CLI. If I want to ensure a global hotkey still works (e.g. such as alt-tab) I add it to the Keys -> Key Bindings section with the action "Do Not Remap Modifiers". If using a hotkey window it is crucial to do this before binding the hotkey.
+ 
+ - Using Karabiner-Elements I install [my shift-delete rule](https://ke-complex-modifications.pqrs.org/#shift-delete-to-delete-forward) that turns Shift-Delete into a forwards delete.
+ 
+ - When coding I don't want Apple's "press and hold" special character insertion, and key repeat instead. So:
+ 
+    defaults write com.googlecode.iterm2 ApplePressAndHoldEnabled -bool false
+    defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
