@@ -9,10 +9,10 @@ iTerm2
 Syncthing
 
 xcode-select --install
-brew install tmux git cmake binutils gcc llvm wget gdb neovim sqlite3
+brew install tmux git cmake binutils coreutils findutils gcc llvm wget gdb neovim sqlite3
 
 Rust
-cargo install ripgrep fd-find hyperfine bacon
+cargo install ripgrep fd-find hyperfine bacon cargo-deadlinks du-dust
 
 ## To make the system more usable
 Lunar
@@ -20,7 +20,8 @@ LinearMouse
 AltTab
 Karabiner-Elements
 Easy Move+Resize
-brew install --cask lunar linearmouse alt-tab karabiner-elements easy-move-plus-resize
+Rectangle
+brew install --cask lunar linearmouse alt-tab karabiner-elements easy-move-plus-resize rectangle
 
 # Manual steps
 
@@ -37,8 +38,6 @@ brew install --cask lunar linearmouse alt-tab karabiner-elements easy-move-plus-
    
        Left: Fn Ctrl Option Command => Command Ctrl Ctrl Option
        Right: Command Option => Fn Option
-
-   `Fn` I put on the right command key.
 
  - Within iTerm2's Keys -> Remap Modifiers settings I swap Ctrl and Command once more such that ^C and such work the way I'm used to in the CLI. If I want to ensure a global hotkey still works (e.g. such as alt-tab) I add it to the Keys -> Key Bindings section with the action "Do Not Remap Modifiers". If using a hotkey window it is crucial to do this before binding the hotkey.
  
