@@ -493,10 +493,12 @@ xmap <silent> * <Plug>(StartSelectionSearch):<C-U>call feedkeys('n')<CR>
 xmap <silent> # <Plug>(StartSelectionSearchBackward):<C-U>call feedkeys('n')<CR>
 
 " Create splits.
-nnoremap <silent> sh :leftabove vsplit<CR>
-nnoremap <silent> sl :rightbelow vsplit<CR>
-nnoremap <silent> sk :leftabove split<CR>
-nnoremap <silent> sj :rightbelow split<CR>
+if !exists('g:vscode')
+    nnoremap <silent> sh :leftabove vsplit<CR>
+    nnoremap <silent> sl :rightbelow vsplit<CR>
+    nnoremap <silent> sk :leftabove split<CR>
+    nnoremap <silent> sj :rightbelow split<CR>
+endif
 
 " Easily edit vimrc and reload.
 nnoremap <silent> <leader>ve :e $MYVIMRC<CR>
@@ -507,6 +509,16 @@ nnoremap <silent> <leader>s :set spell!<CR>
 
 " Quick clear highlighting / error msg.
 nnoremap <silent> <leader>l :nohlsearch <Bar> echon ''<CR>
+
+" Extra easy copy/paste register.
+nnoremap sp "sp
+xnoremap sp "sp
+nnoremap sP "sP
+xnoremap sP "sP
+nnoremap sy "sy
+xnoremap sy "sy
+nnoremap sY "sY
+xnoremap sY "sY
 
 " Quick copy/paste to/from system clipboard.
 nnoremap <leader>p "+p
