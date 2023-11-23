@@ -12,7 +12,8 @@ syntax on
 
 " http://stackoverflow.com/questions/3377298
 " Set default 'runtimepath' (without ~/.vim folders).
-let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
+" Disabled for now because it breaks VS code.
+" let &runtimepath = printf('%s/vimfiles,%s,%s/vimfiles/after', $VIM, $VIMRUNTIME, $VIM)
 
 " What is the name of the directory containing this file?
 let s:portable = fnamemodify(resolve(expand('<sfile>:p')), ':h')
