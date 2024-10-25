@@ -2,6 +2,7 @@
 
 " Disable legacy cruft and enable compatibility.
 set nocompatible
+language en_US.UTF-8
 set langnoremap
 filetype plugin indent on
 syntax on
