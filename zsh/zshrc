@@ -88,3 +88,10 @@ stty -ixon
 
 # gp is pari/gp, not git push.
 unalias gp
+
+FZF_CTRL_R_OPTS="--height 50% --preview 'echo {2..} | bat --color=always -pl sh' --preview-window 'wrap,up,5'"
+source <(fzf --zsh)
+
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+fi

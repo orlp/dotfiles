@@ -621,6 +621,13 @@ augroup vimrc_help
     autocmd Filetype help nnoremap <silent><buffer> q :bd<CR>
 augroup END
 
+" VS Code specific bindings
+if exists('g:vscode')
+    nmap gf <CMD>call VSCodeCall('seito-openfile.openFileFromText')<CR>
+    nmap sc <CMD> call VSCodeCall('editor.action.inlineSuggest.trigger')<CR>
+    nmap <TAB> <CMD> call VSCodeCall('editor.action.inlineSuggest.commit')<CR>
+endif
+
 " --------------------------------------------------------------------------------------------------
 " Other features.
 " --------------------------------------------------------------------------------------------------
