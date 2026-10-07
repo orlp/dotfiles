@@ -512,6 +512,10 @@ nnoremap <silent> <leader>s :set spell!<CR>
 " Quick clear highlighting / error msg.
 nnoremap <silent> <leader>l :nohlsearch <Bar> echon ''<CR>
 
+" Copy current filename + line number to clipboard (sF for absolute).
+nnoremap <silent> sf :let @+ = expand('%:p:.') . ':' . line('.')<CR>
+nnoremap <silent> sF :let @+ = expand('%:p') . ':' . line('.')<CR>
+
 " Extra easy copy/paste register.
 nnoremap sp "sp
 xnoremap sp "sp
@@ -595,9 +599,6 @@ if has('win32')
 else
     nnoremap <silent> <leader>e :silent exe "!xdg-open " . shellescape(expand("%:p:h"))<CR>
 endif
-
-" Copy current filename to clipboard.
-nnoremap <leader>% :let @+ = expand('%:p')<CR>
 
 " Execute line on terminal.
 nnoremap <leader>t :put =system(getline('.'))<cr>
